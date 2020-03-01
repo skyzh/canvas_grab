@@ -1,10 +1,17 @@
 # canvas-grab
 
-Grab all files on Canvas LSM to local directory.
+Grab all files on Canvas LMS to local directory. Download latest release
+[here](https://github.com/skyzh/canvas_grab/archive/master.zip).
 
 ```bash
 pip3 install -r requirements.txt
 ./main.py
+```
+
+For Windows users:
+```bash
+pip install -r requirements.txt
+python main.py
 ```
 
 Please offer an API key in `config.py` before running this program.
