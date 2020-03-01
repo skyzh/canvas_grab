@@ -48,7 +48,7 @@ new_files_list = []
 
 def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
     name = course.name.replace("（", "(").replace("）", ")")
-    print(f"{Fore.CYAN}Course {name}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Course {name} {course.course_code}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.list_folders()}
     for file in course.list_files():
         folder = folders[file.folder_id] + "/"
@@ -78,8 +78,7 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                 pathlib.Path(path).unlink()
             except:
                 pass
-            
-            time.sleep(1)
+
             download_file(file.url, f"    {Fore.GREEN}Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}", path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
@@ -100,7 +99,7 @@ do_checkpoint()
 if len(new_files_list) == 0:
     print("All files up to date")
 else:
-    print(f"{Fore.GREEN}New or Updated files:")
+    print(f"{Fore.GREEN}New or Updated files:{Style.RESET_ALL}")
     for f in new_files_list:
         print(f)
 
