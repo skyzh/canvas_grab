@@ -74,6 +74,7 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
             except:
                 pass
             
+            time.sleep(1)
             download_file(file.url, path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
