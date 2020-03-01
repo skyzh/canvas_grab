@@ -32,3 +32,5 @@ You may interrupt at any time.
 
 You may change `do_download` function in `main.py` to filter files.
 Currently the filter is set to ignore non-document files and too big files.
+
+To re-download all files, remove `.checkpoint` file and `files` folder.
