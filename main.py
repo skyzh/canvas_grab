@@ -4,6 +4,7 @@
 from canvasapi import Canvas
 import canvasapi
 from colorama import Fore, Back, Style
+import colorama
 import json
 import pathlib
 import os
@@ -12,6 +13,8 @@ import sys
 import requests
 from download_file import download_file
 from config import API_URL, API_KEY
+
+colorama.init()
 
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
@@ -25,7 +28,7 @@ def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
     if not any(file.display_name.endswith(pf) for pf in pfs):
         return (False, "only download documents")
-    if file.size >= 30 * 1024 * 1024:
+    if file.size >= 70 * 1024 * 1024:
         return (False, f"file too big: {file.size // 1024 // 1024} MB")
     return (True, "")
 
@@ -41,6 +44,8 @@ try:
 except:
     print(f"{Fore.RED} No checkpoint found")
 
+new_files_list = []
+
 def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
     name = course.name.replace("（", "(").replace("）", ")")
     print(f"{Fore.CYAN} Course {name}{Style.RESET_ALL}")
@@ -51,7 +56,7 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
             folder = ""
 
         directory = f"{BASE_DIR}/{name}/{folder}"
-        path = f"{directory}/{file.display_name}"
+        path = f"{directory}{file.display_name}"
 
         json_key = f"{name}/{folder}{file}"
 
@@ -78,13 +83,21 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
             download_file(file.url, path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
+            new_files_list.append(path)
         else:
             print(f"    {Style.DIM} Ignore {file.display_name}: {reason} {Style.RESET_ALL}")
         do_checkpoint()
 
-for course in courses:
-    if hasattr(course, "name"):
-        process_course(course)
+try:
+    for course in courses:
+        if hasattr(course, "name"):
+            process_course(course)
+except KeyboardInterrupt:
+    pass
 
 do_checkpoint()
+print(f"{Fore.GREEN} New files:")
+for f in new_files_list:
+    print(f)
+
 print(f"{Fore.CYAN} Done.")

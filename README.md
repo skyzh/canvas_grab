@@ -18,6 +18,10 @@ API_URL = "https://oc.sjtu.edu.cn"
 API_KEY = "balahbalah"
 ```
 
-The program will automatically checkpoint your downloads, therefore
+The program will automatically checkpoint your downloads. Therefore
 it will not grab downloaded files, and will check if there's any update
-on a file.
+on a file. Checkpoint is done after any new file downloaded.
+You may interrupt at any time.
+
+You may change `do_download` function in `main.py` to filter files.
+Currently the filter is set to ignore non-document files and too big files.
