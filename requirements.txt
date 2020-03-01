@@ -1,0 +1,4 @@
+canvasapi
+colorama
+requests
+tqdm
