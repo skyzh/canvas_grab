@@ -27,9 +27,9 @@ courses = canvas.get_courses()
 def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
     if not any(file.display_name.endswith(pf) for pf in pfs):
-        return (False, "only download documents")
+        return (False, f"{Fore.BLACK}{Back.WHITE}only download documents")
     if file.size >= 70 * 1024 * 1024:
-        return (False, f"file too big: {file.size // 1024 // 1024} MB")
+        return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 // 1024} MB")
     return (True, "")
 
 checkpoint = {}
@@ -42,18 +42,18 @@ try:
     with open(CHECKPOINT_FILE, 'r') as file:
         checkpoint = json.load(file)
 except:
-    print(f"{Fore.RED} No checkpoint found")
+    print(f"{Fore.RED}No checkpoint found")
 
 new_files_list = []
 
 def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
     name = course.name.replace("（", "(").replace("）", ")")
-    print(f"{Fore.CYAN} Course {name}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Course {name}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.list_folders()}
     for file in course.list_files():
         folder = folders[file.folder_id] + "/"
-        if folder == "course files/":
-            folder = ""
+        if folder.startswith("course files/"):
+            folder = folder[len("course files/"):]
 
         directory = f"{BASE_DIR}/{name}/{folder}"
         path = f"{directory}{file.display_name}"
@@ -70,9 +70,9 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
 
         if file.url == "":
             d = False
-            reason = "url not available"
+            reason = "file not available"
+        
         if d:
-            print(f"    {Fore.GREEN} Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
             try:
                 pathlib.Path(path).unlink()
@@ -80,12 +80,12 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                 pass
             
             time.sleep(1)
-            download_file(file.url, path)
+            download_file(file.url, f"    {Fore.GREEN}Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}", path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
             new_files_list.append(path)
         else:
-            print(f"    {Style.DIM} Ignore {file.display_name}: {reason} {Style.RESET_ALL}")
+            print(f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
         do_checkpoint()
 
 try:
@@ -96,8 +96,12 @@ except KeyboardInterrupt:
     pass
 
 do_checkpoint()
-print(f"{Fore.GREEN} New files:")
-for f in new_files_list:
-    print(f)
 
-print(f"{Fore.CYAN} Done.")
+if len(new_files_list) == 0:
+    print("All files up to date")
+else:
+    print(f"{Fore.GREEN}New or Updated files:")
+    for f in new_files_list:
+        print(f)
+
+print(f"{Fore.CYAN}Done.")

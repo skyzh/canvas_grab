@@ -4,7 +4,7 @@ __license__ = "MIT"
 import requests 
 import tqdm     # progress bar
 import os.path
-def download_file(url, filename=False, verbose = False):
+def download_file(url, desc, filename=False, verbose = False):
     """
     Download file with progressbar
     
@@ -29,7 +29,8 @@ def download_file(url, filename=False, verbose = False):
                                     r.iter_content(chunk_size=chunk_size)
                                     , total= num_bars
                                     , unit = 'KB'
-                                    , bar_format = '    {l_bar}{bar}{r_bar}'
+                                    , desc = desc
+                                    , bar_format = '{l_bar}{bar}{r_bar}'
                                 ):
             fp.write(chunk)
     return
