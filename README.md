@@ -15,8 +15,8 @@ python main.py
 ```
 
 Please offer an API key in `config.py` before running this program.
-You may obtain API key in Canvas settings. `config.py` should contain
-the following content.
+You may obtain API key in Canvas settings. Create `config.py` in the 
+repo root, which contains the following content.
 
 ```python
 # Canvas API URL
@@ -34,3 +34,9 @@ You may change `do_download` function in `main.py` to filter files.
 Currently the filter is set to ignore non-document files and too big files.
 
 To re-download all files, remove `.checkpoint` file and `files` folder.
+
+## Common Issues
+
+**Don't move downloaded files elsewhere** Otherwise you may get incomplete chunk as the file is checkpointed.
+
+**SJTU Users** Please get API token from [here](https://oc.sjtu.edu.cn/profile/settings), in section "允许融入使用的外部软件".
