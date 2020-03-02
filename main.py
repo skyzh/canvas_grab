@@ -90,7 +90,10 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
 try:
     for course in courses:
         if hasattr(course, "name"):
-            process_course(course)
+            try:
+                process_course(course)
+            except canvasapi.exceptions.Unauthorized as e:
+                print(f"{Fore.RED}An error occoured when processing this course: {e}")
 except KeyboardInterrupt:
     pass
 
