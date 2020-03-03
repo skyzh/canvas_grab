@@ -16,7 +16,7 @@ API_URL = "https://oc.sjtu.edu.cn"
 API_KEY = "balahbalah"
 ```
 
-For macOS or Linux users:
+Please install Python 3.7+. For macOS or Linux users:
 ```bash
 pip3 install -r requirements.txt
 ./main.py
