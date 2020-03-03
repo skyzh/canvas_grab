@@ -82,8 +82,8 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                 pathlib.Path(path).unlink()
             except:
                 pass
-
-            download_file(file.url, f"    {Fore.GREEN}Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}", path)
+            print(f"    {Fore.GREEN}Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
+            download_file(file.url, "    Downloading", path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
             new_files_list.append(path)
