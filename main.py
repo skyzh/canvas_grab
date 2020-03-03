@@ -110,7 +110,7 @@ do_checkpoint()
 if len(new_files_list) == 0:
     print("All files up to date")
 else:
-    print(f"{Fore.GREEN}New or Updated files:{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}{len(new_files_list)}New or Updated files:{Style.RESET_ALL}")
     for f in new_files_list:
         print(f)
 
