@@ -4,7 +4,7 @@ __license__ = "MIT"
 import requests 
 import tqdm     # progress bar
 import os.path
-def download_file(url, desc, filename=False, verbose=False):
+def download_file(url, desc, filename=False, verbose=False, req_timeout=0):
     """
     Download file with progressbar
     
@@ -15,7 +15,7 @@ def download_file(url, desc, filename=False, verbose=False):
         local_filename = os.path.join(".",url.split('/')[-1])
     else:
         local_filename = filename
-    r = requests.get(url, stream=True)
+    r = requests.get(url, stream=True, timeout=req_timeout)
     file_size = int(r.headers['Content-Length'])
     chunk = 1
     chunk_size=1024

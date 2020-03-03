@@ -11,7 +11,7 @@ import os
 import time
 import sys
 import requests
-from download_file import download_file
+from download_file_ex import download_file
 from config import API_URL, API_KEY
 
 colorama.init()
@@ -49,8 +49,8 @@ new_files_list = []
 def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
     name = course.name.replace("（", "(").replace("）", ")")
     print(f"{Fore.CYAN}Course {name} {course.course_code}{Style.RESET_ALL}")
-    folders = {folder.id: folder.full_name for folder in course.list_folders()}
-    for file in course.list_files():
+    folders = {folder.id: folder.full_name for folder in course.get_folders()}
+    for file in course.get_files():
         folder = folders[file.folder_id] + "/"
         if folder.startswith("course files/"):
             folder = folder[len("course files/"):]

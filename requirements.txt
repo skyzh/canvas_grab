@@ -2,3 +2,4 @@ canvasapi
 colorama
 requests
 tqdm
+retrying
