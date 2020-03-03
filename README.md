@@ -3,6 +3,8 @@
 Grab all files on Canvas LMS to local directory. Download latest release
 [here](https://github.com/skyzh/canvas_grab/archive/master.zip).
 
+![image](https://user-images.githubusercontent.com/4198311/75742884-0b7e2180-5d4a-11ea-800a-e57bd2fa42ac.png)
+
 ```bash
 pip3 install -r requirements.txt
 ./main.py
