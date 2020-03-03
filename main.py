@@ -22,7 +22,7 @@ canvas = Canvas(API_URL, API_KEY)
 CHECKPOINT_FILE = ".checkpoint"
 BASE_DIR = f"{os.getcwd()}/files"
 
-courses = canvas.get_courses()
+print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
 
 def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
@@ -91,6 +91,8 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
             print(f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
         do_checkpoint()
 
+courses = canvas.get_courses()
+
 try:
     for course in courses:
         if hasattr(course, "name"):
@@ -98,6 +100,8 @@ try:
                 process_course(course)
             except canvasapi.exceptions.Unauthorized as e:
                 print(f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
 except KeyboardInterrupt:
     pass
 
