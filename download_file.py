@@ -19,7 +19,7 @@ def download_file(url, desc, filename=False, verbose=False):
     file_size = int(r.headers['Content-Length'])
     chunk = 1
     chunk_size=1024
-    num_bars = int(file_size / chunk_size)
+    num_bars = int(file_size / chunk_size) + 1
     if verbose:
         print(dict(file_size=file_size))
         print(dict(num_bars=num_bars))
