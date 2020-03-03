@@ -67,6 +67,10 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                 if checkpoint[json_key]["updated_at"] == file.updated_at:
                     d = False
                     reason = "already downloaded"
+        else:
+            if json_key in checkpoint:
+                del checkpoint[json_key]
+                do_checkpoint()
 
         if file.url == "":
             d = False
@@ -93,7 +97,7 @@ try:
             try:
                 process_course(course)
             except canvasapi.exceptions.Unauthorized as e:
-                print(f"{Fore.RED}An error occoured when processing this course: {e}")
+                print(f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
 except KeyboardInterrupt:
     pass
 

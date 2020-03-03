@@ -31,6 +31,7 @@ def download_file(url, desc, filename=False, verbose=False):
                                     , unit = 'KB'
                                     , desc = desc
                                     , bar_format = '{l_bar}{bar}{r_bar}'
+                                    , dynamic_ncols = True
                                 ):
             fp.write(chunk)
     return
