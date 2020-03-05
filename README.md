@@ -6,15 +6,8 @@ Grab all files on Canvas LMS to local directory. Download latest release
 ![image](https://user-images.githubusercontent.com/4198311/75742884-0b7e2180-5d4a-11ea-800a-e57bd2fa42ac.png)
 
 Please offer an API key in `config.py` before running this program.
-You may obtain API key in Canvas settings. Create `config.py` in the 
-repo root, which contains the following content.
-
-```python
-# Canvas API URL
-API_URL = "https://oc.sjtu.edu.cn"
-# Canvas API key
-API_KEY = "balahbalah"
-```
+You may obtain API key in Canvas settings. Refer to `config.example.py`
+to create a config file.
 
 Please install Python 3.7+. For macOS or Linux users:
 ```bash
