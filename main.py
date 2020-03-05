@@ -61,12 +61,15 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
         json_key = f"{name}/{folder}{file}"
 
         d, reason = do_download(file)
+        update_flag = False
 
         if pathlib.Path(path).exists():
             if json_key in checkpoint:
                 if checkpoint[json_key]["updated_at"] == file.updated_at:
                     d = False
                     reason = "already downloaded"
+                else:
+                    update_flag = True
         else:
             if json_key in checkpoint:
                 del checkpoint[json_key]
@@ -82,7 +85,7 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                 pathlib.Path(path).unlink()
             except:
                 pass
-            print(f"    {Fore.GREEN}Download {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
+            print(f"    {Fore.GREEN}{'Update' if update_flag else 'New'} {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             download_file(file.url, "    Downloading", path)
 
             checkpoint[json_key] = { "updated_at": file.updated_at }
