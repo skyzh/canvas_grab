@@ -13,14 +13,15 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # CLASSROOM_ID : id used to distinguish two same courses
 # NAME : course name
 # Example: "{CANVAS_ID}.resource-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
-NAME_TEMPLATE = "{SJTU_ID}-{NAME}"
+# Example: "{SJTU_ID}-{NAME}" if you have course with the same name
+NAME_TEMPLATE = "{NAME}"
 # Some courses include illegal chars in its name, replace it
 REPLACE_ILLEGAL_CHAR_WITH = "-"
 # Ignore course
 
 [CHECKPOINT]
-# Checkpoint file path(relative or absolute)
-CHECKPOINT_FILE = "files/.checkpoint"
+# Checkpoint file path(relative or absolute), e.g. 'files/.checkpoint'
+CHECKPOINT_FILE = ".checkpoint"
 
 [SYNC]
 # Directory path(relative or absolute) for syncing
