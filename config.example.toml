@@ -13,7 +13,8 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # CLASSROOM_ID : id used to distinguish two same courses
 # NAME : course name
 # Example: "{CANVAS_ID}.resource-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
-# Example: "{SJTU_ID}-{NAME}" if you have course with the same name
+# Example: "{SJTU_ID}-{NAME}" if you want "CS100-Course"
+# Example: "{CANVAS_ID}-{NAME}" if you have two courses of same name
 NAME_TEMPLATE = "{NAME}"
 # Some courses include illegal chars in its name, replace it
 REPLACE_ILLEGAL_CHAR_WITH = "-"
