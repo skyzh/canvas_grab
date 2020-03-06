@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 
 For Windows users:
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.windows.txt
 python main.py
 ```
 
