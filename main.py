@@ -3,6 +3,7 @@
 # Import the Canvas class
 from canvasapi import Canvas
 import canvasapi
+import configparser
 from colorama import Fore, Back, Style
 import colorama
 import json
@@ -12,23 +13,58 @@ import time
 import sys
 import requests
 from download_file_ex import download_file
-from config import API_URL, API_KEY, USE_COURSE_ID
 
 colorama.init()
 
+# Load Config
+config = configparser.ConfigParser()
+if not os.path.isfile("config.ini"):
+    with open("config.ini",'w') as f:
+        f.write('''[API]
+; Canvas API URL
+API_URL = https://oc.sjtu.edu.cn
+; Canvas API key, acquire it in Canvas Settings
+API_KEY = PASTE YOUR API_KEY HERE
+
+[COURSE]
+; Only enable this option when you have two courses of the same name
+USE_COURSE_ID = 0
+
+[CHECKPOINT]
+; Checkpoint file path relative to current working directory
+CHECKPOINT_FILE = .checkpoint
+
+[SYNC]
+; directory path relative to current working directory for syncing
+BASE_DIR = files
+; max single file size(in megabytes) for syncing, files bigger than 
+; this will be ignored
+MAX_SINGLE_FILE_SIZE = 100
+''')
+config.read("config.ini")
+API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
+API_KEY = config["API"].get("API_KEY", "balahbalah")
+USE_COURSE_ID = config["COURSE"].getboolean("USE_COURSE_ID", "0")
+CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", ".checkpoint")
+BASE_DIR = f"{os.getcwd()}/{config['SYNC'].get('BASE_DIR', 'files')}"
+MAX_SINGLE_FILE_SIZE = config['SYNC'].getfloat('MAX_SINGLE_FILE_SIZE', '100')
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
-CHECKPOINT_FILE = ".checkpoint"
-BASE_DIR = f"{os.getcwd()}/files"
-
-print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+try:
+    print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+except canvasapi.exceptions.InvalidAccessToken:
+    print("Invalid access token, please check your API_KEY in config file")
+    if os.name == "nt":
+        # for windows double-click user
+        input()
+    sys.exit()
 
 def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
     if not any(file.display_name.endswith(pf) for pf in pfs):
         return (False, f"{Fore.BLACK}{Back.WHITE}only download documents")
-    if file.size >= 70 * 1024 * 1024:
+    if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
         return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 // 1024} MB")
     return (True, "")
 
