@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# Import the Canvas class
 from canvasapi import Canvas
 import canvasapi
 import configparser
@@ -13,52 +12,39 @@ import time
 import sys
 import requests
 from download_file_ex import download_file
+import toml
 
 colorama.init()
 
-# Load Config
-config = configparser.ConfigParser()
-if not os.path.isfile("config.ini"):
-    with open("config.ini",'w') as f:
-        f.write('''[API]
-; Canvas API URL
-API_URL = https://oc.sjtu.edu.cn
-; Canvas API key, acquire it in Canvas Settings
-API_KEY = PASTE YOUR API_KEY HERE
+if not pathlib.Path("config.toml").exists():
+    src = pathlib.Path("config.example.toml")
+    dst = pathlib.Path("config.toml")
+    dst.write_text(src.read_text())
+    print(f"{Fore.RED} config not found, using default config")
 
-[COURSE]
-; Only enable this option when you have two courses of the same name
-USE_COURSE_ID = 0
+config = {}
 
-[CHECKPOINT]
-; Checkpoint file path relative to current working directory
-CHECKPOINT_FILE = .checkpoint
+with open("config.toml") as f:
+    config = toml.load(f)
 
-[SYNC]
-; directory path relative to current working directory for syncing
-BASE_DIR = files
-; max single file size(in megabytes) for syncing, files bigger than 
-; this will be ignored
-MAX_SINGLE_FILE_SIZE = 100
-''')
-config.read("config.ini")
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
-API_KEY = config["API"].get("API_KEY", "balahbalah")
-USE_COURSE_ID = config["COURSE"].getboolean("USE_COURSE_ID", "0")
+API_KEY = config["API"].get("API_KEY", "")
+USE_COURSE_ID = config["COURSE"].get("USE_COURSE_ID", False)
 CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", ".checkpoint")
 BASE_DIR = f"{os.getcwd()}/{config['SYNC'].get('BASE_DIR', 'files')}"
-MAX_SINGLE_FILE_SIZE = config['SYNC'].getfloat('MAX_SINGLE_FILE_SIZE', '100')
+MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
+
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
 try:
     print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
 except canvasapi.exceptions.InvalidAccessToken:
-    print("Invalid access token, please check your API_KEY in config file")
+    print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
     if os.name == "nt":
         # for windows double-click user
         input()
-    sys.exit()
+    exit()
 
 def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]

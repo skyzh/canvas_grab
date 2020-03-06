@@ -1,0 +1,20 @@
+[API]
+# Canvas API URL
+API_URL = "https://oc.sjtu.edu.cn"
+# Canvas API key, acquire it in Canvas Settings
+API_KEY = "PASTE YOUR API_KEY HERE"
+
+[COURSE]
+# Only enable this option when you have two courses of the same name
+USE_COURSE_ID = false
+
+[CHECKPOINT]
+# Checkpoint file path relative to current working directory
+CHECKPOINT_FILE = ".checkpoint"
+
+[SYNC]
+# directory path relative to current working directory for syncing
+BASE_DIR = "files"
+# max single file size(in megabytes) for syncing, files bigger than 
+# this will be ignored
+MAX_SINGLE_FILE_SIZE = 100

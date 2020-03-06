@@ -5,7 +5,7 @@ Grab all files on Canvas LMS to local directory. Download latest release
 
 ![image](https://user-images.githubusercontent.com/4198311/75742884-0b7e2180-5d4a-11ea-800a-e57bd2fa42ac.png)
 
-Please offer an API key in `config.ini` before running this program.
+Please offer an API key in `config.toml` before running this program.
 You may obtain API key in Canvas settings.
 
 Please install Python 3.7+. For macOS or Linux users:

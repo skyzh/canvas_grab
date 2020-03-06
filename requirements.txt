@@ -3,3 +3,4 @@ colorama
 requests
 tqdm
 retrying
+toml
