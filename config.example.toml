@@ -31,6 +31,8 @@ MAX_SINGLE_FILE_SIZE = 100
 # Only file extensions list below will be synced
 ALLOW_FILE_EXTENSION_GROUP = ["DOCUMENT", "CUSTOM"]
 ALLOW_FILE_EXTENSION = [".ppt", ".pptx", ".csv"]
+# Override the access and modified times of the file
+OVERRIDE_FILE_TIME = true
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP
