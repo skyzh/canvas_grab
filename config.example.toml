@@ -4,16 +4,26 @@ API_URL = "https://oc.sjtu.edu.cn"
 # Canvas API key, acquire it in Canvas Settings
 API_KEY = "PASTE YOUR API_KEY HERE"
 
-[COURSE]
-# Only enable this option when you have two courses of the same name
-USE_COURSE_ID = false
+[COURSE_FOLDER]
+# Course folder name will be formatted using the template
+# only the keywords listed below are allowed in curly braces
+# CANVAS_ID : id in Canvas, LIKE 10001
+# SJTU_ID : id in Canvas, LIKE CS101
+# SEMESTER_ID : LIKE 2019-2020-2
+# CLASSROOM_ID : id used to distinguish two same courses
+# NAME : course name
+# Example: "{CANVAS_ID}.resource-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
+NAME_TEMPLATE = "{SJTU_ID}-{NAME}"
+# Some courses include illegal chars in its name, replace it
+REPLACE_ILLEGAL_CHAR_WITH = "-"
+# Ignore course
 
 [CHECKPOINT]
-# Checkpoint file path relative to current working directory
-CHECKPOINT_FILE = ".checkpoint"
+# Checkpoint file path(relative or absolute)
+CHECKPOINT_FILE = "files/.checkpoint"
 
 [SYNC]
-# Directory path relative to current working directory for syncing
+# Directory path(relative or absolute) for syncing
 BASE_DIR = "files"
 # Max single file size(in megabytes) for syncing, files bigger than 
 # this will be ignored

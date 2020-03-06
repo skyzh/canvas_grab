@@ -6,6 +6,7 @@ import configparser
 from colorama import Fore, Back, Style
 import colorama
 import json
+import re
 import pathlib
 import os
 import time
@@ -40,7 +41,7 @@ with open("config.toml") as f:
 
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
 API_KEY = config["API"].get("API_KEY", "")
-USE_COURSE_ID = config["COURSE"].get("USE_COURSE_ID", False)
+USE_COURSE_ID = config["COURSE_FOLDER"].get("USE_COURSE_ID", False)
 CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", "files/.checkpoint")
 BASE_DIR = config['SYNC'].get('BASE_DIR', 'files')
 MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
@@ -48,6 +49,8 @@ ALLOW_FILE_EXTENSION = []
 ALLOW_FILE_EXTENSION.extend(config['SYNC'].get('ALLOW_FILE_EXTENSION', []))
 for ext_groups in config['SYNC'].get('ALLOW_FILE_EXTENSION_GROUP', []):
     ALLOW_FILE_EXTENSION.extend(config['EXTENSION'].get(ext_groups, []))
+NAME_TEMPLATE = config['COURSE_FOLDER'].get('NAME_TEMPLATE', '{NAME}')
+REPLACE_ILLEGAL_CHAR_WITH = config['COURSE_FOLDER'].get('REPLACE_ILLEGAL_CHAR_WITH', '-')
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
@@ -81,11 +84,25 @@ except:
 
 new_files_list = []
 
+def parse_course_folder_name(course : canvasapi.canvas.Course) -> str:
+    r=re.match(r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z",course.course_code)
+    template_map={
+        r"{CANVAS_ID}":str(course.id),
+        r"{SJTU_ID}":r["sjtu_id"],
+        r"{SEMESTER_ID}":r["semester_id"],
+        r"{CLASSROOM_ID}":r["classroom_id"],
+        r"{NAME}":course.name.replace("（", "(").replace("）", ")")
+    }
+    
+    folderName=NAME_TEMPLATE
+    for old,new in template_map.items():
+        folderName=folderName.replace(old,new)
+    name = re.sub(r'[/\\:*?"<>|]',REPLACE_ILLEGAL_CHAR_WITH,folderName)
+    return folderName
+
 def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
-    name = course.name.replace("（", "(").replace("）", ")")
-    print(f"{Fore.CYAN}Course {name} {course.course_code}{Style.RESET_ALL}")
-    if USE_COURSE_ID:
-        name = f"{course.id}-{name}"
+    name = parse_course_folder_name(course)
+    print(f"{Fore.CYAN}Course {course.course_code}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
     
     for file in course.get_files():
