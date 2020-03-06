@@ -3,6 +3,7 @@
 # Import the Canvas class
 from canvasapi import Canvas
 import canvasapi
+import configparser
 from colorama import Fore, Back, Style
 import colorama
 import json
@@ -12,17 +13,29 @@ import time
 import sys
 import requests
 from download_file_ex import download_file
-from config import API_URL, API_KEY, USE_COURSE_ID
 
 colorama.init()
+
+# Load Config
+config = configparser.ConfigParser()
+config.read('config.ini')
+API_URL = config['API'].get('API_URL', 'https://oc.sjtu.edu.cn')
+API_KEY = config['API'].get('API_KEY', 'balahbalah')
+USE_COURSE_ID = config['COURSE'].get('USE_COURSE_ID', '0') == '0'
 
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
 CHECKPOINT_FILE = ".checkpoint"
 BASE_DIR = f"{os.getcwd()}/files"
-
-print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+try:
+    print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+except canvasapi.exceptions.InvalidAccessToken:
+    print("Invalid access token, please check your API_KEY in config file")
+    if os.name == 'nt':
+        # for windows double-click user
+        input('')
+    sys.exit()
 
 def do_download(file) -> (bool, str):
     pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
