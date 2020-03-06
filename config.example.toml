@@ -13,8 +13,20 @@ USE_COURSE_ID = false
 CHECKPOINT_FILE = ".checkpoint"
 
 [SYNC]
-# directory path relative to current working directory for syncing
+# Directory path relative to current working directory for syncing
 BASE_DIR = "files"
-# max single file size(in megabytes) for syncing, files bigger than 
+# Max single file size(in megabytes) for syncing, files bigger than 
 # this will be ignored
 MAX_SINGLE_FILE_SIZE = 100
+# Only file extensions list below will be synced
+ALLOW_FILE_EXTENSION_GROUP = ["DOCUMENT", "CUSTOM"]
+ALLOW_FILE_EXTENSION = [".ppt", ".pptx", ".csv"]
+
+[EXTENSION]
+# All the groups below can be in ALLOW_FILE_EXTENSION_GROUP
+VIDEO = [".mp4", ".avi", ".mkv"]
+AUDIO = [".mp3", ".wav", ".aac", ".flac"]
+IMAGE = [".bmp", ".jpg", ".jpeg", ".png", ".gif"]
+DOCUMENT = [".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx", ".pdf", ".epub", ".caj"]
+MYGROUP = [".rar", ".zip"]
+ALLFORMAT = [""]
