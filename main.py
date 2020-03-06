@@ -18,7 +18,8 @@ import toml
 from sys import exit
 WINDOWS = os.name == "nt"
 if WINDOWS:
-    import win32file,pywintypes
+    import win32file
+    import pywintypes
 
 colorama.init()
 
@@ -27,9 +28,11 @@ if not pathlib.Path("config.toml").exists():
     if not src.exists():
         if sys._MEIPASS:  # for portable exe created by pyinstaller
             # load config from temporary dirertory
-            src = pathlib.Path(os.path.join(sys._MEIPASS, "config.example.toml"))
+            src = pathlib.Path(os.path.join(
+                sys._MEIPASS, "config.example.toml"))
         else:
-            print(f"{Fore.RED}Config not found, default config not found either{Style.RESET_ALL}")
+            print(
+                f"{Fore.RED}Config not found, default config not found either{Style.RESET_ALL}")
             if WINDOWS:
                 # for windows double-click user
                 input()
@@ -46,8 +49,10 @@ with open("config.toml") as f:
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
 API_KEY = config["API"].get("API_KEY", "")
 NAME_TEMPLATE = config['COURSE_FOLDER'].get('NAME_TEMPLATE', '{NAME}')
-REPLACE_ILLEGAL_CHAR_WITH = config['COURSE_FOLDER'].get('REPLACE_ILLEGAL_CHAR_WITH', '-')
-CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", "files/.checkpoint")
+REPLACE_ILLEGAL_CHAR_WITH = config['COURSE_FOLDER'].get(
+    'REPLACE_ILLEGAL_CHAR_WITH', '-')
+CHECKPOINT_FILE = config["CHECKPOINT"].get(
+    "CHECKPOINT_FILE", "files/.checkpoint")
 BASE_DIR = config['SYNC'].get('BASE_DIR', 'files')
 OVERRIDE_FILE_TIME = config['SYNC'].get('OVERRIDE_FILE_TIME', True)
 MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
@@ -67,6 +72,7 @@ except canvasapi.exceptions.InvalidAccessToken:
         input()
     exit()
 
+
 def do_download(file) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
         return (False, f"{Fore.BLACK}{Back.WHITE}filtered by extension")
@@ -74,11 +80,15 @@ def do_download(file) -> (bool, str):
         return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 / 1000} MB")
     return (True, "")
 
+
 checkpoint = {}
-os.makedirs(pathlib.Path(CHECKPOINT_FILE).parent,exist_ok=True)
+os.makedirs(pathlib.Path(CHECKPOINT_FILE).parent, exist_ok=True)
+
+
 def do_checkpoint():
     with open(CHECKPOINT_FILE, 'w') as file:
         json.dump(checkpoint, file)
+
 
 try:
     with open(CHECKPOINT_FILE, 'r') as file:
@@ -88,27 +98,30 @@ except:
 
 new_files_list = []
 
-def parse_course_folder_name(course : canvasapi.canvas.Course) -> str:
-    r=re.match(r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z",course.course_code)
-    template_map={
-        r"{CANVAS_ID}":str(course.id),
-        r"{SJTU_ID}":r["sjtu_id"],
-        r"{SEMESTER_ID}":r["semester_id"],
-        r"{CLASSROOM_ID}":r["classroom_id"],
-        r"{NAME}":course.name.replace("（", "(").replace("）", ")")
+
+def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
+    r = re.match(
+        r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
+    template_map = {
+        r"{CANVAS_ID}": str(course.id),
+        r"{SJTU_ID}": r["sjtu_id"],
+        r"{SEMESTER_ID}": r["semester_id"],
+        r"{CLASSROOM_ID}": r["classroom_id"],
+        r"{NAME}": course.name.replace("（", "(").replace("）", ")")
     }
-    
-    folderName=NAME_TEMPLATE
-    for old,new in template_map.items():
-        folderName=folderName.replace(old,new)
-    name = re.sub(r'[/\\:*?"<>|]',REPLACE_ILLEGAL_CHAR_WITH,folderName)
+
+    folderName = NAME_TEMPLATE
+    for old, new in template_map.items():
+        folderName = folderName.replace(old, new)
+    name = re.sub(r'[/\\:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, folderName)
     return folderName
 
-def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
+
+def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
     name = parse_course_folder_name(course)
     print(f"{Fore.CYAN}Course {course.course_code}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
-    
+
     for file in course.get_files():
         folder = folders[file.folder_id] + "/"
         if folder.startswith("course files/"):
@@ -137,21 +150,25 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
         if file.url == "":
             d = False
             reason = "file not available"
-        
+
         if d:
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
             try:
                 pathlib.Path(path).unlink()
             except:
                 pass
-            print(f"    {Fore.GREEN}{'Update' if update_flag else 'New'} {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
+            print(
+                f"    {Fore.GREEN}{'Update' if update_flag else 'New'} {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             download_file(file.url, "    Downloading", path)
             if OVERRIDE_FILE_TIME:
-                c_time=datetime.strptime(file.created_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
-                m_time=datetime.strptime(file.updated_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
-                a_time=time.time()
+                c_time = datetime.strptime(
+                    file.created_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
+                m_time = datetime.strptime(
+                    file.updated_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
+                a_time = time.time()
                 if WINDOWS:
-                    Handle = win32file.CreateFile(path, 1<<30, 0, None, 3, 0, None)
+                    Handle = win32file.CreateFile(
+                        path, 1 << 30, 0, None, 3, 0, None)
                     try:
                         c_time = pywintypes.Time(c_time)
                         m_time = pywintypes.Time(m_time)
@@ -162,12 +179,14 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
                     finally:
                         Handle.Close()
                 else:
-                    os.utime(path,(a_time,m_time))
-            checkpoint[json_key] = { "updated_at": file.updated_at }
+                    os.utime(path, (a_time, m_time))
+            checkpoint[json_key] = {"updated_at": file.updated_at}
             new_files_list.append(path)
         else:
-            print(f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
+            print(
+                f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
         do_checkpoint()
+
 
 courses = canvas.get_courses()
 
@@ -177,7 +196,8 @@ try:
             try:
                 process_course(course)
             except canvasapi.exceptions.Unauthorized as e:
-                print(f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+                print(
+                    f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
         else:
             print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
 except KeyboardInterrupt:
@@ -193,4 +213,3 @@ else:
         print(f)
 
 print(f"{Fore.CYAN}Done.")
- 
