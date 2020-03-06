@@ -17,8 +17,8 @@ def download_file(url, desc, filename, verbose=False):
         ret = df(url, desc, filename, verbose, req_timeout=TIMEOUT)
     except KeyboardInterrupt:
         raise
-    except:
-        print(f"    {Fore.RED}Retrying {Path(filename).name}...{Style.RESET_ALL}")
+    except Exception as e:
+        print(f"    {Fore.RED}Retrying {Path(filename).name} ({e})...{Style.RESET_ALL}")
         raise
 
     return ret

@@ -37,7 +37,7 @@ ALLOW_FILE_EXTENSION = []
 ALLOW_FILE_EXTENSION.extend(config['SYNC'].get('ALLOW_FILE_EXTENSION', []))
 for ext_groups in config['SYNC'].get('ALLOW_FILE_EXTENSION_GROUP', []):
     ALLOW_FILE_EXTENSION.extend(config['EXTENSION'].get(ext_groups, []))
-print(f"{ALLOW_FILE_EXTENSION}")
+print(f"{Fore.CYAN}Allowed extensions: {' '.join(ALLOW_FILE_EXTENSION)}{Style.RESET_ALL}")
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
@@ -54,7 +54,7 @@ def do_download(file) -> (bool, str):
     if not any(file.display_name.endswith(pf) for pf in ALLOW_FILE_EXTENSION):
         return (False, f"{Fore.BLACK}{Back.WHITE}filtered by extension")
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
-        return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 // 1024} MB")
+        return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 / 1000} MB")
     return (True, "")
 
 checkpoint = {}
@@ -77,6 +77,7 @@ def process_course(course : canvasapi.canvas.Course) -> [(str, str)]:
     if USE_COURSE_ID:
         name = f"{course.id}-{name}"
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
+    
     for file in course.get_files():
         folder = folders[file.folder_id] + "/"
         if folder.startswith("course files/"):

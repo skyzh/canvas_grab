@@ -16,7 +16,7 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=0):
     else:
         local_filename = filename
     r = requests.get(url, stream=True, timeout=req_timeout)
-    file_size = int(r.headers['Content-Length'])
+    file_size = int(r.headers.get('Content-Length', 0))
     chunk = 1
     chunk_size=1024
     num_bars = int(file_size / chunk_size) + 1
