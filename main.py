@@ -20,9 +20,9 @@ colorama.init()
 if not pathlib.Path("config.toml").exists():
     src = pathlib.Path("config.example.toml")
     if not src.exists():
-        if sys._MEIPASS: # for portable exe created by pyinstaller
+        if sys._MEIPASS:  # for portable exe created by pyinstaller
             # load config from temporary dirertory
-            src = pathlib.Path(os.path.join(sys._MEIPASS,"config.example.toml"))
+            src = pathlib.Path(os.path.join(sys._MEIPASS, "config.example.toml"))
         else:
             print(f"{Fore.RED}Config not found, default config not found either{Style.RESET_ALL}")
             if os.name == "nt":
@@ -41,14 +41,13 @@ with open("config.toml") as f:
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
 API_KEY = config["API"].get("API_KEY", "")
 USE_COURSE_ID = config["COURSE"].get("USE_COURSE_ID", False)
-CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", ".checkpoint")
-BASE_DIR = f"{os.getcwd()}/{config['SYNC'].get('BASE_DIR', 'files')}"
+CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", "files/.checkpoint")
+BASE_DIR = config['SYNC'].get('BASE_DIR', 'files')
 MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
 ALLOW_FILE_EXTENSION = []
 ALLOW_FILE_EXTENSION.extend(config['SYNC'].get('ALLOW_FILE_EXTENSION', []))
 for ext_groups in config['SYNC'].get('ALLOW_FILE_EXTENSION_GROUP', []):
     ALLOW_FILE_EXTENSION.extend(config['EXTENSION'].get(ext_groups, []))
-print(f"{Fore.CYAN}Allowed extensions: {' '.join(ALLOW_FILE_EXTENSION)}{Style.RESET_ALL}")
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
@@ -157,3 +156,4 @@ else:
         print(f)
 
 print(f"{Fore.CYAN}Done.")
+ 
