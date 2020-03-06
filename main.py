@@ -19,6 +19,16 @@ colorama.init()
 
 if not pathlib.Path("config.toml").exists():
     src = pathlib.Path("config.example.toml")
+    if not src.exists():
+        if sys._MEIPASS: # for portable exe created by pyinstaller
+            # load config from temporary dirertory
+            src = pathlib.Path(os.path.join(sys._MEIPASS,"config.example.toml"))
+        else:
+            print(f"{Fore.RED}Config not found, default config not found either{Style.RESET_ALL}")
+            if os.name == "nt":
+                # for windows double-click user
+                input()
+            exit()
     dst = pathlib.Path("config.toml")
     dst.write_text(src.read_text())
     print(f"{Fore.RED}Config not found, using default config{Style.RESET_ALL}")
