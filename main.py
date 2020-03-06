@@ -13,6 +13,7 @@ import sys
 import requests
 from download_file_ex import download_file
 import toml
+from sys import exit
 
 colorama.init()
 
