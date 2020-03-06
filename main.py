@@ -20,7 +20,7 @@ if not pathlib.Path("config.toml").exists():
     src = pathlib.Path("config.example.toml")
     dst = pathlib.Path("config.toml")
     dst.write_text(src.read_text())
-    print(f"{Fore.RED} config not found, using default config")
+    print(f"{Fore.RED}Config not found, using default config{Style.RESET_ALL}")
 
 config = {}
 
@@ -33,7 +33,11 @@ USE_COURSE_ID = config["COURSE"].get("USE_COURSE_ID", False)
 CHECKPOINT_FILE = config["CHECKPOINT"].get("CHECKPOINT_FILE", ".checkpoint")
 BASE_DIR = f"{os.getcwd()}/{config['SYNC'].get('BASE_DIR', 'files')}"
 MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
-
+ALLOW_FILE_EXTENSION = []
+ALLOW_FILE_EXTENSION.extend(config['SYNC'].get('ALLOW_FILE_EXTENSION', []))
+for ext_groups in config['SYNC'].get('ALLOW_FILE_EXTENSION_GROUP', []):
+    ALLOW_FILE_EXTENSION.extend(config['EXTENSION'].get(ext_groups, []))
+print(f"{ALLOW_FILE_EXTENSION}")
 # Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
@@ -47,9 +51,8 @@ except canvasapi.exceptions.InvalidAccessToken:
     exit()
 
 def do_download(file) -> (bool, str):
-    pfs = [".pptx", ".docx", ".ppt", ".pdf", ".doc", ".xlsx"]
-    if not any(file.display_name.endswith(pf) for pf in pfs):
-        return (False, f"{Fore.BLACK}{Back.WHITE}only download documents")
+    if not any(file.display_name.endswith(pf) for pf in ALLOW_FILE_EXTENSION):
+        return (False, f"{Fore.BLACK}{Back.WHITE}filtered by extension")
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
         return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 // 1024} MB")
     return (True, "")
