@@ -7,7 +7,8 @@ Grab all files on Canvas LMS to local directory. Download latest release
 
 Please offer an API key in `config.toml` before running this program.
 You may obtain API key in Canvas settings. You can edit `config.toml`
-with Notepad or VSCode.
+with Notepad or VSCode. And you may configure the filter in config.
+Currently the filter is set to ignore non-document files and too big files.
 
 Please install Python 3.7+. For macOS or Linux users:
 ```bash
@@ -25,9 +26,6 @@ The program will automatically checkpoint your downloads. Therefore
 it will not grab downloaded files, and will check if there's any update
 on a file. Checkpoint is done after any new file downloaded.
 You may interrupt at any time.
-
-You may change `do_download` function in `main.py` to filter files.
-Currently the filter is set to ignore non-document files and too big files.
 
 To re-download all files, remove `.checkpoint` file and `files` folder.
 
