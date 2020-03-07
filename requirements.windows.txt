@@ -4,4 +4,4 @@ requests
 tqdm
 retrying
 toml
-pywin32
+win32_setctime

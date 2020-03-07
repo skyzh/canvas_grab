@@ -7,28 +7,47 @@ Grab all files on Canvas LMS to local directory. Download latest release
 
 Please offer an API key in `config.toml` before running this program.
 You may obtain API key in Canvas settings. You can edit `config.toml`
-with Notepad or VSCode. And you may configure the filter in config.
-Currently the filter is set to ignore non-document files and too big files.
+with your favourite text editor.
 
-Please install Python 3.7+. For macOS or Linux users:
+## What you can do in `config.toml`
+
+- Specify your Canvas API_KEY
+- Custimize the file extension filter
+- Custimize the style of course folder name
+- Specify the folder for syncing
+- ……
+
+## Get started
+
+Please install Python 3.7+ at first.
+
+For macOS or Linux users：
+
 ```bash
 pip3 install -r requirements.txt
 ./main.py
 ```
 
 For Windows users:
-```bash
+```powershell
 pip install -r requirements.windows.txt
 python main.py
 ```
+
+To create a portable .exe file on Windows with pyinstaller, run：
+
+```powershell
+pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --onefile
+```
+
 
 The program will automatically checkpoint your downloads. Therefore
 it will not grab downloaded files, and will check if there's any update
 on a file. Checkpoint is done after any new file downloaded.
 You may interrupt at any time.
 
-To re-download all files, remove `.checkpoint` file and `files` folder.
+To re-download all files, remove `CHECKPOINT_FILE` or `BASE_DIR`.
 
 ## Common Issues
 
-**SJTU Users** Please get API token from [here](https://oc.sjtu.edu.cn/profile/settings), in section "允许融入使用的外部软件".
+**上海交通大学用户**请在[此页面](https://oc.sjtu.edu.cn/profile/settings)内通过**创建新访问许可证**按钮生成访问令牌。
