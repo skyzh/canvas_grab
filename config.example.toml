@@ -8,7 +8,7 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # Course folder name will be formatted using the template
 # only the keywords listed below are allowed in curly braces
 # CANVAS_ID : id in Canvas, LIKE 10001
-# SJTU_ID : id in Canvas, LIKE CS101
+# SJTU_ID : id in SJTU, LIKE CS101
 # SEMESTER_ID : LIKE 2019-2020-2
 # CLASSROOM_ID : id used to distinguish two same courses
 # NAME : course name
