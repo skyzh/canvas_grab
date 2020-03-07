@@ -18,9 +18,7 @@ import toml
 from sys import exit
 WINDOWS = os.name == "nt"
 if WINDOWS:
-    import win32file
-    import pywintypes
-
+    from win32_setctime import setctime
 colorama.init()
 
 if not pathlib.Path("config.toml").exists():
@@ -167,20 +165,9 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
                     file.updated_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
                 a_time = time.time()
                 if WINDOWS:
-                    Handle = win32file.CreateFile(
-                        path, 1 << 30, 0, None, 3, 0, None)
-                    try:
-                        c_time = pywintypes.Time(c_time)
-                        m_time = pywintypes.Time(m_time)
-                        a_time = pywintypes.Time(a_time)
-                        win32file.SetFileTime(Handle, c_time, a_time, m_time)
-                    except:
-                        pass
-                    finally:
-                        Handle.Close()
-                else:
-                    os.utime(path, (a_time, m_time))
-            checkpoint[json_key] = {"updated_at": file.updated_at}
+                    setctime(path, c_time)
+                os.utime(path, (a_time, m_time))
+            checkpoint[json_key] = { "updated_at": file.updated_at }
             new_files_list.append(path)
         else:
             print(
