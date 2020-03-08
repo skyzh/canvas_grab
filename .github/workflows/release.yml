@@ -24,7 +24,7 @@ jobs:
     - name: Packaging with PyInstaller
       id: packaging_pyinstaller
       run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' -n canvas_grab
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --add-data 'LICENSE;.' --add-data 'README.md;.' -n canvas_grab
     - name: Create tar Package
       run: |
         tar -czf canvas_grab.tar.gz dist/canvas_grab
@@ -79,7 +79,7 @@ jobs:
     - name: Packaging with PyInstaller
       id: packaging_pyinstaller
       run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' -n canvas_grab
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
     - name: Create tar Package
       run: |
         tar -czf canvas_grab.tar.gz dist/canvas_grab
@@ -134,7 +134,7 @@ jobs:
     - name: Packaging with PyInstaller
       id: packaging_pyinstaller
       run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' -n canvas_grab
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
     - name: Create tar Package
       run: |
         tar -czf canvas_grab.tar.gz dist/canvas_grab

@@ -18,6 +18,7 @@ import toml
 from sys import exit
 
 print(f"Thank you for using canvas_grab. If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+print(f"You may review {Fore.GREEN}LICENSE{Style.RESET_ALL} and {Fore.GREEN}README.md{Style.RESET_ALL} shipped with this release")
 
 WINDOWS = os.name == "nt"
 if WINDOWS:
