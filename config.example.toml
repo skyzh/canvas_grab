@@ -14,7 +14,8 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # NAME : course name
 # Example: "{CANVAS_ID}.resource-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
 # Example: "{SJTU_ID}-{NAME}" if you want "CS100-Course"
-# Example: "{CANVAS_ID}-{NAME}" if you have two courses of same name
+# Example: "{NAME}({CLASSROOM_ID})" if you have two courses of same name
+# Example: "{SJTU_ID}-{NAME}/Canvas" if you want to download in a subfolder "Canvas"
 NAME_TEMPLATE = "{NAME}"
 # Some courses include illegal chars in its name, replace it
 REPLACE_ILLEGAL_CHAR_WITH = "-"

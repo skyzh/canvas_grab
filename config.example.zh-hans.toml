@@ -1,0 +1,47 @@
+[API]
+# Canvas API URL
+API_URL = "https://oc.sjtu.edu.cn"
+# Canvas API 访问令牌, 在Canvas设置中获取
+API_KEY = "PASTE YOUR API_KEY HERE"
+
+[COURSE_FOLDER]
+# 课程文件夹名将通过此模板字符串生成
+# 以下关键词可以放在大括号{}内
+# CANVAS_ID : Canvas课程ID，如：10001
+# SJTU_ID : 课号，如：CS101
+# SEMESTER_ID : 学期号，如：2019-2020-2
+# CLASSROOM_ID : 课程教学班序号，如：1
+# NAME : 课程名，如：程序设计
+# Example: "{CANVAS_ID}-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
+# Example: "{SJTU_ID}-{NAME}" 将得到 "CS101-程序设计"
+# Example: "{NAME}-{CLASSROOM_ID}" 可用于区分两个相同课程
+# Example: "{SJTU_ID}-{NAME}/Canvas" 文件夹将创建在"10001-程序设计"下的"Canvas"子文件夹中
+NAME_TEMPLATE = "{NAME}"
+# 用此内容替换课程名中的非法字符
+REPLACE_ILLEGAL_CHAR_WITH = "-"
+# 忽略课程
+
+[CHECKPOINT]
+# 检查点文件路径(绝对路径或相对路径)，例如"files/.checkpoint"
+CHECKPOINT_FILE = ".checkpoint"
+
+[SYNC]
+# 用于同步的目录路径(绝对路径或相对路径)
+BASE_DIR = "files"
+# 允许同步的最大单文件大小（以兆字节为单位），超过此大小的文件
+# 将被忽略
+MAX_SINGLE_FILE_SIZE = 100
+# 允许同步的文件扩展名
+ALLOW_FILE_EXTENSION_GROUP = ["DOCUMENT", "CUSTOM"]
+ALLOW_FILE_EXTENSION = [".ppt", ".pptx", ".csv"]
+# 同时同步文件创建日期和修改日期
+OVERRIDE_FILE_TIME = true
+
+[EXTENSION]
+# 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
+VIDEO = [".mp4", ".avi", ".mkv"]
+AUDIO = [".mp3", ".wav", ".aac", ".flac"]
+IMAGE = [".bmp", ".jpg", ".jpeg", ".png", ".gif"]
+DOCUMENT = [".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx", ".pdf", ".epub", ".caj"]
+MYGROUP = [".rar", ".zip"]
+ALLFORMAT = [""]

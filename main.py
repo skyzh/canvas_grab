@@ -41,7 +41,7 @@ if not pathlib.Path("config.toml").exists():
 
 config = {}
 
-with open("config.toml") as f:
+with open("config.toml", encoding='utf8') as f:
     config = toml.load(f)
 
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
