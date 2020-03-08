@@ -2,130 +2,55 @@ name: Create Release
 
 on:
   push:
-    paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
+    tags:
+      - "v*"
 
 jobs:
-  build_windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install Dependencies
-      id: install_dep
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller
-        pip install -r requirements.txt
-    - name: Packaging with PyInstaller
-      id: packaging_pyinstaller
-      run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --add-data 'LICENSE;.' --add-data 'README.md;.' -n canvas_grab
-    - name: Create tar Package
-      run: |
-        tar -czf canvas_grab.tar.gz dist/canvas_grab
-    - name: Create ZIP Package
-      run: |
-        Compress-Archive -Path dist/canvas_grab -DestinationPath canvas_grab.zip
-    - name: Create Release
-      id: create_release
-      if: startsWith(github.event.ref, 'refs/tags/')
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: ${{ github.event.head_commit.message }}
-        draft: false
-        prerelease: false
-    - name: Upload Release (ZIP)
-      id: upload_release
-      if: startsWith(github.event.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.zip
-        asset_name: canvas_grab-windows.zip
-        asset_content_type: application/zip
-    - name: Upload Release (tar)
-      id: upload_release_tar
-      if: startsWith(github.event.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.tar.gz
-        asset_name: canvas_grab-windows.tar.gz
-        asset_content_type: application/tar+gzip
-  build_macos:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Install Dependencies
-      id: install_dep
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller
-        pip install -r requirements.txt
-    - name: Packaging with PyInstaller
-      id: packaging_pyinstaller
-      run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
-    - name: Create tar Package
-      run: |
-        tar -czf canvas_grab.tar.gz dist/canvas_grab
-    - name: Create ZIP Package
-      run: |
-        zip -qq -r canvas_grab.zip dist/canvas_grab
-    - name: Create Release
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: create_release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: ${{ github.event.head_commit.message }}
-        draft: false
-        prerelease: false
-    - name: Upload Release (ZIP)
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: upload_release
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.zip
-        asset_name: canvas_grab-darwin.zip
-        asset_content_type: application/zip
-    - name: Upload Release (tar)
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: upload_release_tar
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.tar.gz
-        asset_name: canvas_grab-darwin.tar.gz
-        asset_content_type: application/tar+gzip
-  build_linux:
+  create_release:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+      - name: download artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: windows-latest  
+      - name: Upload Release (ZIP)
+        id: upload_release
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./canvas_grab.zip
+          asset_name: canvas_grab-windows.zip
+          asset_content_type: application/zip
+      - name: Upload Release (tar)
+        id: upload_release_tar
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./canvas_grab.tar.gz
+          asset_name: canvas_grab-windows.tar.gz
+          asset_content_type: application/tar+gzip
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8
       uses: actions/setup-python@v1
@@ -137,47 +62,32 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         pip install -r requirements.txt
-    - name: Packaging with PyInstaller
-      id: packaging_pyinstaller
+    - name: Packaging with PyInstaller (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --add-data 'LICENSE;.' --add-data 'README.md;.' -n canvas_grab
+    - name: Packaging with PyInstaller (*nix)
+      if: matrix.os != 'windows-latest'
       run: |
         pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
     - name: Create tar Package
       run: |
         tar -czf canvas_grab.tar.gz dist/canvas_grab
-    - name: Create ZIP Package
+    - name: Create ZIP Package (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Compress-Archive -Path dist/canvas_grab -DestinationPath canvas_grab.zip
+    - name: Create ZIP Package (*nix)
+      if: matrix.os != 'windows-latest'
       run: |
         zip -qq -r canvas_grab.zip dist/canvas_grab
-    - name: Create Release
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: create_release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Artifact (ZIP)
+      uses: actions/upload-artifact@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: ${{ github.event.head_commit.message }}
-        draft: false
-        prerelease: false
-    - name: Upload Release (ZIP)
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: upload_release
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: ${{ matrix.os }}
+        path: canvas_grab.zip
+    - name: Upload Artifact (tar)
+      uses: actions/upload-artifact@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.zip
-        asset_name: canvas_grab-linux.zip
-        asset_content_type: application/zip
-    - name: Upload Release (tar)
-      if: startsWith(github.event.ref, 'refs/tags/')
-      id: upload_release_tar
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./canvas_grab.tar.gz
-        asset_name: canvas_grab-linux.tar.gz
-        asset_content_type: application/tar+gzip
+        name: ${{ matrix.os }}
+        path: canvas_grab.tar.gz
