@@ -1,4 +1,4 @@
-name: PyInstaller
+name: Create Release
 
 on:
   push:
@@ -25,8 +25,13 @@ jobs:
       id: packaging_pyinstaller
       run: |
         pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' -n canvas_grab
-        tar -czvf canvas_grab.tar.gz dist/canvas_grab
-        zip -r canvas_grab.zip dist/canvas_grab
+    - name: Create tar Package
+      run: |
+        tar -czf canvas_grab.tar.gz dist/canvas_grab
+    - uses: montudor/action-zip@v0.1.0
+      name: Create ZIP Package
+      with:
+        args: zip -qq -r canvas_grab.zip dist/canvas_grab
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -38,13 +43,23 @@ jobs:
         body: ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
-    - name: Upload Release
+    - name: Upload Release (ZIP)
       id: upload_release
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ env.targetName }}
-        asset_name: ${{ env.targetName }}
-        asset_content_type: application/applefile
+        asset_path: ./canvas_grab.zip
+        asset_name: canvas_grab-windows.zip
+        asset_content_type: application/zip
+    - name: Upload Release (rar)
+      id: upload_release_tar
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./canvas_grab.tar.gz
+        asset_name: canvas_grab-windows.tar.gz
+        asset_content_type: application/tar+gzip
