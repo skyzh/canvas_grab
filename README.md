@@ -12,7 +12,9 @@ Please offer an API key in `config.toml` before running this program.
 You may obtain API key in Canvas settings. You can edit `config.toml`
 with your favourite text editor.
 
-## What you can do in `config.toml`
+## Configuration
+
+You may set the following options in `config.toml`.
 
 - Specify your Canvas API_KEY
 - Custimize the file extension filter

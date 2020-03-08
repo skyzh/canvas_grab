@@ -114,7 +114,7 @@ jobs:
         pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
     - name: Create tar Package
       run: |
-        tar -czf canvas_grab.tar.gz dist/canvas_grab
+        tar -czf canvas_grab.tar.gz dist/canvas_grab -C dist/canvas_grab
     - name: Create ZIP Package (Windows)
       if: matrix.os == 'windows-latest'
       run: |
@@ -122,7 +122,7 @@ jobs:
     - name: Create ZIP Package (*nix)
       if: matrix.os != 'windows-latest'
       run: |
-        zip -qq -r canvas_grab.zip dist/canvas_grab
+        (cd dist/canvas_grab && zip -r - dir-there) > canvas_grab.zip
     - name: Upload Artifact (ZIP)
       uses: actions/upload-artifact@v1
       with:
