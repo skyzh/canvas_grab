@@ -28,10 +28,9 @@ jobs:
     - name: Create tar Package
       run: |
         tar -czf canvas_grab.tar.gz dist/canvas_grab
-    - uses: montudor/action-zip@v0.1.0
-      name: Create ZIP Package
-      with:
-        args: zip -qq -r canvas_grab.zip dist/canvas_grab
+    - name: Create ZIP Package
+      run: |
+        Compress-Archive -Path dist/canvas_grab -DestinationPath canvas_grab.zip
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -53,7 +52,7 @@ jobs:
         asset_path: ./canvas_grab.zip
         asset_name: canvas_grab-windows.zip
         asset_content_type: application/zip
-    - name: Upload Release (rar)
+    - name: Upload Release (tar)
       id: upload_release_tar
       uses: actions/upload-release-asset@v1.0.1
       env:
