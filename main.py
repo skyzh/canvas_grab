@@ -122,11 +122,10 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
 
     for file in course.get_files():
         folder = folders[file.folder_id] + "/"
-        if folder.startswith("course files/"):
-            folder = folder[len("course files/"):]
+        folder = folder.lstrip("course files/")
 
-        directory = f"{BASE_DIR}/{name}/{folder}"
-        path = f"{directory}{file.display_name}"
+        directory = os.path.join(BASE_DIR, name, folder)
+        path = os.path.join(directory, file.display_name)
 
         json_key = f"{name}/{folder}{file}"
 
@@ -167,7 +166,7 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
                 if WINDOWS:
                     setctime(path, c_time)
                 os.utime(path, (a_time, m_time))
-            checkpoint[json_key] = { "updated_at": file.updated_at }
+            checkpoint[json_key] = {"updated_at": file.updated_at}
             new_files_list.append(path)
         else:
             print(
