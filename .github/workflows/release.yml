@@ -1,6 +1,7 @@
 name: PyInstaller
 
 on: [push]
+name: Create Release
 
 jobs:
   build:
@@ -21,12 +22,12 @@ jobs:
       run: |
         pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --onefile
     - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
