@@ -138,3 +138,4 @@ dmypy.json
 files/
 config.py
 config.toml
+.vscode/

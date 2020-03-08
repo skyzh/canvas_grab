@@ -16,6 +16,9 @@ import requests
 from download_file_ex import download_file
 import toml
 from sys import exit
+
+print(f"Thank you for using canvas_grab. If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+
 WINDOWS = os.name == "nt"
 if WINDOWS:
     from win32_setctime import setctime
@@ -37,7 +40,7 @@ if not pathlib.Path("config.toml").exists():
             exit()
     dst = pathlib.Path("config.toml")
     dst.write_text(src.read_text())
-    print(f"{Fore.RED}Config not found, using default config{Style.RESET_ALL}")
+    print(f"{Fore.RED}Config not found, using default config. You may edit 'config.toml' if you want customize.{Style.RESET_ALL}")
 
 config = {}
 

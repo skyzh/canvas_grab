@@ -1,7 +1,10 @@
 name: PyInstaller
 
-on: [push]
-name: Create Release
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
 
 jobs:
   build:
@@ -12,15 +15,18 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.8
-    - name: Install dependencies
+    - name: Install Dependencies
       id: install_dep
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
+        pip install -r requirements.txt
     - name: Packaging with PyInstaller
       id: packaging_pyinstaller
       run: |
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --onefile
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' -n canvas_grab
+        tar -czvf canvas_grab.tar.gz dist/canvas_grab
+        zip -r canvas_grab.zip dist/canvas_grab
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -29,5 +35,16 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
+        body: ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
+    - name: Upload Release
+      id: upload_release
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ env.targetName }}
+        asset_name: ${{ env.targetName }}
+        asset_content_type: application/applefile
