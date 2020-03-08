@@ -10,7 +10,19 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Create Release
+      - name: download artifacts (windows)
+        uses: actions/download-artifact@v1
+        with:
+          name: windows-latest
+      - name: download artifacts (macos)
+        uses: actions/download-artifact@v1
+        with:
+          name: macos-latest
+      - name: download artifacts (linux)
+        uses: actions/download-artifact@v1
+        with:
+          name: ubuntu-latest
+      - name: create release
         id: create_release
         uses: actions/create-release@latest
         env:
@@ -21,29 +33,59 @@ jobs:
           body: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
-      - name: download artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: windows-latest  
       - name: Upload Release (ZIP)
-        id: upload_release
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./canvas_grab.zip
+          asset_path: windows-latest/canvas_grab.zip
           asset_name: canvas_grab-windows.zip
           asset_content_type: application/zip
       - name: Upload Release (tar)
-        id: upload_release_tar
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./canvas_grab.tar.gz
+          asset_path: windows-latest/canvas_grab.tar.gz
           asset_name: canvas_grab-windows.tar.gz
+          asset_content_type: application/tar+gzip
+      - name: Upload Release (ZIP)
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ubuntu-latest/canvas_grab.zip
+          asset_name: canvas_grab-linux.zip
+          asset_content_type: application/zip
+      - name: Upload Release (tar)
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ubuntu-latest/canvas_grab.tar.gz
+          asset_name: canvas_grab-linux.tar.gz
+          asset_content_type: application/tar+gzip
+      - name: Upload Release (ZIP)
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: macos-latest/canvas_grab.zip
+          asset_name: canvas_grab-darwin.zip
+          asset_content_type: application/zip
+      - name: Upload Release (tar)
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: macos-latest/canvas_grab.tar.gz
+          asset_name: canvas_grab-darwin.tar.gz
           asset_content_type: application/tar+gzip
   build:
     runs-on: ${{ matrix.os }}
