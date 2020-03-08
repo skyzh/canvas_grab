@@ -1,12 +1,13 @@
 # canvas-grab
 
-Grab all files on Canvas LMS to local directory. Download latest release
-[here](https://github.com/skyzh/canvas_grab/archive/master.zip).
+Grab all files on Canvas LMS to local directory.
 
 ![image](https://user-images.githubusercontent.com/4198311/75742884-0b7e2180-5d4a-11ea-800a-e57bd2fa42ac.png)
 
+Download latest release
+[here](https://github.com/skyzh/canvas_grab/archive/master.zip).
 
-You may download prebuilt packages [here](https://github.com/skyzh/canvas_grab/releases).
+You may download prebuilt binary [here](https://github.com/skyzh/canvas_grab/releases).
 
 Please offer an API key in `config.toml` before running this program.
 You may obtain API key in Canvas settings. You can edit `config.toml`

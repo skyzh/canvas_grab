@@ -114,7 +114,7 @@ jobs:
         pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
     - name: Create tar Package
       run: |
-        tar -czf canvas_grab.tar.gz dist/canvas_grab -C dist/canvas_grab
+        tar -C dist/canvas_grab -czf canvas_grab.tar.gz .
     - name: Create ZIP Package (Windows)
       if: matrix.os == 'windows-latest'
       run: |
