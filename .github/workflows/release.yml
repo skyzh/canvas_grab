@@ -122,7 +122,7 @@ jobs:
     - name: Create ZIP Package (*nix)
       if: matrix.os != 'windows-latest'
       run: |
-        (cd dist/canvas_grab && zip -r - dir-there) > canvas_grab.zip
+        (cd dist/canvas_grab && zip -r - .) > canvas_grab.zip
     - name: Upload Artifact (ZIP)
       uses: actions/upload-artifact@v1
       with:
