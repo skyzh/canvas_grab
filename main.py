@@ -191,7 +191,7 @@ try:
     for course in courses:
         if not hasattr(course, "name"):
             print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
-        if course.id in IGNOGED_CANVAS_ID:
+        elif course.id in IGNOGED_CANVAS_ID:
             print(
                 f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
         else:
