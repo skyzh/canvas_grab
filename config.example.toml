@@ -19,7 +19,15 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 NAME_TEMPLATE = "{NAME}"
 # Some courses include illegal chars in its name, replace it
 REPLACE_ILLEGAL_CHAR_WITH = "-"
-# Ignore course
+# Ignore courses
+IGNOGED_CANVAS_ID = [10001, 10002, 10003]
+# Customize the folder name for course
+[[COURSE_FOLDER.CUSTOM_NAME]]
+CANVAS_ID = 10001
+FOLDER_NAME = "Calculus/resource"
+[[COURSE_FOLDER.CUSTOM_NAME]]
+CANVAS_ID = 10002
+FOLDER_NAME = "Linear Algebra"
 
 [CHECKPOINT]
 # Checkpoint file path(relative or absolute), e.g. 'files/.checkpoint'

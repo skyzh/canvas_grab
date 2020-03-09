@@ -19,7 +19,15 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 NAME_TEMPLATE = "{NAME}"
 # 用此内容替换课程名中的非法字符
 REPLACE_ILLEGAL_CHAR_WITH = "-"
-# 忽略课程
+# 忽略特定课程ID
+IGNOGED_CANVAS_ID = [10001, 10002, 10003]
+# 为特定课程自定义文件夹名
+[[COURSE_FOLDER.CUSTOM_NAME]]
+CANVAS_ID = 10001
+FOLDER_NAME = "高数/Canvas资料"
+[[COURSE_FOLDER.CUSTOM_NAME]]
+CANVAS_ID = 10002
+FOLDER_NAME = "线性代数"
 
 [CHECKPOINT]
 # 检查点文件路径(绝对路径或相对路径)，例如"files/.checkpoint"
