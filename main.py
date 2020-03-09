@@ -41,7 +41,7 @@ if not pathlib.Path("config.toml").exists():
                 input()
             exit()
     dst = pathlib.Path("config.toml")
-    dst.write_text(src.read_text())
+    dst.write_bytes(src.read_bytes())
     print(f"{Fore.RED}Config not found, using default config. You may edit 'config.toml' if you want customize.{Style.RESET_ALL}")
 
 config = {}
