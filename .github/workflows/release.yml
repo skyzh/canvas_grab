@@ -104,6 +104,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller virtualenv
     - name: create virtualenv
+      run: |
         python -m virtualenv .venv
     - name: install dependencies in virtualenv (Windows)
       if: matrix.os == 'windows-latest'
