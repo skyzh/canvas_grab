@@ -17,7 +17,8 @@ from download_file_ex import download_file
 import toml
 from sys import exit
 
-print(f"Thank you for using canvas_grab. If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+print(
+    f"Thank you for using canvas_grab. If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
 print(f"You may review {Fore.GREEN}LICENSE{Style.RESET_ALL} and {Fore.GREEN}README.md{Style.RESET_ALL} shipped with this release")
 
 WINDOWS = os.name == "nt"
@@ -45,7 +46,7 @@ if not pathlib.Path("config.toml").exists():
 
 config = {}
 
-with open("config.toml") as f:
+with open("config.toml", encoding='utf8') as f:
     config = toml.load(f)
 
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
@@ -53,6 +54,9 @@ API_KEY = config["API"].get("API_KEY", "")
 NAME_TEMPLATE = config['COURSE_FOLDER'].get('NAME_TEMPLATE', '{NAME}')
 REPLACE_ILLEGAL_CHAR_WITH = config['COURSE_FOLDER'].get(
     'REPLACE_ILLEGAL_CHAR_WITH', '-')
+CUSTOM_NAME_OVERRIDE = {int(i['CANVAS_ID']): str(i['FOLDER_NAME'])
+                        for i in config['COURSE_FOLDER'].get('CUSTOM_NAME', [])}
+IGNOGED_CANVAS_ID = config['COURSE_FOLDER'].get('IGNOGED_CANVAS_ID', [])
 CHECKPOINT_FILE = config["CHECKPOINT"].get(
     "CHECKPOINT_FILE", "files/.checkpoint")
 BASE_DIR = config['SYNC'].get('BASE_DIR', 'files')
@@ -102,6 +106,9 @@ new_files_list = []
 
 
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
+    if course.id in CUSTOM_NAME_OVERRIDE:
+        return re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, CUSTOM_NAME_OVERRIDE[course.id])
+
     r = re.match(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
     template_map = {
@@ -109,13 +116,13 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{SJTU_ID}": r["sjtu_id"],
         r"{SEMESTER_ID}": r["semester_id"],
         r"{CLASSROOM_ID}": r["classroom_id"],
-        r"{NAME}": course.name.replace("（", "(").replace("）", ")")
+        r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")"))
     }
 
     folderName = NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
-    name = re.sub(r'[/\\:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, folderName)
+    folderName = re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, folderName)
     return folderName
 
 
@@ -182,14 +189,17 @@ courses = canvas.get_courses()
 
 try:
     for course in courses:
-        if hasattr(course, "name"):
+        if not hasattr(course, "name"):
+            print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
+        elif course.id in IGNOGED_CANVAS_ID:
+            print(
+                f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
+        else:
             try:
                 process_course(course)
             except canvasapi.exceptions.Unauthorized as e:
                 print(
                     f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
-        else:
-            print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
 except KeyboardInterrupt:
     pass
 
@@ -203,3 +213,6 @@ else:
         print(f)
 
 print(f"{Fore.CYAN}Done.")
+if WINDOWS:
+    # for windows double-click user
+    input()
