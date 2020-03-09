@@ -10,7 +10,7 @@ import re
 import pathlib
 import os
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 import sys
 import requests
 from download_file_ex import download_file
@@ -170,9 +170,9 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
             download_file(file.url, "    Downloading", path)
             if OVERRIDE_FILE_TIME:
                 c_time = datetime.strptime(
-                    file.created_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
+                    file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
                 m_time = datetime.strptime(
-                    file.updated_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc).timestamp()
+                    file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
                 a_time = time.time()
                 if WINDOWS:
                     setctime(path, c_time)
