@@ -41,13 +41,24 @@ if not pathlib.Path("config.toml").exists():
                 input()
             exit()
     dst = pathlib.Path("config.toml")
-    dst.write_text(src.read_text())
+    dst.write_bytes(src.read_bytes())
     print(f"{Fore.RED}Config not found, using default config. You may edit 'config.toml' if you want customize.{Style.RESET_ALL}")
 
 config = {}
 
 with open("config.toml", encoding='utf8') as f:
     config = toml.load(f)
+
+if config["API"].get("API_KEY") == 'PASTE YOUR API_KEY HERE':
+    print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here, it can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY:{Fore.MAGENTA}", end='')
+    apiKey = input().strip()
+    if len(apiKey) == 64:  # the only reasonable length for a valid API_KEY
+        # No user will paste a dummy 64 length string here
+        config["API"]["API_KEY"] = apiKey
+        with open("config.toml", encoding='utf8') as f:
+            configToml = f.read()
+        with open("config.toml", 'w', encoding='utf8') as f:
+            f.write(configToml.replace('PASTE YOUR API_KEY HERE', apiKey))
 
 API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
 API_KEY = config["API"].get("API_KEY", "")

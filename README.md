@@ -9,13 +9,13 @@ Download latest release
 
 You may download prebuilt binary [here](https://github.com/skyzh/canvas_grab/releases).
 
-Please offer an API key in `config.toml` before running this program.
-You may obtain API key in Canvas settings. You can edit `config.toml`
-with your favourite text editor.
+Please offer an API key when running this program for the first time.
+You may obtain API key in Canvas settings. 
 
 ## Configuration
 
 You may set the following options in `config.toml`.
+You can edit `config.toml` with your favourite text editor.
 
 - Specify your Canvas API_KEY
 - Custimize the file extension filter
