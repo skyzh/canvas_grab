@@ -2,7 +2,7 @@
 
 Grab all files on Canvas LMS to local directory.
 
-![image](https://user-images.githubusercontent.com/4198311/75742884-0b7e2180-5d4a-11ea-800a-e57bd2fa42ac.png)
+![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
 
 Download latest release
 [here](https://github.com/skyzh/canvas_grab/archive/master.zip).

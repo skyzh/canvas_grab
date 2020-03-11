@@ -17,13 +17,15 @@ from download_file_ex import download_file
 import toml
 from sys import exit
 from utils import is_windows
+from version import check_latest_version
+
 if is_windows():
     from win32_setctime import setctime
 
 colorama.init()
 
 print("Thank you for using canvas_grab!") 
-print(f"If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+print(f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
 print(f"You may review {Fore.GREEN}README.md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
 
 from config import *
@@ -179,7 +181,9 @@ else:
     for f in new_files_list:
         print(f)
 
-print(f"{Fore.CYAN}Done.")
+print(f"{Fore.CYAN}Done.{Style.RESET_ALL}")
+
+check_latest_version()
 
 if is_windows():
     # for windows double-click user

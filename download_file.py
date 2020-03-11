@@ -4,7 +4,7 @@ __license__ = "MIT"
 import requests 
 import tqdm     # progress bar
 import os.path
-def download_file(url, desc, filename=False, verbose=False, req_timeout=0):
+def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None)):
     """
     Download file with progressbar
     
