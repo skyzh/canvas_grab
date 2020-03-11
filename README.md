@@ -12,12 +12,14 @@ You may obtain API key in Canvas settings.
 
 ## Configuration
 
-You may set the following options in `config.toml`.
+You may configure canvas_grab in `config.toml`.
 You can edit `config.toml` with your favourite text editor.
+Refer to `config.example.toml` or `config.example.zh-hans.toml`
+for documentation.
 
 ## Features
 
-- **All CanvasLMS-based sites supported** Just specify Canvas endpoint in config.
+- **All Canvas-based sites are supported** Just specify Canvas endpoint in config.
 - **Auto Checkpoint** A file will only be downloaded once. And the program will update the file if there's any update on Canvas.
 - **Extension and Size Filter** You can specify maximum allowed file size. You may also filter files by extension.
 - **Auto Retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
@@ -25,7 +27,7 @@ You can edit `config.toml` with your favourite text editor.
 
 ## Get started
 
-Please install Python 3.7+ at first.
+First of all, please install Python 3.7+.
 
 For macOS or Linux users：
 
@@ -40,13 +42,7 @@ pip install -r requirements.windows.txt
 python main.py
 ```
 
-
-The program will automatically checkpoint your downloads. Therefore
-it will not grab downloaded files, and will check if there's any update
-on a file. Checkpoint is done after any new file downloaded.
-You may interrupt at any time.
-
-To re-download all files, remove `CHECKPOINT_FILE` or `BASE_DIR`.
+To re-download all files, remove checkpoint file `.checkpoint` and downloaded files folder `files/`.
 
 ## Common Issues
 
@@ -55,3 +51,7 @@ To re-download all files, remove `CHECKPOINT_FILE` or `BASE_DIR`.
 ## Screenshot
 
 ![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
+
+## License
+
+MIT
