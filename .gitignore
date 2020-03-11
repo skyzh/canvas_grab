@@ -136,6 +136,5 @@ dmypy.json
 
 .checkpoint
 files/
-config.py
 config.toml
 .vscode/
