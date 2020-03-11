@@ -45,7 +45,7 @@ def load_config():
             config_file = Path(CONFIG_FILE)
             new_config_content = config_file.read_text(
                 encoding="utf8").replace("PASTE YOUR API_KEY HERE", api_key)
-            config_file.write_text(new_config_content)
+            config_file.write_text(new_config_content, encoding='utf8')
 
     return config
 
