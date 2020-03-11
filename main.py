@@ -181,9 +181,9 @@ else:
     for f in new_files_list:
         print(f)
 
-print(f"{Fore.CYAN}Done.{Style.RESET_ALL}")
-
 check_latest_version()
+
+print(f"{Fore.GREEN}Done.{Style.RESET_ALL}")
 
 if is_windows():
     # for windows double-click user
