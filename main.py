@@ -33,7 +33,8 @@ from config import *
 canvas = Canvas(API_URL, API_KEY)
 
 try:
-    print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+    print(f'{Fore.BLUE}Logging in...{Style.RESET_ALL}')
+    print(f"{Fore.GREEN}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
 except canvasapi.exceptions.InvalidAccessToken:
     print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
     if is_windows():
