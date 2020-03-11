@@ -2,8 +2,6 @@
 
 Grab all files on Canvas LMS to local directory.
 
-![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
-
 Download latest release
 [here](https://github.com/skyzh/canvas_grab/archive/master.zip).
 
@@ -17,11 +15,13 @@ You may obtain API key in Canvas settings.
 You may set the following options in `config.toml`.
 You can edit `config.toml` with your favourite text editor.
 
-- Specify your Canvas API_KEY
-- Custimize the file extension filter
-- Custimize the style of course folder name
-- Specify the folder for syncing
-- ……
+## Features
+
+- **All CanvasLMS-based sites supported** Just specify Canvas endpoint in config.
+- **Auto Checkpoint** A file will only be downloaded once. And the program will update the file if there's any update on Canvas.
+- **Extension and Size Filter** You can specify maximum allowed file size. You may also filter files by extension.
+- **Auto Retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
+- **Auto Sorting** All files will be saved to their corresponding folders on Canvas. You may set folder name with placeholders like `{CANVAS_ID}-{NAME}`.
 
 ## Get started
 
@@ -40,12 +40,6 @@ pip install -r requirements.windows.txt
 python main.py
 ```
 
-To create a portable .exe file on Windows with pyinstaller, run：
-
-```powershell
-pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --onefile
-```
-
 
 The program will automatically checkpoint your downloads. Therefore
 it will not grab downloaded files, and will check if there's any update
@@ -57,3 +51,7 @@ To re-download all files, remove `CHECKPOINT_FILE` or `BASE_DIR`.
 ## Common Issues
 
 **上海交通大学用户**请在[此页面](https://oc.sjtu.edu.cn/profile/settings)内通过**创建新访问许可证**按钮生成访问令牌。
+
+## Screenshot
+
+![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
