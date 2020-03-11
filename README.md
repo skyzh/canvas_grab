@@ -2,13 +2,17 @@
 
 Grab all files on Canvas LMS to local directory.
 
-Download latest release
-[here](https://github.com/skyzh/canvas_grab/archive/master.zip).
+## Getting Started
+If you have Python installed, download latest release
+[here](https://github.com/skyzh/canvas_grab/archive/master.zip),
+and follow the steps in "Build and Run from Source"
 
-You may download prebuilt binary [here](https://github.com/skyzh/canvas_grab/releases).
+Otherwise, you may download prebuilt binary [here](https://github.com/skyzh/canvas_grab/releases).
 
-Please offer an API key when running this program for the first time.
-You may obtain API key in Canvas settings. 
+The program will ask you for an API key when running for the 
+first time. You may obtain API key in Canvas settings. If you
+want further customization, you may edit `config.toml`. Refer to
+Configuration section.
 
 ## Configuration
 
@@ -25,7 +29,7 @@ for documentation.
 - **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
 - **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
 
-## Get started
+## Build and Run from Source
 
 First of all, please install Python 3.7+.
 

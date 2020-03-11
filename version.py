@@ -10,7 +10,7 @@ def check_latest_version():
     try:
         version = requests.get(GITHUB_RELEASE_URL, timeout=3).json()
     except Exception as e:
-        print(f"{Fore.RED}Failed to check update: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}Failed to check update{Style.RESET_ALL}")
         return
     version = version.get("tag_name", "unknown")
     if version != VERSION:

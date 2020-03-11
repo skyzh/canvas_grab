@@ -129,7 +129,7 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
             except:
                 pass
             print(
-                f"    {Fore.GREEN}{'Update' if update_flag else 'New'} {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
+                f"    {Fore.GREEN}{'Update' if update_flag else 'New'}: {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             download_file(file.url, "    Downloading", path)
             if OVERRIDE_FILE_TIME:
                 c_time = datetime.strptime(
