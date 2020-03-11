@@ -44,6 +44,8 @@ ALLOW_FILE_EXTENSION_GROUP = ["DOCUMENT", "CUSTOM"]
 ALLOW_FILE_EXTENSION = [".ppt", ".pptx", ".csv"]
 # Override the access and modified times of the file
 OVERRIDE_FILE_TIME = true
+# Show verbose information
+VERBOSE = false
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP

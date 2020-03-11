@@ -16,75 +16,25 @@ import requests
 from download_file_ex import download_file
 import toml
 from sys import exit
-
-print(
-    f"Thank you for using canvas_grab. If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
-print(f"You may review {Fore.GREEN}LICENSE{Style.RESET_ALL} and {Fore.GREEN}README.md{Style.RESET_ALL} shipped with this release")
-
-WINDOWS = os.name == "nt"
-if WINDOWS:
+from utils import is_windows
+if is_windows():
     from win32_setctime import setctime
+
 colorama.init()
 
-if not pathlib.Path("config.toml").exists():
-    src = pathlib.Path("config.example.toml")
-    if not src.exists():
-        if sys._MEIPASS:  # for portable exe created by pyinstaller
-            # load config from temporary dirertory
-            src = pathlib.Path(os.path.join(
-                sys._MEIPASS, "config.example.toml"))
-        else:
-            print(
-                f"{Fore.RED}Config not found, default config not found either{Style.RESET_ALL}")
-            if WINDOWS:
-                # for windows double-click user
-                input()
-            exit()
-    dst = pathlib.Path("config.toml")
-    dst.write_bytes(src.read_bytes())
-    print(f"{Fore.RED}Config not found, using default config. You may edit 'config.toml' if you want customize.{Style.RESET_ALL}")
+print("Thank you for using canvas_grab!") 
+print(f"If you have any questions, please file an issue at {Fore.GREEN}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+print(f"You may review {Fore.GREEN}README.md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
 
-config = {}
+from config import *
 
-with open("config.toml", encoding='utf8') as f:
-    config = toml.load(f)
-
-if config["API"].get("API_KEY") == 'PASTE YOUR API_KEY HERE':
-    print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here, it can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY:{Fore.MAGENTA}", end='')
-    apiKey = input().strip()
-    if len(apiKey) == 64:  # the only reasonable length for a valid API_KEY
-        # No user will paste a dummy 64 length string here
-        config["API"]["API_KEY"] = apiKey
-        with open("config.toml", encoding='utf8') as f:
-            configToml = f.read()
-        with open("config.toml", 'w', encoding='utf8') as f:
-            f.write(configToml.replace('PASTE YOUR API_KEY HERE', apiKey))
-
-API_URL = config["API"].get("API_URL", "https://oc.sjtu.edu.cn")
-API_KEY = config["API"].get("API_KEY", "")
-NAME_TEMPLATE = config['COURSE_FOLDER'].get('NAME_TEMPLATE', '{NAME}')
-REPLACE_ILLEGAL_CHAR_WITH = config['COURSE_FOLDER'].get(
-    'REPLACE_ILLEGAL_CHAR_WITH', '-')
-CUSTOM_NAME_OVERRIDE = {int(i['CANVAS_ID']): str(i['FOLDER_NAME'])
-                        for i in config['COURSE_FOLDER'].get('CUSTOM_NAME', [])}
-IGNOGED_CANVAS_ID = config['COURSE_FOLDER'].get('IGNOGED_CANVAS_ID', [])
-CHECKPOINT_FILE = config["CHECKPOINT"].get(
-    "CHECKPOINT_FILE", "files/.checkpoint")
-BASE_DIR = config['SYNC'].get('BASE_DIR', 'files')
-OVERRIDE_FILE_TIME = config['SYNC'].get('OVERRIDE_FILE_TIME', True)
-MAX_SINGLE_FILE_SIZE = config['SYNC'].get('MAX_SINGLE_FILE_SIZE', 100)
-ALLOW_FILE_EXTENSION = []
-ALLOW_FILE_EXTENSION.extend(config['SYNC'].get('ALLOW_FILE_EXTENSION', []))
-for ext_groups in config['SYNC'].get('ALLOW_FILE_EXTENSION_GROUP', []):
-    ALLOW_FILE_EXTENSION.extend(config['EXTENSION'].get(ext_groups, []))
-# Initialize a new Canvas object
 canvas = Canvas(API_URL, API_KEY)
 
 try:
     print(f"{Fore.BLUE}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
 except canvasapi.exceptions.InvalidAccessToken:
     print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
-    if WINDOWS:
+    if is_windows():
         # for windows double-click user
         input()
     exit()
@@ -92,16 +42,14 @@ except canvasapi.exceptions.InvalidAccessToken:
 
 def do_download(file) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
-        return (False, f"{Fore.BLACK}{Back.WHITE}filtered by extension")
+        return (False, "filtered by extension")
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
-        return (False, f"{Fore.BLACK}{Back.WHITE}file too big: {file.size // 1024 / 1000} MB")
+        return (False, f"file too big: {file.size // 1024 / 1000} MB")
     return (True, "")
 
 
 checkpoint = {}
 os.makedirs(pathlib.Path(CHECKPOINT_FILE).parent, exist_ok=True)
-
-
 def do_checkpoint():
     with open(CHECKPOINT_FILE, 'w') as file:
         json.dump(checkpoint, file)
@@ -141,6 +89,7 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
     name = parse_course_folder_name(course)
     print(f"{Fore.CYAN}Course {course.course_code}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
+    reasons_of_not_download = {}
 
     for file in course.get_files():
         folder = folders[file.folder_id] + "/"
@@ -185,23 +134,30 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
                 m_time = datetime.strptime(
                     file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
                 a_time = time.time()
-                if WINDOWS:
+                if is_windows():
                     setctime(path, c_time)
                 os.utime(path, (a_time, m_time))
             checkpoint[json_key] = {"updated_at": file.updated_at}
             new_files_list.append(path)
         else:
-            print(
-                f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
+            if VERBOSE_MODE:
+                print(
+                    f"    {Style.DIM}Ignore {file.display_name}: {reason}{Style.RESET_ALL}")
+            else:
+                prev_cnt = reasons_of_not_download.get(reason, 0)
+                reasons_of_not_download[reason] = prev_cnt + 1
         do_checkpoint()
 
+    for (reason, cnt) in reasons_of_not_download.items():
+        print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
 
 courses = canvas.get_courses()
 
 try:
     for course in courses:
         if not hasattr(course, "name"):
-            print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
+            if VERBOSE_MODE:
+                print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
         elif course.id in IGNOGED_CANVAS_ID:
             print(
                 f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
@@ -224,6 +180,7 @@ else:
         print(f)
 
 print(f"{Fore.CYAN}Done.")
-if WINDOWS:
+
+if is_windows():
     # for windows double-click user
     input()
