@@ -11,14 +11,13 @@ def need_retrying(exception):
     return not isinstance(exception, KeyboardInterrupt)
 
 
-@retry(retry_on_exception=need_retrying, stop_max_attempt_number=ATTEMPT)
+@retry(retry_on_exception=need_retrying, stop_max_attempt_number=ATTEMPT, wait_fixed=1000)
 def download_file(url, desc, filename, verbose=False):
     try:
-        ret = df(url, desc, filename, verbose, req_timeout=TIMEOUT)
+        df(url, desc, filename, verbose, req_timeout=TIMEOUT)
     except KeyboardInterrupt:
         raise
     except Exception as e:
         print(f"    {Fore.RED}Retrying {Path(filename).name} ({e})...{Style.RESET_ALL}")
         raise
 
-    return ret
