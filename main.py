@@ -69,9 +69,10 @@ new_files_list = []
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in CUSTOM_NAME_OVERRIDE:
         return re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, CUSTOM_NAME_OVERRIDE[course.id])
-
+    
     r = re.match(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
+    
     template_map = {
         r"{CANVAS_ID}": str(course.id),
         r"{SJTU_ID}": r["sjtu_id"],
