@@ -19,30 +19,91 @@ from sys import exit
 from utils import is_windows
 from version import check_latest_version
 import shlex
+import multiprocessing
+from config import *
 
 if is_windows():
     from win32_setctime import setctime
 
-colorama.init()
+checkpoint = {}
+new_files_list = []
+ffmpeg_commands = []
 
-print("Thank you for using canvas_grab!") 
-print(f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
-print(f"You may review {Fore.GREEN}README.md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
+def main():
+    colorama.init()
 
-from config import *
+    print("Thank you for using canvas_grab!") 
+    print(f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+    print(f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
+    if ENABLE_VIDEO:
+        print(f"Note: You've enabled video download. You should install the required tools yourself.")
+        print(f"      This is an experimental functionality and takes up large amount of bandwidth. {Fore.RED}Use at your own risk.{Style.RESET_ALL}")
+    canvas = Canvas(API_URL, API_KEY)
 
-canvas = Canvas(API_URL, API_KEY)
+    try:
+        print(f'{Fore.BLUE}Logging in...{Style.RESET_ALL}')
+        print(f"{Fore.GREEN}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+    except canvasapi.exceptions.InvalidAccessToken:
+        print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
+        if is_windows():
+            # for windows double-click user
+            input()
+        exit()
 
-try:
-    print(f'{Fore.BLUE}Logging in...{Style.RESET_ALL}')
-    print(f"{Fore.GREEN}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
-except canvasapi.exceptions.InvalidAccessToken:
-    print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
+    os.makedirs(pathlib.Path(CHECKPOINT_FILE).parent, exist_ok=True)
+
+    try:
+        with open(CHECKPOINT_FILE, 'r') as file:
+            global checkpoint
+            checkpoint = json.load(file)
+    except:
+        print(f"{Fore.RED}No checkpoint found")
+
+    courses = canvas.get_courses()
+
+    try:
+        for course in courses:
+            if not hasattr(course, "name"):
+                if VERBOSE_MODE:
+                    print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
+            elif course.id in IGNOGED_CANVAS_ID:
+                print(
+                    f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
+            else:
+                try:
+                    process_course(course)
+                except canvasapi.exceptions.Unauthorized as e:
+                    print(
+                        f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+    except KeyboardInterrupt:
+        pass
+
+    do_checkpoint()
+
+    if len(new_files_list) == 0:
+        print("All files up to date")
+    else:
+        print(f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
+        for f in new_files_list:
+            print(f)
+
+    if ENABLE_VIDEO:
+        print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
+        print(f"Please run the automatically-generated script {Fore.BLUE}download_video.sh{Style.RESET_ALL} to download all videos.")
+        with open("download_video.sh", 'w') as file:
+            file.write("\n".join(ffmpeg_commands))
+
+    check_latest_version()
+
+    print(f"{Fore.GREEN}Done.{Style.RESET_ALL}")
+
     if is_windows():
         # for windows double-click user
         input()
-    exit()
 
+def do_checkpoint():
+    with open(CHECKPOINT_FILE, 'w') as file:
+        json.dump(checkpoint, file)
 
 def do_download(file) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
@@ -50,23 +111,6 @@ def do_download(file) -> (bool, str):
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
         return (False, f"size limit exceed")
     return (True, "")
-
-
-checkpoint = {}
-os.makedirs(pathlib.Path(CHECKPOINT_FILE).parent, exist_ok=True)
-def do_checkpoint():
-    with open(CHECKPOINT_FILE, 'w') as file:
-        json.dump(checkpoint, file)
-
-
-try:
-    with open(CHECKPOINT_FILE, 'r') as file:
-        checkpoint = json.load(file)
-except:
-    print(f"{Fore.RED}No checkpoint found")
-
-new_files_list = []
-
 
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in CUSTOM_NAME_OVERRIDE:
@@ -124,8 +168,6 @@ def resolve_video(page: canvasapi.page.PageRevision):
             continue
         yield (True, video_link[0])
     pass
-
-ffmpeg_commands = []
 
 def process_course(course: canvasapi.canvas.Course):
     name = parse_course_folder_name(course)
@@ -207,44 +249,6 @@ def process_course(course: canvasapi.canvas.Course):
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
 
-courses = canvas.get_courses()
-
-try:
-    for course in courses:
-        if not hasattr(course, "name"):
-            if VERBOSE_MODE:
-                print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
-        elif course.id in IGNOGED_CANVAS_ID:
-            print(
-                f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
-        else:
-            try:
-                process_course(course)
-            except canvasapi.exceptions.Unauthorized as e:
-                print(
-                    f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
-except KeyboardInterrupt:
-    pass
-
-do_checkpoint()
-
-if len(new_files_list) == 0:
-    print("All files up to date")
-else:
-    print(f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
-    for f in new_files_list:
-        print(f)
-
-if ENABLE_VIDEO:
-    print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
-    print(f"Please run the automatically-generated script {Fore.BLUE}download_video.sh{Style.RESET_ALL} to download all videos.")
-    with open("download_video.sh", 'w') as file:
-        file.write("\n".join(ffmpeg_commands))
-
-check_latest_version()
-
-print(f"{Fore.GREEN}Done.{Style.RESET_ALL}")
-
-if is_windows():
-    # for windows double-click user
-    input()
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    main()
