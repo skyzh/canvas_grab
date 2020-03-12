@@ -138,3 +138,4 @@ dmypy.json
 files/
 config.toml
 .vscode/
+download_video.sh

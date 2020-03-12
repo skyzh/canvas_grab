@@ -18,6 +18,7 @@ import toml
 from sys import exit
 from utils import is_windows
 from version import check_latest_version
+import shlex
 
 if is_windows():
     from win32_setctime import setctime
@@ -81,15 +82,52 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{CLASSROOM_ID}": r["classroom_id"],
         r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")"))
     }
-    
+
     folderName = NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
     folderName = re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, folderName)
     return folderName
 
+def resolve_video(page: canvasapi.page.PageRevision):
+    title = page.title
+    if VERBOSE_MODE:
+        print(f"    {Fore.GREEN}Resolving page {title}{Style.RESET_ALL}")
+    if not hasattr(page, "body") or page.body is None:
+        if VERBOSE_MODE:
+            print(f"    {Fore.RED}This page has no attribute 'body'{Style.RESET_ALL}")
+        yield (False, "failed to resolve page")
+        return
+    links = re.findall(r"\"(https:\/\/vshare.sjtu.edu.cn\/.*?)\"", page.body)
+    if len(links) != 0:
+        if VERBOSE_MODE:
+            print(f"    {Style.DIM}unsupported link: vshare.sjtu.edu.cn{Style.RESET_ALL}")
+        for i in range(len(links)):
+            yield (False, "unsupported video link")
+    
+    links = re.findall(r"\"(https:\/\/v.sjtu.edu.cn\/.*?)\"", page.body)
+    for link in links:
+        try:
+            video_page = requests.get(link, timeout=3).text
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
+            if VERBOSE_MODE:
+                print(f"    {Fore.RED}Failed to resolve video: {e}{Style.RESET_ALL}")
+            yield (False, "failed to resolve video")
+            continue
+        video_link = re.findall(r"src=\'(.*?.m3u8)\'", video_page)
+        if len(video_link) != 1:
+            if VERBOSE_MODE:
+                print(f"    {Fore.RED}Failed to resolve video: video link {video_link} != 1{Style.RESET_ALL}")
+            yield (False, "failed to resolve video")
+            continue
+        yield (True, video_link[0])
+    pass
 
-def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
+ffmpeg_commands = []
+
+def process_course(course: canvasapi.canvas.Course):
     name = parse_course_folder_name(course)
     print(f"{Fore.CYAN}Course {course.course_code}{Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
@@ -152,6 +190,20 @@ def process_course(course: canvasapi.canvas.Course) -> [(str, str)]:
                 reasons_of_not_download[reason] = prev_cnt + 1
         do_checkpoint()
 
+    if ENABLE_VIDEO:
+        for page in course.get_pages():
+            for (result, msg) in resolve_video(page.show_latest_revision()):
+                if result == True:
+                    filename = msg.split("/")[-2]
+                    json_key = f"{name}/{page.title}-{filename}"
+                    path = os.path.join(BASE_DIR, name, f"{page.title}-{filename}")
+                    if not Path(path).exists():
+                        quoted_path = shlex.quote(path)
+                        ffmpeg_commands.append(f"ffmpeg -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
+                else:
+                    prev_cnt = reasons_of_not_download.get(msg, 0)
+                    reasons_of_not_download[msg] = prev_cnt + 1
+
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
 
@@ -182,6 +234,11 @@ else:
     print(f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
     for f in new_files_list:
         print(f)
+
+if ENABLE_VIDEO:
+    print(f"Please run the automatically-generated script {Fore.BLUE}download_video.sh{Style.RESET_ALL} to download all videos.")
+    with open("download_video.sh", 'w') as file:
+        file.write("\n".join(ffmpeg_commands))
 
 check_latest_version()
 
