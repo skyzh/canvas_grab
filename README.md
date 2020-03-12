@@ -58,6 +58,7 @@ python main.py
 * **Ignored course** If you see the warning "Ignored Course", then canvas_grab has no access to a course. This is because (1) Course not available (2) Course from previous semesters are hidden.
 * **An error occurred** You'll see "An error occoured when processing this course" if there's no file in a course.
 * **File not available** This file might have been included in an unpublished unit. canvas_grab cannot bypass restrictions.
+* **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 
 ## Screenshot
 
