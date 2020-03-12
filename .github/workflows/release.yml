@@ -122,12 +122,12 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         .\.venv\Scripts\activate.ps1
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --one-file
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
     - name: packaging with PyInstaller (*nix)
       if: matrix.os != 'windows-latest'
       run: |
         source .venv/bin/activate
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --one-file
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
     - name: copy bundled files
       run: |
         cp README.md dist/
