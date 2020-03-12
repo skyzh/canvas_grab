@@ -2,6 +2,7 @@
 
 Grab all files on Canvas LMS to local directory.
 
+[中文说明](https://github.com/skyzh/canvas_grab/blob/master/README_zh-hans.md)
 ## Getting Started
 
 If you have Python installed, download latest release
@@ -54,9 +55,9 @@ python main.py
 ## Common Issues
 
 * **Acquire API token** Access Token can be obtained at "Account - Settings - New Access Token".
-* **SJTU users** 请在[此页面](https://oc.sjtu.edu.cn/profile/settings)内通过“创建新访问许可证”按钮生成访问令牌。
+* **SJTU users** 请在[此页面](https://oc.sjtu.edu.cn/profile/settings#access_tokens_holder)内通过“创建新访问许可证”按钮生成访问令牌。
 * **Ignored course** If you see the warning "Ignored Course", then canvas_grab has no access to a course. This is because (1) Course not available (2) Course from previous semesters are hidden.
-* **An error occurred** You'll see "An error occoured when processing this course" if there's no file in a course.
+* **An error occurred** You'll see "An error occurred when processing this course" if there's no file in a course.
 * **File not available** This file might have been included in an unpublished unit. canvas_grab cannot bypass restrictions.
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 
