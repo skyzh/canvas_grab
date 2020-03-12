@@ -122,23 +122,30 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         .\.venv\Scripts\activate.ps1
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml;.' --add-data 'LICENSE;.' --add-data 'README.md;.' -n canvas_grab
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
     - name: packaging with PyInstaller (*nix)
       if: matrix.os != 'windows-latest'
       run: |
         source .venv/bin/activate
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn --add-data 'config.example.toml:.' --add-data 'LICENSE:.' --add-data 'README.md:.' -n canvas_grab
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+    - name: copy bundled files
+      run: |
+        cp README.md dist/
+        cp README_zh-hans.md dist/
+        cp config.example.toml dist/
+        cp config.example.zh-hans.toml dist/
+        cp LICENSE dist/
     - name: create tar
       run: |
-        tar -C dist/canvas_grab -czf canvas_grab.tar.gz .
+        tar -C dist -czf canvas_grab.tar.gz .
     - name: create zip (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        Compress-Archive -Path dist/canvas_grab -DestinationPath canvas_grab.zip
+        Compress-Archive -Path dist -DestinationPath canvas_grab.zip
     - name: create zip (*nix)
       if: matrix.os != 'windows-latest'
       run: |
-        (cd dist/canvas_grab && zip -r - .) > canvas_grab.zip
+        (cd dist && zip -r - .) > canvas_grab.zip
     - name: upload artifact (zip)
       uses: actions/upload-artifact@v1
       with:
