@@ -63,6 +63,12 @@ python main.py
 
 ![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
 
+## [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors)
+
+[@skyzh](https://github.com/skyzh), 
+[@danyang685](https://github.com/danyang685),
+[@BugenZhao](https://github.com/BugenZhao)
+
 ## License
 
 MIT
