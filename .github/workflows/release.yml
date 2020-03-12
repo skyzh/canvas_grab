@@ -131,7 +131,7 @@ jobs:
     - name: copy bundled files
       run: |
         cp README.md dist/
-        cp README.zh-hans.md dist/
+        cp README_zh-hans.md dist/
         cp config.example.toml dist/
         cp config.example.zh-hans.toml dist/
         cp LICENSE dist/
