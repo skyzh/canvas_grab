@@ -2,6 +2,7 @@
 
 Grab all files on Canvas LMS to local directory.
 
+[中文说明](https://github.com/skyzh/canvas_grab/blob/master/README_zh-hans.md)
 ## Getting Started
 
 If you have Python installed, download latest release
