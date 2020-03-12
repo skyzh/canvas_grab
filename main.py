@@ -236,6 +236,7 @@ else:
         print(f)
 
 if ENABLE_VIDEO:
+    print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
     print(f"Please run the automatically-generated script {Fore.BLUE}download_video.sh{Style.RESET_ALL} to download all videos.")
     with open("download_video.sh", 'w') as file:
         file.write("\n".join(ffmpeg_commands))
