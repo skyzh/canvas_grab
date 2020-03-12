@@ -47,7 +47,7 @@ def do_download(file) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
         return (False, "filtered by extension")
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
-        return (False, f"file too big: {file.size // 1024 / 1000} MB")
+        return (False, f"size limit exceed")
     return (True, "")
 
 
