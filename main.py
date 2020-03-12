@@ -81,7 +81,7 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{CLASSROOM_ID}": r["classroom_id"],
         r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")"))
     }
-
+    
     folderName = NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)

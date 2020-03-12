@@ -32,7 +32,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: ${{ github.event.head_commit.message }}
           draft: false
-          prerelease: false
+          prerelease: true
       - name: upload release (ZIP)
         uses: actions/upload-release-asset@v1.0.1
         env:
