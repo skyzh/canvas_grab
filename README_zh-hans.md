@@ -16,12 +16,12 @@
 
 ## 配置
 
-`config.toml` 文件可以对canvas_grab程序进行配置，这是一个可以用任何一个文本编辑器打开的纯文本文件。
+`config.toml` 文件可以对 canvas_grab 程序进行配置，这是一个可以用任何一个文本编辑器打开的纯文本文件。
 可以参考 `config.example.toml` 或 `config.example.zh-hans.toml`文件中的注释进行配置。
 
 ## 炫酷功能
 
-- **支持所有使用Canvas系统的网站！** 只要配置正确的Canvas系统网址即可。
+- **支持所有使用 Canvas 系统的网站！** 只要配置正确的Canvas系统网址即可。
 - **自动记录下载状态！** 只要资源没有发生更新，文件就不会被反复下载。
 - **设置文件尺寸过滤和类型过滤！** 可以设置允许下载的最大文件尺寸，还能通过文件扩展名过滤不想要的文件。
 - **自动重试！** 当网络连接出错时，程序会自动进行重试，它随时都会停下来！
@@ -29,7 +29,7 @@
 
 ## 构建并从源代码运行
 
-首先，请按照Python 3.7或更高版本。
+首先，请按照 Python 3.7 或更高版本。
 
 对于 macOS 或 Linux 用户，运行：
 
@@ -46,12 +46,12 @@ python main.py
 
 ## 常见问题
 
-* **获取API密钥** 在Canvas系统中，依次找到“账户” - “设置” - “创建新访问许可证”.
+* **获取 API 密钥** 在Canvas系统中，依次找到“账户” - “设置” - “创建新访问许可证”.
 * **交大人** 可直接通过[传送门](https://oc.sjtu.edu.cn/profile/settings#access_tokens_holder)生成访问令牌。
-* **提示Ignored Course** 如果出现"Ignored Course"警告，表明canvas_grab无法访问此课程。可能是由于(1) 课程没有发布 (2) 课程在之前的学期。
-* **提示An error occurred** 如果出现"An error occurred when processing this course"说明课程中没有任何文件。
-* **提示File not available** 此文件可能位于未发布的章节，canvas_grab无法绕过平台的限制。
-* **提示No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
+* **提示 Ignored Course** 如果出现"Ignored Course"警告，表明canvas_grab无法访问此课程。可能是由于 (1) 课程没有发布 (2) 课程在之前的学期。
+* **提示 An error occurred** 如果出现"An error occurred when processing this course"说明课程中没有任何文件。
+* **提示 File not available** 此文件可能位于未发布的章节，canvas_grab 无法绕过平台的限制。
+* **提示 No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
 
 ## 截图
 
