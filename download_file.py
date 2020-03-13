@@ -4,6 +4,8 @@ __license__ = "MIT"
 import requests 
 import tqdm     # progress bar
 import os.path
+from utils import is_windows
+
 def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None)):
     """
     Download file with progressbar
@@ -31,6 +33,7 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None
                                     , unit = 'KB'
                                     , desc = desc
                                     , bar_format = '{l_bar}{bar}{r_bar}'
+                                    , ascii = is_windows()
                                 ):
             fp.write(chunk)
     return
