@@ -63,6 +63,7 @@ python main.py
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 * **Error when checking update** It's normal if you don't have a stable connection to GitHub. You may regularly check updates by visiting this repo.
 * **Unsupported Link** canvas_grab only supports downloading from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
+* **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
 
 ## Screenshot
 

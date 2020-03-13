@@ -2,11 +2,12 @@ import requests
 from colorama import Fore, Back, Style
 
 GITHUB_RELEASE_URL = "https://api.github.com/repos/skyzh/canvas_grab/releases/latest"
-VERSION = "v1.3.6"
+VERSION = "v1.3.7"
 
 
 def check_latest_version():
     version_obj = {}
+    print()
     try:
         version_obj = requests.get(GITHUB_RELEASE_URL, timeout=3).json()
     except Exception as e:

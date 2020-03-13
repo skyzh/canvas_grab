@@ -67,5 +67,6 @@ MAX_SINGLE_FILE_SIZE = config["SYNC"]["MAX_SINGLE_FILE_SIZE"]
 ALLOW_FILE_EXTENSION = []
 ALLOW_FILE_EXTENSION.extend(config["SYNC"]["ALLOW_FILE_EXTENSION"])
 ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
+FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
 for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
     ALLOW_FILE_EXTENSION.extend(config["EXTENSION"].get(ext_groups, []))
