@@ -46,6 +46,8 @@ ALLOW_FILE_EXTENSION = [".ppt", ".pptx", ".csv"]
 OVERRIDE_FILE_TIME = true
 # 是否显示详细的下载信息
 VERBOSE = false
+# 是否开启视频下载功能
+ENABLE_VIDEO = false
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
