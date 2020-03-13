@@ -89,8 +89,10 @@ def main():
 
     if ENABLE_VIDEO:
         print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
-        print(f"Please run the automatically-generated script {Fore.BLUE}download_video.sh{Style.RESET_ALL} to download all videos.")
+        print(f"Please run the automatically-generated script {Fore.BLUE}download_video.(sh/ps1){Style.RESET_ALL} to download all videos.")
         with open("download_video.sh", 'w') as file:
+            file.write("\n".join(ffmpeg_commands))
+        with open("download_video.ps1", 'w') as file:
             file.write("\n".join(ffmpeg_commands))
 
     check_latest_version()
@@ -241,7 +243,7 @@ def process_course(course: canvasapi.canvas.Course):
                     path = os.path.join(BASE_DIR, name, f"{page.title}-{filename}")
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
-                        ffmpeg_commands.append(f"ffmpeg -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
+                        ffmpeg_commands.append(f"{FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
                 else:
                     prev_cnt = reasons_of_not_download.get(msg, 0)
                     reasons_of_not_download[msg] = prev_cnt + 1

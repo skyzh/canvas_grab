@@ -7,6 +7,7 @@ VERSION = "v1.3.6"
 
 def check_latest_version():
     version_obj = {}
+    print()
     try:
         version_obj = requests.get(GITHUB_RELEASE_URL, timeout=3).json()
     except Exception as e:
