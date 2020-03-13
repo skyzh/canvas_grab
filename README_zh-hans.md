@@ -4,9 +4,9 @@
 
 ## 入门指南
 
-如果你希望享受直接运行源代码的快感，可以 [在这里](https://github.com/skyzh/canvas_grab/archive/master.zip) 下载最新版本源代码，并按照 “构建并从源代码运行” 章节进行。
+如果您希望享受直接运行源代码的快感，可以 [在这里](https://github.com/skyzh/canvas_grab/archive/master.zip) 下载最新版本源代码，并按照 “构建并从源代码运行” 章节进行。
 
-或者，你也可以直接 [在这里](https://github.com/skyzh/canvas_grab/releases) 下载构建好的二进制包，有能双击打开的 `canvas_grab(.exe)` 文件哦！
+或者，您也可以直接 [在这里](https://github.com/skyzh/canvas_grab/releases) 下载构建好的二进制包，有能双击打开的 `canvas_grab(.exe)` 文件哦！
 
 本程序将会在首次启动时提示输入一个API密钥，API密钥可以通过Canvas的 “设置” 页面生成。通过修改 `config.toml` 文件还可以对程序进行自定义，想试试更多炫酷功能吗？去“配置”章节看看吧！
 
@@ -26,6 +26,7 @@
 - **设置文件尺寸过滤和类型过滤！** 可以设置允许下载的最大文件尺寸，还能通过文件扩展名过滤不想要的文件。
 - **自动重试！** 当网络连接出错时，程序会自动进行重试，它随时都会停下来！
 - **自动归类！** 所有文件都会被自动保存至对应课程的目录。课程目录名还可以利用像 `{CANVAS_ID}-{NAME}` 这样的模板来自定义！
+- **下载视频！** 支持下载 `v.sjtu.edu.cn` 的视频。在开启此功能之前，您需要安装 ffmpeg。
 
 ## 构建并从源代码运行
 
@@ -52,6 +53,8 @@ python main.py
 * **提示 An error occurred** 如果出现"An error occurred when processing this course"说明课程中没有任何文件。
 * **提示 File not available** 此文件可能位于未发布的章节，canvas_grab 无法绕过平台的限制。
 * **提示 No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
+* **提示 Error when checking update** 这个现象在较差的网络环境里发生是正常的。经常来 GitHub 看看有没有更新就行了。
+* **提示 Unsupported Link** canvas_grab 只支持 `v.sjtu.edu.cn` 视频的下载。现在暂时不支持 `vshare.sjtu.edu.cn`。
 
 ## 截图
 
