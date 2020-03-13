@@ -34,6 +34,7 @@ for documentation.
 - **File size and type filter** You can specify maximum allowed file size. You may also filter files by their extensions.
 - **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
 - **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
+- **Video download** Currently we support download video from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality.
 
 ## Build and Run from Source
 
@@ -60,6 +61,8 @@ python main.py
 * **An error occurred** You'll see "An error occurred when processing this course" if there's no file in a course.
 * **File not available** This file might have been included in an unpublished unit. canvas_grab cannot bypass restrictions.
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
+* **Error when checking update** It's normal if you don't have a stable connection to GitHub. You may regularly check updates by visiting this repo.
+* **Unsupported Link** canvas_grab only supports downloading from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
 
 ## Screenshot
 
