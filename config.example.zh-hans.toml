@@ -48,6 +48,16 @@ OVERRIDE_FILE_TIME = true
 VERBOSE = false
 # 是否开启视频下载功能
 ENABLE_VIDEO = false
+# ffmpeg 可执行文件路径
+# 若 ffmpeg 在您的环境变量 PATH 中，填写 "ffmpeg" 即可。
+# 如果不是这样，请在运行 canvas_grab 之前设置好这个选项。
+# 这里既可以使用相对路径，也可以使用绝对路径。
+# 比如：ffmpeg 在 "canvas_grab_folder/bin/ffmpeg" 里
+# "./bin/ffmpeg" (*nix) 或者 "bin/ffmpeg.exe" (Windows)
+# 比如：ffmpeg 在一个绝对路径里
+# "/usr/local/bin/ffmpeg" (*nix) 或 "C:\bin\ffmpeg.exe" (Windows)
+# 路径中请勿出现空格或特殊字符
+FFMPEG_PATH = "ffmpeg"
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中

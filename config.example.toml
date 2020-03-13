@@ -48,6 +48,16 @@ OVERRIDE_FILE_TIME = true
 VERBOSE = false
 # Enable video download from v.sjtu.edu.cn
 ENABLE_VIDEO = false
+# ffmpeg binary path
+# If ffmpeg is inside your PATH, just use "ffmpeg"
+# If not, specify ffmpeg binary before running canvas_grab
+# You may set this value to relative path to canvas_grab binary
+# e.g. ffmpeg binary is located at "canvas_grab_folder/bin/ffmpeg"
+# "./bin/ffmpeg" (*nix) or "bin/ffmpeg" (Windows)
+# e.g. ffmpeg binary is located at some absolute path
+# "/usr/local/bin/ffmpeg" (*nix) or "C:\bin\ffmpeg" (Windows)
+# Don't include special characters and space in this path
+FFMPEG_PATH = "ffmpeg"
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP
