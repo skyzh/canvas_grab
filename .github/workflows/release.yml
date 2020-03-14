@@ -106,7 +106,7 @@ jobs:
         pip install pyinstaller
     - name: create virtualenv
       run: |
-        python -m virtualenv .venv --no-site-packages 
+        python -m virtualenv .venv --clear
     - name: install dependencies in virtualenv (Windows)
       if: matrix.os == 'windows-latest'
       run: |
