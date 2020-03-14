@@ -121,12 +121,12 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         .\.venv\Scripts\activate.ps1
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile --clean -p .venv\lib\python3.8\site-packages
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --clean -p .venv\lib\python3.8\site-packages
     - name: packaging with PyInstaller (*nix)
       if: matrix.os != 'windows-latest'
       run: |
         source .venv/bin/activate
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile --clean -p ./.venv/lib/python3.8/site-packages
+        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --clean -p ./.venv/lib/python3.8/site-packages
     - name: copy bundled files
       run: |
         cp README.md dist/
