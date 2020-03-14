@@ -101,9 +101,6 @@ jobs:
     - name: install build tools
       id: install_dep
       run: |
-        pip freeze > unins
-        pip uninstall -r unins
-        python -m pip install --upgrade pip
         pip install virtualenv
         pip install pyinstaller
     - name: create virtualenv
