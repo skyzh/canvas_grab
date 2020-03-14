@@ -12,6 +12,9 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # SEMESTER_ID : 学期号，如：2019-2020-2
 # CLASSROOM_ID : 课程教学班序号，如：1
 # NAME : 课程名，如：程序设计
+# COURSE_CODE: 课程号
+# 如果您的 Canvas URL 不是 oc.sjtu.edu.cn，那么您只能使用
+# "COURSE_CODE" 和 "NAME"
 # Example: "{CANVAS_ID}-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
 # Example: "{SJTU_ID}-{NAME}" 将得到 "CS101-程序设计"
 # Example: "{NAME}-{CLASSROOM_ID}" 可用于区分两个相同课程

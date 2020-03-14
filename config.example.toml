@@ -12,6 +12,9 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # SEMESTER_ID : LIKE 2019-2020-2
 # CLASSROOM_ID : id used to distinguish two same courses
 # NAME : course name
+# COURSE_CODE: course code on canvas
+# If your canvas endpoint is not "oc.sjtu.edu.cn", then you can only use
+# "COURSE_CODE" and "NAME"
 # Example: "{CANVAS_ID}.resource-({SEMESTER_ID})-{SJTU_ID}-{CLASSROOM_ID}-{NAME}"
 # Example: "{SJTU_ID}-{NAME}" if you want "CS100-Course"
 # Example: "{NAME}({CLASSROOM_ID})" if you have two courses of same name
