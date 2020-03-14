@@ -118,15 +118,19 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in CUSTOM_NAME_OVERRIDE:
         return re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, CUSTOM_NAME_OVERRIDE[course.id])
     
-    r = re.match(
+    r = re.search(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
-    
+    if r is not None:
+        r = r.groupdict()
+    else:
+        r = {}
     template_map = {
         r"{CANVAS_ID}": str(course.id),
-        r"{SJTU_ID}": r["sjtu_id"],
-        r"{SEMESTER_ID}": r["semester_id"],
-        r"{CLASSROOM_ID}": r["classroom_id"],
-        r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")"))
+        r"{SJTU_ID}": r.get("sjtu_id", ""),
+        r"{SEMESTER_ID}": r.get("semester_id", ""),
+        r"{CLASSROOM_ID}": r.get("classroom_id", ""),
+        r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")")),
+        r"{COURSE_CODE}": course.course_code
     }
 
     folderName = NAME_TEMPLATE
