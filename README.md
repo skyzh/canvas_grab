@@ -3,6 +3,7 @@
 Grab all files on Canvas LMS to local directory.
 
 [中文说明](https://github.com/skyzh/canvas_grab/blob/master/README_zh-hans.md)
+
 ## Getting Started
 
 If you have Python installed, download latest release
@@ -34,7 +35,7 @@ for documentation.
 - **File size and type filter** You can specify maximum allowed file size. You may also filter files by their extensions.
 - **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
 - **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
-- **Video download** Currently we support download video from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality.
+- **Video download** Currently we support download video from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality. Note that this is an EXPERIMENTAL functionality. Use at your own risk.
 
 ## Build and Run from Source
 
@@ -78,3 +79,18 @@ python main.py
 ## License
 
 MIT
+
+```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+Which means that we do not shoulder any responsibilities for, included but not limited to:
+
+1. API key leaking
+2. Users upload copyright material from website to the Internet

@@ -35,9 +35,11 @@ def main():
     print("Thank you for using canvas_grab!") 
     print(f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
     print(f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
+    print(f"Please MAKE SURE that you've reviewed the LICENSE. Refer to {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues/29{Style.RESET_ALL} for why we enforced you to take this action.")
     if ENABLE_VIDEO:
         print(f"Note: You've enabled video download. You should install the required tools yourself.")
         print(f"      This is an experimental functionality and takes up large amount of bandwidth. {Fore.RED}Use at your own risk.{Style.RESET_ALL}")
+    
     canvas = Canvas(API_URL, API_KEY)
 
     try:
