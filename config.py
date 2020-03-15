@@ -37,7 +37,7 @@ def load_config():
         config = toml.load(f)
 
     if config["API"].get("API_KEY") == "PASTE YOUR API_KEY HERE":
-        print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here. It can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY:{Fore.MAGENTA}", end="")
+        print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here. It can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
         api_key = input().strip()
         if len(api_key) == 64:  # the only reasonable length for a valid API_KEY
             # No user will paste a dummy 64 length string here
@@ -46,6 +46,9 @@ def load_config():
             new_config_content = config_file.read_text(
                 encoding="utf8").replace("PASTE YOUR API_KEY HERE", api_key)
             config_file.write_text(new_config_content, encoding='utf8')
+
+        print(f"{Fore.BLUE}And I've reviewed the LICENSE. I know that I should NEVER publish copyright materials online.{Style.RESET_ALL} (Press [Enter])")
+        input()
 
     return config
 
