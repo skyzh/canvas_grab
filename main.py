@@ -74,7 +74,12 @@ def main():
             else:
                 try:
                     process_course(course)
+                except KeyboardInterrupt:
+                    raise
                 except canvasapi.exceptions.Unauthorized as e:
+                    print(
+                        f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+                except canvasapi.exceptions.ResourceDoesNotExist as e:
                     print(
                         f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
     except KeyboardInterrupt:
@@ -179,7 +184,7 @@ def resolve_video(page: canvasapi.page.PageRevision):
 
 def process_course(course: canvasapi.canvas.Course):
     name = parse_course_folder_name(course)
-    print(f"{Fore.CYAN}Course {course.course_code}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Course {course.course_code} (ID: {course.id}){Style.RESET_ALL}")
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
     reasons_of_not_download = {}
 
