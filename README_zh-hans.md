@@ -57,6 +57,7 @@ python main.py
 * **提示 Unsupported Link** canvas_grab 只支持 `v.sjtu.edu.cn` 视频的下载。现在暂时不支持 `vshare.sjtu.edu.cn`。
 * **下载 FFMPEG** 在 [这里](https://www.ffmpeg.org/download.html) 可以下载已经编译好的 ffmpeg。
 * **macOS 提示文件损坏** macOS 的安全机制导致。请在设置-隐私中运行运行，或从源代码直接运行。
+* **跳过导致程序崩溃的课程** 在 `config.toml` 中，把 ID 加入 `IGNORED_COURSE`。
 
 ## 截图
 

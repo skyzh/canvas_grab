@@ -66,6 +66,7 @@ python main.py
 * **Unsupported Link** canvas_grab only supports resolving URL from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
 * **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
 * **Invalid prebuilt binary on macOS** You should allow this application to run in "Preferences - Privacy"
+* **Skip a course causing error** edit `config.toml`, add ID into `IGNORED_COURSE`.
 
 ## Screenshot
 
