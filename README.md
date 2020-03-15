@@ -35,7 +35,7 @@ for documentation.
 - **File size and type filter** You can specify maximum allowed file size. You may also filter files by their extensions.
 - **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
 - **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
-- **Video download** Currently we support download video from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality. Note that this is an EXPERIMENTAL functionality. Use at your own risk.
+- **Video URL resolution** Currently we support resolve video URL from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality. Note that this is an EXPERIMENTAL functionality. Use at your own risk.
 
 ## Build and Run from Source
 
@@ -63,8 +63,9 @@ python main.py
 * **File not available** This file might have been included in an unpublished unit. canvas_grab cannot bypass restrictions.
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 * **Error when checking update** It's normal if you don't have a stable connection to GitHub. You may regularly check updates by visiting this repo.
-* **Unsupported Link** canvas_grab only supports downloading from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
+* **Unsupported Link** canvas_grab only supports resolving URL from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
 * **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
+* **Invalid prebuilt binary on macOS** You should allow this application to run in "Preferences - Privacy"
 
 ## Screenshot
 

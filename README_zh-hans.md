@@ -26,7 +26,7 @@
 - **设置文件尺寸过滤和类型过滤！** 可以设置允许下载的最大文件尺寸，还能通过文件扩展名过滤不想要的文件。
 - **自动重试！** 当网络连接出错时，程序会自动进行重试，它随时都会停下来！
 - **自动归类！** 所有文件都会被自动保存至对应课程的目录。课程目录名还可以利用像 `{CANVAS_ID}-{NAME}` 这样的模板来自定义！
-- **下载视频！** 支持下载 `v.sjtu.edu.cn` 的视频。在开启此功能之前，您需要安装 ffmpeg。
+- **解析视频！** 支持解析 `v.sjtu.edu.cn` 的视频 URL。在开启此功能之前，您需要安装 ffmpeg。
 
 ## 构建并从源代码运行
 
@@ -55,6 +55,8 @@ python main.py
 * **提示 No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
 * **提示 Error when checking update** 这个现象在较差的网络环境里发生是正常的。经常来 GitHub 看看有没有更新就行了。
 * **提示 Unsupported Link** canvas_grab 只支持 `v.sjtu.edu.cn` 视频的下载。现在暂时不支持 `vshare.sjtu.edu.cn`。
+* **下载 FFMPEG** 在 [这里](https://www.ffmpeg.org/download.html) 可以下载已经编译好的 ffmpeg。
+* **macOS 提示文件损坏** macOS 的安全机制导致。请在设置-隐私中运行运行，或从源代码直接运行。
 
 ## 截图
 
