@@ -47,7 +47,8 @@ def load_config():
                 encoding="utf8").replace("PASTE YOUR API_KEY HERE", api_key)
             config_file.write_text(new_config_content, encoding='utf8')
 
-        print(f"{Fore.BLUE}And I've reviewed the LICENSE. I know that I should NEVER publish copyright materials online.{Style.RESET_ALL} (Press [Enter])")
+        print(
+            f"{Fore.BLUE}And I've reviewed the LICENSE. I know that I should NEVER publish copyright materials online.{Style.RESET_ALL} (Press [Enter])")
         input()
 
     return config

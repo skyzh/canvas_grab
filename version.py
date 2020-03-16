@@ -3,7 +3,7 @@ from colorama import Fore, Back, Style
 from packaging import version as ver_parser
 
 GITHUB_RELEASE_URL = "https://api.github.com/repos/skyzh/canvas_grab/releases/latest"
-VERSION = "v1.3.11"
+VERSION = "v1.3.12"
 
 
 def check_latest_version():
@@ -16,9 +16,13 @@ def check_latest_version():
         print(f"You may report the following message to developer: {e}")
         return
     version = version_obj.get("tag_name", "unknown")
-    if ver_parser.parse(version) > ver_parser.parse(VERSION):
+    if version == "unknown":
+        print("Failed to check update: unknown remote version")
+    elif ver_parser.parse(version) > ver_parser.parse(VERSION):
         print(f"You're using version {Fore.GREEN}{VERSION}{Style.RESET_ALL}, "
               f"but the latest release is {Fore.GREEN}{version}{Style.RESET_ALL}.")
         print(f"Please visit {Fore.BLUE}https://github.com/skyzh/canvas_grab/releases{Style.RESET_ALL} "
               "to download the latest version.")
         print(version_obj.get("body", ""))
+    else:
+        print("Just checked update. You're using latest version of canvas_grab. :)")
