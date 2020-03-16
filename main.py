@@ -191,7 +191,7 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
 
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     for m_idx, module in enumerate(course.get_modules()):
-        print(module.name)
+        print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
         for item in module.get_module_items():
             if item.type == "File":
                 yield (course.get_file(item.content_id), '%d ' % m_idx + re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
@@ -222,7 +222,7 @@ def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasa
 
 def process_course(course: canvasapi.canvas.Course):
     name = parse_course_folder_name(course)
-    print(f"{Fore.CYAN}Course {course.course_code} (ID: {course.id}){Style.RESET_ALL}")
+    print(f"Course {Fore.CYAN}{course.course_code} (ID: {course.id}){Style.RESET_ALL}")
     
     reasons_of_not_download = {}
 
