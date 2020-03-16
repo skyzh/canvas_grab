@@ -190,11 +190,11 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
         yield (file, folder)
 
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    for module in course.get_modules():
+    for m_idx, module in enumerate(course.get_modules()):
         print(module.name)
         for item in module.get_module_items():
             if item.type == "File":
-                yield (course.get_file(item.content_id), re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                yield (course.get_file(item.content_id), '%d ' % m_idx + re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
 
 def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
     another_mode = ""
