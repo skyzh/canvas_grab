@@ -92,7 +92,7 @@ def main():
                     print(
                         f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
     except KeyboardInterrupt:
-        pass
+        print("{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
     do_checkpoint()
 
@@ -262,11 +262,11 @@ def process_course(course: canvasapi.canvas.Course):
 
         if can_download and json_key in checkpoint:
             if pathlib.Path(path).exists():
-                    if checkpoint[json_key]["updated_at"] == file.updated_at:
-                        can_download = False
-                        reason = "already downloaded"
-                    else:
-                        update_flag = True
+                if checkpoint[json_key]["updated_at"] == file.updated_at:
+                    can_download = False
+                    reason = "already downloaded"
+                else:
+                    update_flag = True
             else:
                 del checkpoint[json_key]
                 do_checkpoint()
