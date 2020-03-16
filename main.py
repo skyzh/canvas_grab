@@ -16,7 +16,7 @@ import requests
 from download_file_ex import download_file
 import toml
 from sys import exit
-from utils import is_windows
+from utils import is_windows, file_regex
 from version import check_latest_version
 import shlex
 import multiprocessing
@@ -78,10 +78,10 @@ def main():
                     raise
                 except canvasapi.exceptions.Unauthorized as e:
                     print(
-                        f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+                        f"{Fore.RED}An error occoured when processing this course (unauthorized): {e}{Style.RESET_ALL}")
                 except canvasapi.exceptions.ResourceDoesNotExist as e:
                     print(
-                        f"{Fore.RED}An error occoured when processing this course: {e}{Style.RESET_ALL}")
+                        f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
     except KeyboardInterrupt:
         pass
 
@@ -136,7 +136,7 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{SJTU_ID}": r.get("sjtu_id", ""),
         r"{SEMESTER_ID}": r.get("semester_id", ""),
         r"{CLASSROOM_ID}": r.get("classroom_id", ""),
-        r"{NAME}": re.sub(r'/\\', REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")")),
+        r"{NAME}": re.sub(file_regex, REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")")),
         r"{COURSE_CODE}": course.course_code
     }
 
@@ -182,16 +182,51 @@ def resolve_video(page: canvasapi.page.PageRevision):
         yield (True, video_link[0])
     pass
 
-def process_course(course: canvasapi.canvas.Course):
-    name = parse_course_folder_name(course)
-    print(f"{Fore.CYAN}Course {course.course_code} (ID: {course.id}){Style.RESET_ALL}")
+def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
-    reasons_of_not_download = {}
-
     for file in course.get_files():
         folder = folders[file.folder_id] + "/"
         folder = folder.lstrip("course files/")
+        yield (file, folder)
 
+def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
+    for module in course.get_modules():
+        print(module.name)
+        for item in module.get_module_items():
+            if item.type == "File":
+                yield (course.get_file(item.content_id), re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+
+def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
+    another_mode = ""
+    try:
+        if organize_by == "file":
+            another_mode = "module"
+            for (file, path) in organize_by_file(course):
+                yield (file, path)
+        elif organize_by == "module":
+            another_mode = "file"
+            for (file, path) in organize_by_module(course):
+                yield (file, path)
+        else:
+            print(f"    {Fore.RED}unsupported organize mode: {ORGANIZE_BY}{Style.RESET_ALL}")
+        return
+    except canvasapi.exceptions.ResourceDoesNotExist:
+        pass
+    except canvasapi.exceptions.Unauthorized:
+        pass
+    except Exception:
+        raise
+    print(f"    {Fore.YELLOW}{organize_by} not available, falling back to {another_mode}{Style.RESET_ALL}")
+    for (file, path) in get_file_list(course, another_mode):
+        yield (file, path)
+
+def process_course(course: canvasapi.canvas.Course):
+    name = parse_course_folder_name(course)
+    print(f"{Fore.CYAN}Course {course.course_code} (ID: {course.id}){Style.RESET_ALL}")
+    
+    reasons_of_not_download = {}
+
+    for (file, folder) in get_file_list(course, ORGANIZE_BY):
         directory = os.path.join(BASE_DIR, name, folder)
         path = os.path.join(directory, file.display_name)
 

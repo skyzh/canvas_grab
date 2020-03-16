@@ -35,6 +35,7 @@ for documentation.
 - **File size and type filter** You can specify maximum allowed file size. You may also filter files by their extensions.
 - **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
 - **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
+- **Organize by Module or by File** You can set file organization mode in config.
 - **Video URL resolution** Currently we support resolve video URL from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality. Note that this is an EXPERIMENTAL functionality. Use at your own risk.
 
 ## Build and Run from Source
