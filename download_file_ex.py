@@ -18,6 +18,6 @@ def download_file(url, desc, filename, verbose=False):
     except KeyboardInterrupt:
         raise
     except Exception as e:
-        print(f"    {Fore.RED}Retrying {Path(filename).name} ({e})...{Style.RESET_ALL}")
+        print(
+            f"    {Fore.RED}Retrying {Path(filename).name} ({e})...{Style.RESET_ALL}")
         raise
-

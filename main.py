@@ -29,24 +29,31 @@ checkpoint = {}
 new_files_list = []
 ffmpeg_commands = []
 
+
 def main():
     colorama.init()
 
-    print("Thank you for using canvas_grab!") 
-    print(f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
-    print(f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
-    print(f"Please MAKE SURE that you've reviewed the LICENSE. Refer to {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues/29{Style.RESET_ALL} for why we enforced you to take this action.")
+    print("Thank you for using canvas_grab!")
+    print(
+        f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+    print(
+        f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
+    print(
+        f"Please MAKE SURE that you've reviewed the LICENSE. Refer to {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues/29{Style.RESET_ALL} for why we enforced you to take this action.")
     if ENABLE_VIDEO:
         print(f"Note: You've enabled video download. You should install the required tools yourself.")
-        print(f"      This is an experimental functionality and takes up large amount of bandwidth. {Fore.RED}Use at your own risk.{Style.RESET_ALL}")
-    
+        print(
+            f"      This is an experimental functionality and takes up large amount of bandwidth. {Fore.RED}Use at your own risk.{Style.RESET_ALL}")
+
     canvas = Canvas(API_URL, API_KEY)
 
     try:
         print(f'{Fore.BLUE}Logging in...{Style.RESET_ALL}')
-        print(f"{Fore.GREEN}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
+        print(
+            f"{Fore.GREEN}Logged in to {API_URL} as {canvas.get_current_user()}{Style.RESET_ALL}")
     except canvasapi.exceptions.InvalidAccessToken:
-        print(f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
+        print(
+            f"{Fore.RED}Invalid access token, please check your API_KEY in config file")
         if is_windows():
             # for windows double-click user
             input()
@@ -67,7 +74,8 @@ def main():
         for course in courses:
             if not hasattr(course, "name"):
                 if VERBOSE_MODE:
-                    print(f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
+                    print(
+                        f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
             elif course.id in IGNOGED_CANVAS_ID:
                 print(
                     f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
@@ -90,13 +98,15 @@ def main():
     if len(new_files_list) == 0:
         print("All files up to date")
     else:
-        print(f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
+        print(
+            f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
         for f in new_files_list:
             print(f)
 
     if ENABLE_VIDEO:
         print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
-        print(f"Please run the automatically-generated script {Fore.BLUE}download_video.(sh/ps1){Style.RESET_ALL} to download all videos.")
+        print(
+            f"Please run the automatically-generated script {Fore.BLUE}download_video.(sh/ps1){Style.RESET_ALL} to download all videos.")
         with open("download_video.sh", 'w') as file:
             file.write("\n".join(ffmpeg_commands))
         with open("download_video.ps1", 'w') as file:
@@ -110,9 +120,11 @@ def main():
         # for windows double-click user
         input()
 
+
 def do_checkpoint():
     with open(CHECKPOINT_FILE, 'w') as file:
         json.dump(checkpoint, file)
+
 
 def do_download(file) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
@@ -121,10 +133,11 @@ def do_download(file) -> (bool, str):
         return (False, f"size limit exceed")
     return (True, "")
 
+
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in CUSTOM_NAME_OVERRIDE:
         return re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, CUSTOM_NAME_OVERRIDE[course.id])
-    
+
     r = re.search(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
     if r is not None:
@@ -146,22 +159,25 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     folderName = re.sub(r'[:*?"<>|]', REPLACE_ILLEGAL_CHAR_WITH, folderName)
     return folderName
 
+
 def resolve_video(page: canvasapi.page.PageRevision):
     title = page.title
     if VERBOSE_MODE:
         print(f"    {Fore.GREEN}Resolving page {title}{Style.RESET_ALL}")
     if not hasattr(page, "body") or page.body is None:
         if VERBOSE_MODE:
-            print(f"    {Fore.RED}This page has no attribute 'body'{Style.RESET_ALL}")
+            print(
+                f"    {Fore.RED}This page has no attribute 'body'{Style.RESET_ALL}")
         yield (False, "failed to resolve page")
         return
     links = re.findall(r"\"(https:\/\/vshare.sjtu.edu.cn\/.*?)\"", page.body)
     if len(links) != 0:
         if VERBOSE_MODE:
-            print(f"    {Style.DIM}unsupported link: vshare.sjtu.edu.cn{Style.RESET_ALL}")
+            print(
+                f"    {Style.DIM}unsupported link: vshare.sjtu.edu.cn{Style.RESET_ALL}")
         for i in range(len(links)):
             yield (False, "unsupported video link")
-    
+
     links = re.findall(r"\"(https:\/\/v.sjtu.edu.cn\/.*?)\"", page.body)
     for link in links:
         try:
@@ -170,17 +186,20 @@ def resolve_video(page: canvasapi.page.PageRevision):
             raise
         except Exception as e:
             if VERBOSE_MODE:
-                print(f"    {Fore.RED}Failed to resolve video: {e}{Style.RESET_ALL}")
+                print(
+                    f"    {Fore.RED}Failed to resolve video: {e}{Style.RESET_ALL}")
             yield (False, "failed to resolve video")
             continue
         video_link = re.findall(r"src=\'(.*?.m3u8)\'", video_page)
         if len(video_link) != 1:
             if VERBOSE_MODE:
-                print(f"    {Fore.RED}Failed to resolve video: video link {video_link} != 1{Style.RESET_ALL}")
+                print(
+                    f"    {Fore.RED}Failed to resolve video: video link {video_link} != 1{Style.RESET_ALL}")
             yield (False, "failed to resolve video")
             continue
         yield (True, video_link[0])
     pass
+
 
 def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
@@ -189,12 +208,14 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
         folder = folder.lstrip("course files/")
         yield (file, folder)
 
+
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     for m_idx, module in enumerate(course.get_modules()):
         print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
         for item in module.get_module_items():
             if item.type == "File":
                 yield (course.get_file(item.content_id), '%d ' % m_idx + re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+
 
 def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
     another_mode = ""
@@ -208,7 +229,8 @@ def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasa
             for (file, path) in organize_by_module(course):
                 yield (file, path)
         else:
-            print(f"    {Fore.RED}unsupported organize mode: {ORGANIZE_BY}{Style.RESET_ALL}")
+            print(
+                f"    {Fore.RED}unsupported organize mode: {ORGANIZE_BY}{Style.RESET_ALL}")
         return
     except canvasapi.exceptions.ResourceDoesNotExist:
         pass
@@ -220,10 +242,12 @@ def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasa
     for (file, path) in get_file_list(course, another_mode):
         yield (file, path)
 
+
 def process_course(course: canvasapi.canvas.Course):
     name = parse_course_folder_name(course)
-    print(f"Course {Fore.CYAN}{course.course_code} (ID: {course.id}){Style.RESET_ALL}")
-    
+    print(
+        f"Course {Fore.CYAN}{course.course_code} (ID: {course.id}){Style.RESET_ALL}")
+
     reasons_of_not_download = {}
 
     for (file, folder) in get_file_list(course, ORGANIZE_BY):
@@ -286,16 +310,19 @@ def process_course(course: canvasapi.canvas.Course):
                 if result == True:
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
-                    path = os.path.join(BASE_DIR, name, f"{page.title}-{filename}")
+                    path = os.path.join(
+                        BASE_DIR, name, f"{page.title}-{filename}")
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
-                        ffmpeg_commands.append(f"{FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
+                        ffmpeg_commands.append(
+                            f"{FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
                 else:
                     prev_cnt = reasons_of_not_download.get(msg, 0)
                     reasons_of_not_download[msg] = prev_cnt + 1
 
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
+
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
