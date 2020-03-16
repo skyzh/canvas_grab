@@ -123,8 +123,9 @@ def main():
 
 
 def do_checkpoint():
-    with open(CHECKPOINT_FILE, 'w') as file:
+    with open(CHECKPOINT_FILE+'.canvas_tmp', 'w') as file:
         json.dump(checkpoint, file)
+    os.replace(CHECKPOINT_FILE+'.canvas_tmp', CHECKPOINT_FILE)
 
 
 def check_download_rule(file, path) -> (bool, str):
