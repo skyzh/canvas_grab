@@ -22,3 +22,5 @@ def check_latest_version():
         print(f"Please visit {Fore.BLUE}https://github.com/skyzh/canvas_grab/releases{Style.RESET_ALL} "
               "to download the latest version.")
         print(version_obj.get("body", ""))
+    else:
+        print("Just checked update. You're using latest version of canvas_grab. :)")
