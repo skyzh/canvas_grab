@@ -65,10 +65,10 @@ FFMPEG_PATH = "ffmpeg"
 # If one organization mode fails, it will fallback to another.
 ORGANIZE_BY = "file"
 # Never overwrite any file existed. There will be a message.
-NEVER_OVERWRITE_FILE = true
+NEVER_OVERWRITE_FILE = false
 # Download never downloaded only, moved or renamed
 # files will not be downloaded again.
-NEVER_DOWNLOAD_AGAIN = false
+NEVER_DOWNLOAD_AGAIN = true
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP

@@ -65,7 +65,7 @@ FFMPEG_PATH = "ffmpeg"
 # 如果默认方式不行的话，程序会自动尝试另一种。
 ORGANIZE_BY = "file"
 # 只下载本地不存在的文件，不覆盖任何已有文件，但会给出通知
-NEVER_OVERWRITE_FILE = true
+NEVER_OVERWRITE_FILE = false
 # 只下载未下载过的文件，被转移或更名的文件不会被重新下载
 NEVER_DOWNLOAD_AGAIN = true
 
