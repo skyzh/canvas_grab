@@ -61,6 +61,9 @@ ENABLE_VIDEO = false
 # "/usr/local/bin/ffmpeg" (*nix) or "C:\bin\ffmpeg" (Windows)
 # Don't include special characters and space in this path
 FFMPEG_PATH = "ffmpeg"
+# Default organize mode, eiter "file" or "module".
+# If one organization mode fails, it will fallback to another.
+ORGANIZE_BY = "file"
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP

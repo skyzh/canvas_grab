@@ -61,6 +61,9 @@ ENABLE_VIDEO = false
 # "/usr/local/bin/ffmpeg" (*nix) 或 "C:\bin\ffmpeg.exe" (Windows)
 # 路径中请勿出现空格或特殊字符
 FFMPEG_PATH = "ffmpeg"
+# 默认文件夹命名方式。可以是 "file" 或者 "module"。
+# 如果默认方式不行的话，程序会自动尝试另一种。
+ORGANIZE_BY = "file"
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
