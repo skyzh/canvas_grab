@@ -267,9 +267,9 @@ def process_course(course: canvasapi.canvas.Course):
                     reason = "already downloaded"
                 else:
                     update_flag = True
-            else:
-                del checkpoint[json_key]
-                do_checkpoint()
+            if can_download and NEVER_DOWNLOAD_AGAIN:
+                can_download = False
+                reason = "already downloaded"
 
         if can_download and file.url == "":
             can_download = False
