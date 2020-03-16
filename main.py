@@ -104,6 +104,10 @@ def main():
         for f in new_files_list:
             print(f)
 
+    if updated_files_list:
+        print(
+            f"{Fore.GREEN}{len(updated_files_list)} Updated but not downloaded files:{Style.RESET_ALL}")
+
     if ENABLE_VIDEO:
         print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
         print(
