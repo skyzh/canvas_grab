@@ -27,6 +27,7 @@ if is_windows():
 
 checkpoint = {}
 new_files_list = []
+updated_files_list = []
 ffmpeg_commands = []
 
 
@@ -126,7 +127,7 @@ def do_checkpoint():
         json.dump(checkpoint, file)
 
 
-def do_download(file) -> (bool, str):
+def check_download_rule(file, path) -> (bool, str):
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
         return (False, "filtered by extension")
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
@@ -256,26 +257,30 @@ def process_course(course: canvasapi.canvas.Course):
 
         json_key = f"{name}/{folder}{file}"
 
-        d, reason = do_download(file)
+        can_download, reason = check_download_rule(file, path)
         update_flag = False
 
-        if pathlib.Path(path).exists():
-            if json_key in checkpoint:
-                if checkpoint[json_key]["updated_at"] == file.updated_at:
-                    d = False
-                    reason = "already downloaded"
-                else:
-                    update_flag = True
-        else:
-            if json_key in checkpoint:
+        if can_download and json_key in checkpoint:
+            if pathlib.Path(path).exists():
+                    if checkpoint[json_key]["updated_at"] == file.updated_at:
+                        can_download = False
+                        reason = "already downloaded"
+                    else:
+                        update_flag = True
+            else:
                 del checkpoint[json_key]
                 do_checkpoint()
 
-        if file.url == "":
-            d = False
+        if can_download and file.url == "":
+            can_download = False
             reason = "file not available"
 
-        if d:
+        if can_download and NEVER_OVERWRITE_FILE and pathlib.Path(path).exists():
+            updated_files_list.append(path)
+            can_download = False
+            reason = "file exists here"
+
+        if can_download:
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
             try:
                 pathlib.Path(path).unlink()

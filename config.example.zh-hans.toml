@@ -58,12 +58,16 @@ ENABLE_VIDEO = false
 # 比如：ffmpeg 在 "canvas_grab_folder/bin/ffmpeg" 里
 # "./bin/ffmpeg" (*nix) 或者 "bin/ffmpeg.exe" (Windows)
 # 比如：ffmpeg 在一个绝对路径里
-# "/usr/local/bin/ffmpeg" (*nix) 或 "C:\bin\ffmpeg.exe" (Windows)
+# "/usr/local/bin/ffmpeg" (*nix) 或 "C:/bin/ffmpeg.exe" (Windows)
 # 路径中请勿出现空格或特殊字符
 FFMPEG_PATH = "ffmpeg"
 # 默认文件夹命名方式。可以是 "file" 或者 "module"。
 # 如果默认方式不行的话，程序会自动尝试另一种。
 ORGANIZE_BY = "file"
+# 只下载本地不存在的文件，不覆盖任何已有文件，但会给出通知
+NEVER_OVERWRITE_FILE = true
+# 只下载未下载过的文件，被转移或更名的文件不会被重新下载
+NEVER_DOWNLOAD_AGAIN = true
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
