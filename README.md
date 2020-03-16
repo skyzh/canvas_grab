@@ -65,6 +65,7 @@ python main.py
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 * **Error when checking update** It's normal if you don't have a stable connection to GitHub. You may regularly check updates by visiting this repo.
 * **Unsupported Link** canvas_grab only supports resolving URL from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
+* **Reserved escape sequence used** please use "/" as the path seperator instead of "\\".
 * **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
 * **Invalid prebuilt binary on macOS** You should allow this application to run in "Preferences - Privacy"
 * **Skip a course causing error** edit `config.toml`, add ID into `IGNORED_COURSE`.
