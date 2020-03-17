@@ -56,6 +56,7 @@ python main.py
 * **提示 No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
 * **提示 Error when checking update** 这个现象在较差的网络环境里发生是正常的。经常来 GitHub 看看有没有更新就行了。
 * **提示 Unsupported Link** canvas_grab 只支持 `v.sjtu.edu.cn` 视频的下载。现在暂时不支持 `vshare.sjtu.edu.cn`。
+* **提示 Reserved escape sequence used** 请使用"/"作为文件路径分隔符，不要使用"\\"。
 * **下载 FFMPEG** 在 [这里](https://www.ffmpeg.org/download.html) 可以下载已经编译好的 ffmpeg。
 * **macOS 提示文件损坏** macOS 的安全机制导致。请在设置-隐私中运行运行，或从源代码直接运行。
 * **跳过导致程序崩溃的课程** 在 `config.toml` 中，把 ID 加入 `IGNORED_COURSE`。
