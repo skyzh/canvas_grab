@@ -96,15 +96,15 @@ def main():
 
     do_checkpoint()
 
-    if len(new_files_list) == 0:
-        print("All files up to date")
-    else:
+    if new_files_list:
         print(
             f"{Fore.GREEN}{len(new_files_list)} new or updated files:{Style.RESET_ALL}")
         for f in new_files_list:
             print(f)
+    else:
+        print("All files up to date")
 
-    if len(updated_files_list) != 0:
+    if updated_files_list:
         print(
             f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version in Canvas:{Style.RESET_ALL}")
         for f in updated_files_list:
@@ -201,7 +201,7 @@ def resolve_video(page: canvasapi.page.PageRevision):
         yield (False, "failed to resolve page")
         return
     links = re.findall(r"\"(https:\/\/vshare.sjtu.edu.cn\/.*?)\"", page.body)
-    if len(links) != 0:
+    if links:
         if VERBOSE_MODE:
             print(
                 f"    {Style.DIM}unsupported link: vshare.sjtu.edu.cn{Style.RESET_ALL}")
