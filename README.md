@@ -77,7 +77,7 @@ python main.py
 
 [@skyzh](https://github.com/skyzh), 
 [@danyang685](https://github.com/danyang685),
-[@BugenZhao](https://github.com/BugenZhao)
+[@BugenZhao](https://github.com/BugenZhao),
 [@ElectronicElephant](https://github.com/ElectronicElephant)
 
 ## License
