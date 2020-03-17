@@ -74,7 +74,7 @@ ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
 FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
 ORGANIZE_BY = config["SYNC"].get("ORGANIZE_BY", "file")
 NEVER_OVERWRITE_FILE = config["SYNC"].get("NEVER_OVERWRITE_FILE", False)
-NEVER_DOWNLOAD_AGAIN = config["SYNC"].get("NEVER_DOWNLOAD_AGAIN", True)
+NEVER_DOWNLOAD_AGAIN = config["SYNC"].get("NEVER_DOWNLOAD_AGAIN", False)
 
 for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
     ALLOW_FILE_EXTENSION.extend(config["EXTENSION"].get(ext_groups, []))

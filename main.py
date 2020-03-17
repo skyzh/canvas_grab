@@ -100,13 +100,15 @@ def main():
         print("All files up to date")
     else:
         print(
-            f"{Fore.GREEN}{len(new_files_list)} New or Updated files:{Style.RESET_ALL}")
+            f"{Fore.GREEN}{len(new_files_list)} new or updated files:{Style.RESET_ALL}")
         for f in new_files_list:
             print(f)
 
-    if updated_files_list:
+    if len(updated_files_list) != 0:
         print(
-            f"{Fore.GREEN}{len(updated_files_list)} Updated but not downloaded files:{Style.RESET_ALL}")
+            f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version in Canvas:{Style.RESET_ALL}")
+        for f in updated_files_list:
+            print(f)
 
     if ENABLE_VIDEO:
         print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
@@ -132,12 +134,34 @@ def do_checkpoint():
     os.replace(CHECKPOINT_FILE+'.canvas_tmp', CHECKPOINT_FILE)
 
 
-def check_download_rule(file, path) -> (bool, str):
+def check_download_rule(file, path, json_key) -> (bool, str, bool):
+    if file.url == "":
+        return (False, "file not available", False)
+    
+    update_flag = False
+    updated_at = file.updated_at
+
+    if json_key in checkpoint:
+        if checkpoint[json_key]["updated_at"] != updated_at:
+            update_flag = True
+    
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
-        return (False, "filtered by extension")
+        return (False, "filtered by extension", update_flag)
+
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
-        return (False, f"size limit exceed")
-    return (True, "")
+        return (False, "size limit exceed", update_flag)
+
+    if json_key in checkpoint and NEVER_DOWNLOAD_AGAIN:
+        return (False, "file has been downloaded before (NEVER_DOWNLOAD_AGAIN)", update_flag)
+
+    if pathlib.Path(path).exists() and NEVER_OVERWRITE_FILE:
+        return (False, "file exists and will not be overwritten (NEVER_OVERWRITE_FILE)", update_flag)
+
+    if json_key in checkpoint:
+        if checkpoint[json_key]["updated_at"] == updated_at:
+            return (False, "already downloaded and is latest version", update_flag)
+
+    return (True, "", update_flag)
 
 
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
@@ -262,28 +286,8 @@ def process_course(course: canvasapi.canvas.Course):
 
         json_key = f"{name}/{folder}{file}"
 
-        can_download, reason = check_download_rule(file, path)
-        update_flag = False
-
-        if can_download and json_key in checkpoint:
-            if pathlib.Path(path).exists():
-                if checkpoint[json_key]["updated_at"] == file.updated_at:
-                    can_download = False
-                    reason = "already downloaded"
-                else:
-                    update_flag = True
-            if can_download and NEVER_DOWNLOAD_AGAIN:
-                can_download = False
-                reason = "already downloaded"
-
-        if can_download and file.url == "":
-            can_download = False
-            reason = "file not available"
-
-        if can_download and NEVER_OVERWRITE_FILE and pathlib.Path(path).exists():
-            updated_files_list.append(path)
-            can_download = False
-            reason = "file exists here"
+        can_download, reason, update_flag = check_download_rule(
+            file, path, json_key)
 
         if can_download:
             pathlib.Path(directory).mkdir(parents=True, exist_ok=True)
@@ -312,6 +316,9 @@ def process_course(course: canvasapi.canvas.Course):
             else:
                 prev_cnt = reasons_of_not_download.get(reason, 0)
                 reasons_of_not_download[reason] = prev_cnt + 1
+            if update_flag:
+                updated_files_list.append(path)
+
         do_checkpoint()
 
     if ENABLE_VIDEO:
