@@ -140,6 +140,7 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     
     update_flag = False
     updated_at = file.updated_at
+    path_exist = pathlib.Path(path).exists()
 
     if json_key in checkpoint:
         if checkpoint[json_key]["updated_at"] != updated_at:
@@ -154,10 +155,10 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if json_key in checkpoint and NEVER_DOWNLOAD_AGAIN:
         return (False, "file has been downloaded before (NEVER_DOWNLOAD_AGAIN)", update_flag)
 
-    if pathlib.Path(path).exists() and NEVER_OVERWRITE_FILE:
+    if path_exist and NEVER_OVERWRITE_FILE:
         return (False, "file exists and will not be overwritten (NEVER_OVERWRITE_FILE)", update_flag)
 
-    if json_key in checkpoint:
+    if path_exist and json_key in checkpoint:
         if checkpoint[json_key]["updated_at"] == updated_at:
             return (False, "already downloaded and is latest version", update_flag)
 
