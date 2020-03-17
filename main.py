@@ -66,7 +66,7 @@ def main():
             global checkpoint
             checkpoint = json.load(file)
     except:
-        print(f"{Fore.RED}No checkpoint found")
+        print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
     courses = canvas.get_courses()
 
