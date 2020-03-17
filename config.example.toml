@@ -64,11 +64,11 @@ FFMPEG_PATH = "ffmpeg"
 # Default organize mode, eiter "file" or "module".
 # If one organization mode fails, it will fallback to another.
 ORGANIZE_BY = "file"
-# Never overwrite any file existed. There will be a message.
+# Never overwrite any existing file. There will be a message.
 NEVER_OVERWRITE_FILE = false
-# Download never downloaded only, moved or renamed
-# files will not be downloaded again.
-NEVER_DOWNLOAD_AGAIN = true
+# If a file has been downloaded in canvas_grab before, 
+# it won't be downloaded even after it is moved or renamed.
+NEVER_DOWNLOAD_AGAIN = false
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP

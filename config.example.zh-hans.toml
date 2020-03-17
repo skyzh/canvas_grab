@@ -67,7 +67,7 @@ ORGANIZE_BY = "file"
 # 只下载本地不存在的文件，不覆盖任何已有文件，但会给出通知
 NEVER_OVERWRITE_FILE = false
 # 只下载未下载过的文件，被转移或更名的文件不会被重新下载
-NEVER_DOWNLOAD_AGAIN = true
+NEVER_DOWNLOAD_AGAIN = false
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
