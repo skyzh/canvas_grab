@@ -77,7 +77,7 @@ def main():
                 if VERBOSE_MODE:
                     print(
                         f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
-            elif course.id in IGNOGED_CANVAS_ID:
+            elif course.id in IGNORED_CANVAS_ID:
                 print(
                     f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
             else:
