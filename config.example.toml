@@ -23,7 +23,7 @@ NAME_TEMPLATE = "{NAME}"
 # Some courses include illegal chars in its name, replace it
 REPLACE_ILLEGAL_CHAR_WITH = "-"
 # Ignore courses
-IGNOGED_CANVAS_ID = [10001, 10002, 10003]
+IGNORED_CANVAS_ID = [10001, 10002, 10003]
 # Customize the folder name for course
 [[COURSE_FOLDER.CUSTOM_NAME]]
 CANVAS_ID = 10001
