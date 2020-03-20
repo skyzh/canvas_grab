@@ -140,3 +140,6 @@ config.toml
 .vscode/
 download_video.sh
 download_video.ps1
+
+# PyCharm
+.idea/
