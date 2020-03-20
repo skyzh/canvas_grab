@@ -29,7 +29,6 @@ def create_default_config():
 
 
 def load_config():
-    config = {}
     if not Path(CONFIG_FILE).exists():
         print(f"{Fore.RED}Config not found, using default config. You may revisit 'config.toml' if you want to customize.{Style.RESET_ALL}")
         create_default_config()
@@ -39,6 +38,9 @@ def load_config():
     if config["API"].get("API_KEY") == "PASTE YOUR API_KEY HERE":
         print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here. It can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
         api_key = input().strip()
+        while len(api_key) != 64:
+            print(f"{Fore.RED}API KEY length NOT match. Please re-enter.\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
+            api_key = input().strip()
         if len(api_key) == 64:  # the only reasonable length for a valid API_KEY
             # No user will paste a dummy 64 length string here
             config["API"]["API_KEY"] = api_key
