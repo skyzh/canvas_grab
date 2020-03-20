@@ -29,7 +29,6 @@ def create_default_config():
 
 
 def load_config():
-    config = {}
     if not Path(CONFIG_FILE).exists():
         print(f"{Fore.RED}Config not found, using default config. You may revisit 'config.toml' if you want to customize.{Style.RESET_ALL}")
         create_default_config()
