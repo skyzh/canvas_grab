@@ -288,7 +288,7 @@ def process_course(course: canvasapi.canvas.Course):
 
     if course.id in CUSTOM_ORGANIZE:
         organize_mode = CUSTOM_ORGANIZE[course.id]
-    
+
     for (file, folder) in get_file_list(course, organize_mode):
         directory = os.path.join(BASE_DIR, name, folder)
         path = os.path.join(directory, file.display_name)

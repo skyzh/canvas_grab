@@ -75,7 +75,7 @@ REPLACE_ILLEGAL_CHAR_WITH = config["COURSE_FOLDER"]["REPLACE_ILLEGAL_CHAR_WITH"]
 CUSTOM_NAME_OVERRIDE = {int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
                         for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])}
 CUSTOM_ORGANIZE = {int(i["CANVAS_ID"]): str(i["ORGANIZE_BY"])
-    for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])}
+                   for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])}
 IGNORED_CANVAS_ID = config["COURSE_FOLDER"].get("IGNORED_CANVAS_ID", [])
 CHECKPOINT_FILE = config["CHECKPOINT"]["CHECKPOINT_FILE"]
 BASE_DIR = config["SYNC"]["BASE_DIR"]
