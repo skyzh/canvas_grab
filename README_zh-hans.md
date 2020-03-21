@@ -60,6 +60,7 @@ python main.py
 * **下载 FFMPEG** 在 [这里](https://www.ffmpeg.org/download.html) 可以下载已经编译好的 ffmpeg。
 * **macOS 提示文件损坏** macOS 的安全机制导致。请在设置-隐私中允许运行，或从源代码直接运行。
 * **跳过导致程序崩溃的课程** 在 `config.toml` 中，把 ID 加入 `IGNORED_COURSE`。
+* **提示 Duplicated files detected** C同一目录下出现了两个同名文件。您需要自己在 Canvas 上下载这个文件。
 
 ## 截图
 
