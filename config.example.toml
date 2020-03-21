@@ -28,6 +28,11 @@ IGNORED_CANVAS_ID = [10001, 10002, 10003]
 MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
 # Module folder IDX start number
 MODULE_FOLDER_IDX_BEGIN_WITH = 0
+# Consolidate space in module name
+# For example: "Module 1      Introduction"
+# will be consolidated to "Module 1 Introduction"
+# if this option is set to true
+CONSOLIDATE_MODULE_SPACE = false
 
 # Customize the folder name for course
 [[COURSE_FOLDER.CUSTOM_NAME]]

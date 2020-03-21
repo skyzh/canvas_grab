@@ -28,6 +28,10 @@ IGNORED_CANVAS_ID = [10001, 10002, 10003]
 MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
 # 单元文件夹 "IDX" 的初值
 MODULE_FOLDER_IDX_BEGIN_WITH = 0
+# 合并单元名中的空格
+# 比如："Module 1      Introduction"
+# 会被合并成 "Module 1 Introduction"
+CONSOLIDATE_MODULE_SPACE = false
 
 # 为特定课程自定义文件夹名
 [[COURSE_FOLDER.CUSTOM_NAME]]
