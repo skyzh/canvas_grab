@@ -39,10 +39,12 @@ def load_config():
         print(f"{Fore.BLUE}Welcome! First of all, you should paste your API_KEY here. It can be generated on your Canvas settings page (https://oc.sjtu.edu.cn/profile/settings).\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
         api_key = input().strip()
         while len(api_key) != 64:
-            print(f"{Fore.RED}API KEY length NOT match. Please re-enter.\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
+            print(
+                f"{Fore.RED}API KEY length NOT match. Please re-enter.\n{Fore.GREEN}API_KEY: {Fore.MAGENTA}", end="")
             api_key = input().strip()
         if len(api_key) == 64:  # the only reasonable length for a valid API_KEY
             # No user will paste a dummy 64 length string here
+            # Otherwise they'll be warned when being logged in
             config["API"]["API_KEY"] = api_key
             config_file = Path(CONFIG_FILE)
             new_config_content = config_file.read_text(
@@ -50,7 +52,10 @@ def load_config():
             config_file.write_text(new_config_content, encoding='utf8')
 
         print(
-            f"{Fore.BLUE}And I've reviewed the LICENSE. I know that I should NEVER publish copyright materials online.{Style.RESET_ALL} (Press [Enter])")
+            f"{Style.RESET_ALL}Please MAKE SURE that you've reviewed the LICENSE. Refer to {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues/29{Style.RESET_ALL} for more explanation.")
+        print(
+            f"{Fore.BLUE}I've been acknowledged that I should NEVER publish copyright materials online.{Style.RESET_ALL}")
+        print("Press [Enter] to continue")
         input()
 
     return config
@@ -62,8 +67,10 @@ VERBOSE_MODE = config["SYNC"].get("VERBOSE", False)
 API_URL = config["API"]["API_URL"]
 API_KEY = config["API"]["API_KEY"]
 NAME_TEMPLATE = config["COURSE_FOLDER"]["NAME_TEMPLATE"]
-MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get("MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
-MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get("MODULE_FOLDER_IDX_BEGIN_WITH", 0)
+MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get(
+    "MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
+MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get(
+    "MODULE_FOLDER_IDX_BEGIN_WITH", 0)
 REPLACE_ILLEGAL_CHAR_WITH = config["COURSE_FOLDER"]["REPLACE_ILLEGAL_CHAR_WITH"]
 CUSTOM_NAME_OVERRIDE = {int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
                         for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])}
