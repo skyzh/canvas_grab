@@ -284,7 +284,12 @@ def process_course(course: canvasapi.canvas.Course):
 
     reasons_of_not_download = {}
 
-    for (file, folder) in get_file_list(course, ORGANIZE_BY):
+    organize_mode = ORGANIZE_BY
+
+    if course.id in CUSTOM_ORGANIZE:
+        organize_mode = CUSTOM_ORGANIZE[course.id]
+    
+    for (file, folder) in get_file_list(course, organize_mode):
         directory = os.path.join(BASE_DIR, name, folder)
         path = os.path.join(directory, file.display_name)
 
