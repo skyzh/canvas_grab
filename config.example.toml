@@ -24,6 +24,11 @@ NAME_TEMPLATE = "{NAME}"
 REPLACE_ILLEGAL_CHAR_WITH = "-"
 # Ignore courses
 IGNORED_CANVAS_ID = [10001, 10002, 10003]
+# Module folder name template
+MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
+# Module folder IDX start number
+MODULE_FOLDER_IDX_BEGIN_WITH = 0
+
 # Customize the folder name for course
 [[COURSE_FOLDER.CUSTOM_NAME]]
 CANVAS_ID = 10001
@@ -31,6 +36,11 @@ FOLDER_NAME = "Calculus/resource"
 [[COURSE_FOLDER.CUSTOM_NAME]]
 CANVAS_ID = 10002
 FOLDER_NAME = "Linear Algebra"
+
+# Override organization mode
+[[COURSE_FOLDER.ORGANIZE_BY]]
+CANVAS_ID = 10002
+ORGANIZE_BY = "module"
 
 [CHECKPOINT]
 # Checkpoint file path(relative or absolute), e.g. 'files/.checkpoint'

@@ -24,6 +24,11 @@ NAME_TEMPLATE = "{NAME}"
 REPLACE_ILLEGAL_CHAR_WITH = "-"
 # 忽略特定课程ID
 IGNORED_CANVAS_ID = [10001, 10002, 10003]
+# 单元文件夹命名模版
+MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
+# 单元文件夹 "IDX" 的初值
+MODULE_FOLDER_IDX_BEGIN_WITH = 0
+
 # 为特定课程自定义文件夹名
 [[COURSE_FOLDER.CUSTOM_NAME]]
 CANVAS_ID = 10001
@@ -31,6 +36,11 @@ FOLDER_NAME = "高数/Canvas资料"
 [[COURSE_FOLDER.CUSTOM_NAME]]
 CANVAS_ID = 10002
 FOLDER_NAME = "线性代数"
+
+# 覆盖全局设置，为一门课程指定下载模式
+[[COURSE_FOLDER.ORGANIZE_BY]]
+CANVAS_ID = 10002
+ORGANIZE_BY = "module"
 
 [CHECKPOINT]
 # 检查点文件路径(绝对路径或相对路径)，例如"files/.checkpoint"
@@ -61,7 +71,7 @@ ENABLE_VIDEO = false
 # "/usr/local/bin/ffmpeg" (*nix) 或 "C:/bin/ffmpeg.exe" (Windows)
 # 路径中请勿出现空格或特殊字符
 FFMPEG_PATH = "ffmpeg"
-# 默认文件夹命名方式。可以是 "file" 或者 "module"。
+# 默认文件夹下载模式。可以是 "file" (按照“文件”结构下载) 或者 "module" (按照“单元”下载)。
 # 如果默认方式不行的话，程序会自动尝试另一种。
 ORGANIZE_BY = "file"
 # 只下载本地不存在的文件，不覆盖任何已有文件，但会给出通知
