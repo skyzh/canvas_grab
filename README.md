@@ -69,6 +69,7 @@ python main.py
 * **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
 * **Invalid prebuilt binary on macOS** You should allow this application to run in "Preferences - Privacy"
 * **Skip a course causing error** edit `config.toml`, add ID into `IGNORED_COURSE`.
+* **Duplicated files detected** There're two files of same name in same folder. You should download it from Canvas yourself.
 
 ## Screenshot
 

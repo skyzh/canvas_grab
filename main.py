@@ -148,7 +148,7 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
         return (False, "filtered by extension", update_flag)
 
     if file.size >= MAX_SINGLE_FILE_SIZE * 1024 * 1024:
-        return (False, "size limit exceed", update_flag)
+        return (False, f"size limit exceed (>= {MAX_SINGLE_FILE_SIZE} MB)", update_flag)
 
     if json_key in checkpoint and NEVER_DOWNLOAD_AGAIN:
         return (False, "file has been downloaded before (NEVER_DOWNLOAD_AGAIN)", update_flag)
@@ -159,6 +159,12 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if path_exist and json_key in checkpoint:
         if checkpoint[json_key]["updated_at"] == updated_at:
             return (False, "already downloaded and is latest version", update_flag)
+
+    if json_key in checkpoint:
+        if "id" in checkpoint[json_key]:
+            if checkpoint[json_key]["id"] != file.id:
+                print(f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
+                return (False, "files with duplicated path", update_flag)
 
     return (True, "", update_flag)
 
@@ -318,7 +324,7 @@ def process_course(course: canvasapi.canvas.Course):
                 if is_windows():
                     setctime(path, c_time)
                 os.utime(path, (a_time, m_time))
-            checkpoint[json_key] = {"updated_at": file.updated_at}
+            checkpoint[json_key] = {"updated_at": file.updated_at, "id": file.id}
             new_files_list.append(path)
         else:
             if VERBOSE_MODE:
