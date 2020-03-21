@@ -34,5 +34,4 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None
         ):
             fp.write(chunk)
     os.replace(local_filename+'.canvas_tmp', local_filename)
-    sys.stderr.flush()
     return

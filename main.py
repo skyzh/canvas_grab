@@ -246,6 +246,8 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
                 module_name = MODULE_FOLDER_TEMPLATE
                 module_name = module_name.replace("{NAME}", re.sub(
                     file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                if CONSOLIDATE_MODULE_SPACE:
+                    module_name = " ".join(module_name.split())
                 module_name = module_name.replace(
                     "{IDX}", str(m_idx + MODULE_FOLDER_IDX_BEGIN_WITH))
                 yield (course.get_file(item.content_id), module_name)
@@ -284,7 +286,12 @@ def process_course(course: canvasapi.canvas.Course):
 
     reasons_of_not_download = {}
 
-    for (file, folder) in get_file_list(course, ORGANIZE_BY):
+    organize_mode = ORGANIZE_BY
+
+    if course.id in CUSTOM_ORGANIZE:
+        organize_mode = CUSTOM_ORGANIZE[course.id]
+
+    for (file, folder) in get_file_list(course, organize_mode):
         directory = os.path.join(BASE_DIR, name, folder)
         path = os.path.join(directory, file.display_name)
 
