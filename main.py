@@ -39,8 +39,6 @@ def main():
         f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
     print(
         f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
-    print(
-        f"Please MAKE SURE that you've reviewed the LICENSE. Refer to {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues/29{Style.RESET_ALL} for why we enforced you to take this action.")
     if ENABLE_VIDEO:
         print(f"Note: You've enabled video download. You should install the required tools yourself.")
         print(
@@ -92,7 +90,7 @@ def main():
                     print(
                         f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
     except KeyboardInterrupt:
-        print("{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
+        print(f"{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
     do_checkpoint()
 
@@ -137,7 +135,7 @@ def do_checkpoint():
 def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if file.url == "":
         return (False, "file not available", False)
-    
+
     update_flag = False
     updated_at = file.updated_at
     path_exist = pathlib.Path(path).exists()
@@ -145,7 +143,7 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if json_key in checkpoint:
         if checkpoint[json_key]["updated_at"] != updated_at:
             update_flag = True
-    
+
     if not any(file.display_name.lower().endswith(pf) for pf in ALLOW_FILE_EXTENSION):
         return (False, "filtered by extension", update_flag)
 
@@ -246,8 +244,10 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
         for item in module.get_module_items():
             if item.type == "File":
                 module_name = MODULE_FOLDER_TEMPLATE
-                module_name = module_name.replace("{NAME}", re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
-                module_name = module_name.replace("{IDX}", str(m_idx + MODULE_FOLDER_IDX_BEGIN_WITH))
+                module_name = module_name.replace("{NAME}", re.sub(
+                    file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                module_name = module_name.replace(
+                    "{IDX}", str(m_idx + MODULE_FOLDER_IDX_BEGIN_WITH))
                 yield (course.get_file(item.content_id), module_name)
 
 
