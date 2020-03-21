@@ -245,7 +245,10 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
         print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
         for item in module.get_module_items():
             if item.type == "File":
-                yield (course.get_file(item.content_id), '%d ' % m_idx + re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                module_name = MODULE_FOLDER_TEMPLATE
+                module_name = module_name.replace("{NAME}", re.sub(file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                module_name = module_name.replace("{IDX}", str(m_idx + MODULE_FOLDER_IDX_BEGIN_WITH))
+                yield (course.get_file(item.content_id), module_name)
 
 
 def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
