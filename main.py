@@ -246,6 +246,8 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
                 module_name = MODULE_FOLDER_TEMPLATE
                 module_name = module_name.replace("{NAME}", re.sub(
                     file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                if CONSOLIDATE_MODULE_SPACE:
+                    module_name = " ".join(module_name.split())
                 module_name = module_name.replace(
                     "{IDX}", str(m_idx + MODULE_FOLDER_IDX_BEGIN_WITH))
                 yield (course.get_file(item.content_id), module_name)
