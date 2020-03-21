@@ -72,7 +72,7 @@ python main.py
 
 ## Screenshot
 
-![image](https://user-images.githubusercontent.com/4198311/76405828-b71b1780-63c3-11ea-9c9e-59d0fcaf1de1.png)
+![image](https://user-images.githubusercontent.com/4198311/77220717-ee38b800-6b7d-11ea-8b5c-ac9b18fded5e.png)
 
 ## [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors)
 
@@ -84,16 +84,6 @@ python main.py
 ## License
 
 MIT
-
-```
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
 
 Which means that we do not shoulder any responsibilities for, included but not limited to:
 
