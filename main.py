@@ -20,6 +20,8 @@ from utils import is_windows, file_regex
 from version import check_latest_version
 import shlex
 import multiprocessing
+multiprocessing.freeze_support()
+
 from config import *
 
 if is_windows():
@@ -357,7 +359,5 @@ def process_course(course: canvasapi.canvas.Course):
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
 
-
 if __name__ == '__main__':
-    multiprocessing.freeze_support()
     main()
