@@ -9,4 +9,5 @@ block_cipher = None
 import sys
 sys.modules['FixTk'] = None
 """)
+print(spec)
 Path(spec_file).write_text(spec)
