@@ -1,4 +1,4 @@
-name: Create Release
+name: Build and Release
 
 on:
   push:
@@ -122,12 +122,16 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         .\.venv\Scripts\activate.ps1
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        pyi-makespec main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        python patch_spec.py
+        pyinstaller canvas_grab.spec
     - name: packaging with PyInstaller (*nix)
       if: matrix.os != 'windows-latest'
       run: |
         source .venv/bin/activate
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        pyi-makespec main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        python patch_spec.py
+        pyinstaller canvas_grab.spec
     - name: copy bundled files
       run: |
         cp README.md dist/

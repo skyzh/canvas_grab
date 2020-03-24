@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from canvasapi import Canvas
 import canvasapi
+from canvasapi import Canvas
 import configparser
-from colorama import Fore, Back, Style
 import colorama
+from colorama import Fore, Back, Style
 import json
 import re
 import pathlib
