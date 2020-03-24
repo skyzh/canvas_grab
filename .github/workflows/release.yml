@@ -30,7 +30,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: ${{ github.event.head_commit.message }}
+          body: This is a test release of canvas_grab, for development use. Please download latest stable release below. ${{ github.event.head_commit.message }}
           draft: false
           prerelease: true
       - name: upload release (ZIP)
