@@ -1,5 +1,7 @@
 # canvas-grab
 
+![Build and Release](https://github.com/skyzh/canvas_grab/workflows/Build%20and%20Release/badge.svg)
+
 Grab all files on Canvas LMS to local directory.
 
 [中文说明](https://github.com/skyzh/canvas_grab/blob/master/README_zh-hans.md)
@@ -20,6 +22,12 @@ Configuration section.
 You may interrupt the downloading process at any time. The program will automatically resume from where it stopped.
 
 To re-download all files, remove checkpoint file `.checkpoint` and downloaded files folder `files/`.
+
+To upgrade, just replace `canvas_grab` with a more recent version. If you want to use new
+features, you should edit `config.toml` to manually enable it, as we persist program
+behavior when upgrade.
+
+If you have any questions, feel free to file an issue [here](https://github.com/skyzh/canvas_grab/issues).
 
 ## Configuration
 
