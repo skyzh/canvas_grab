@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import multiprocessing
+multiprocessing.freeze_support()
+
 import canvasapi
 from canvasapi import Canvas
 import configparser
@@ -19,8 +22,6 @@ from sys import exit
 from utils import is_windows, file_regex
 from version import check_latest_version
 import shlex
-import multiprocessing
-multiprocessing.freeze_support()
 
 from config import *
 
