@@ -61,35 +61,45 @@ def load_config():
     return config
 
 
-config = load_config()
+class Config:
+    def __init__(self):
+        pass
 
-VERBOSE_MODE = config["SYNC"].get("VERBOSE", False)
-API_URL = config["API"]["API_URL"]
-API_KEY = config["API"]["API_KEY"]
-NAME_TEMPLATE = config["COURSE_FOLDER"]["NAME_TEMPLATE"]
-MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get(
-    "MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
-MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get(
-    "MODULE_FOLDER_IDX_BEGIN_WITH", 0)
-CONSOLIDATE_MODULE_SPACE = config["COURSE_FOLDER"].get(
-    "CONSOLIDATE_MODULE_SPACE", False)
-REPLACE_ILLEGAL_CHAR_WITH = config["COURSE_FOLDER"]["REPLACE_ILLEGAL_CHAR_WITH"]
-CUSTOM_NAME_OVERRIDE = {int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
-                        for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])}
-CUSTOM_ORGANIZE = {int(i["CANVAS_ID"]): str(i["ORGANIZE_BY"])
-                   for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])}
-IGNORED_CANVAS_ID = config["COURSE_FOLDER"].get("IGNORED_CANVAS_ID", [])
-CHECKPOINT_FILE = config["CHECKPOINT"]["CHECKPOINT_FILE"]
-BASE_DIR = config["SYNC"]["BASE_DIR"]
-OVERRIDE_FILE_TIME = config["SYNC"]["OVERRIDE_FILE_TIME"]
-MAX_SINGLE_FILE_SIZE = config["SYNC"]["MAX_SINGLE_FILE_SIZE"]
-ALLOW_FILE_EXTENSION = []
-ALLOW_FILE_EXTENSION.extend(config["SYNC"]["ALLOW_FILE_EXTENSION"])
-ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
-FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
-ORGANIZE_BY = config["SYNC"].get("ORGANIZE_BY", "file")
-NEVER_OVERWRITE_FILE = config["SYNC"].get("NEVER_OVERWRITE_FILE", False)
-NEVER_DOWNLOAD_AGAIN = config["SYNC"].get("NEVER_DOWNLOAD_AGAIN", False)
+    def load_config(self):
+        config = load_config()
 
-for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
-    ALLOW_FILE_EXTENSION.extend(config["EXTENSION"].get(ext_groups, []))
+        self.VERBOSE_MODE = config["SYNC"].get("VERBOSE", False)
+        self.API_URL = config["API"]["API_URL"]
+        self.API_KEY = config["API"]["API_KEY"]
+        self.NAME_TEMPLATE = config["COURSE_FOLDER"]["NAME_TEMPLATE"]
+        self.MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get(
+            "MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
+        self.MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get(
+            "MODULE_FOLDER_IDX_BEGIN_WITH", 0)
+        self.CONSOLIDATE_MODULE_SPACE = config["COURSE_FOLDER"].get(
+            "CONSOLIDATE_MODULE_SPACE", False)
+        self.REPLACE_ILLEGAL_CHAR_WITH = config["COURSE_FOLDER"]["REPLACE_ILLEGAL_CHAR_WITH"]
+        self.CUSTOM_NAME_OVERRIDE = {int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
+                                     for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])}
+        self.CUSTOM_ORGANIZE = {int(i["CANVAS_ID"]): str(i["ORGANIZE_BY"])
+                                for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])}
+        self.IGNORED_CANVAS_ID = config["COURSE_FOLDER"].get(
+            "IGNORED_CANVAS_ID", [])
+        self.CHECKPOINT_FILE = config["CHECKPOINT"]["CHECKPOINT_FILE"]
+        self.BASE_DIR = config["SYNC"]["BASE_DIR"]
+        self.OVERRIDE_FILE_TIME = config["SYNC"]["OVERRIDE_FILE_TIME"]
+        self.MAX_SINGLE_FILE_SIZE = config["SYNC"]["MAX_SINGLE_FILE_SIZE"]
+        self.ALLOW_FILE_EXTENSION = []
+        self.ALLOW_FILE_EXTENSION.extend(
+            config["SYNC"]["ALLOW_FILE_EXTENSION"])
+        self.ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
+        self.FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
+        self.ORGANIZE_BY = config["SYNC"].get("ORGANIZE_BY", "file")
+        self.NEVER_OVERWRITE_FILE = config["SYNC"].get(
+            "NEVER_OVERWRITE_FILE", False)
+        self.NEVER_DOWNLOAD_AGAIN = config["SYNC"].get(
+            "NEVER_DOWNLOAD_AGAIN", False)
+
+        for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
+            self.ALLOW_FILE_EXTENSION.extend(
+                config["EXTENSION"].get(ext_groups, []))
