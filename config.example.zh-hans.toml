@@ -76,7 +76,9 @@ ENABLE_VIDEO = false
 # 路径中请勿出现空格或特殊字符
 FFMPEG_PATH = "ffmpeg"
 # 默认文件夹下载模式。可以是 "file" (按照“文件”结构下载) 或者 "module" (按照“单元”下载)。
-# 如果默认方式不行的话，程序会自动尝试另一种。
+# 如果 "file" 或 "module" 不行的话，程序会自动尝试另一种。
+# 还有一种方式是 "module_with_file"。这个模式下，程序会先下载单元里的文件，再把不在单元里的文件
+# 下载到 "unmoduled" 文件夹中。
 ORGANIZE_BY = "file"
 # 只下载本地不存在的文件，不覆盖任何已有文件，但会给出通知
 NEVER_OVERWRITE_FILE = false

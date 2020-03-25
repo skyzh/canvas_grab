@@ -76,8 +76,10 @@ ENABLE_VIDEO = false
 # "/usr/local/bin/ffmpeg" (*nix) or "C:/bin/ffmpeg" (Windows)
 # Don't include special characters and space in this path
 FFMPEG_PATH = "ffmpeg"
-# Default organize mode, eiter "file" or "module".
-# If one organization mode fails, it will fallback to another.
+# Default organize mode, "file" or "module" or "module_with_file".
+# If "file" or "module" organize mode fails, it will fallback to another.
+# "module_with_file" will first download files in module, then download
+# those in files but not in modules in "unmoduled" folder
 ORGANIZE_BY = "file"
 # Never overwrite any existing file. There will be a message.
 NEVER_OVERWRITE_FILE = false
