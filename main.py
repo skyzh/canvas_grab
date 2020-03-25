@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-from canvasapi import Canvas
+import multiprocessing
+multiprocessing.freeze_support()
+
 import canvasapi
+from canvasapi import Canvas
 import configparser
-from colorama import Fore, Back, Style
 import colorama
+from colorama import Fore, Back, Style
 import json
 import re
 import pathlib
@@ -19,7 +22,7 @@ from sys import exit
 from utils import is_windows, file_regex
 from version import check_latest_version
 import shlex
-import multiprocessing
+
 from config import *
 
 if is_windows():
@@ -357,7 +360,5 @@ def process_course(course: canvasapi.canvas.Course):
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
 
-
 if __name__ == '__main__':
-    multiprocessing.freeze_support()
     main()

@@ -19,6 +19,7 @@ def download_file(url, desc, filename, verbose=False):
         df(url, desc, filename, verbose, req_timeout=TIMEOUT)
         sys.stderr.flush()
     except KeyboardInterrupt:
+        sys.stderr.flush()
         raise
     except Exception as e:
         sys.stderr.flush()

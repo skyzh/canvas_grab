@@ -1,4 +1,4 @@
-name: Create Release
+name: Build and Release
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: ${{ github.event.head_commit.message }}
+          body: This is a test release of canvas_grab, for development use. Please download latest stable release below. ${{ github.event.head_commit.message }}
           draft: false
           prerelease: true
       - name: upload release (ZIP)
@@ -94,10 +94,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.8
+    - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
-        python-version: 3.8
+        python-version: 3.7
     - name: install build tools
       id: install_dep
       run: |
@@ -122,12 +122,16 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         .\.venv\Scripts\activate.ps1
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        pyi-makespec main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        python patch_spec.py
+        pyinstaller canvas_grab.spec
     - name: packaging with PyInstaller (*nix)
       if: matrix.os != 'windows-latest'
       run: |
         source .venv/bin/activate
-        pyinstaller main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        pyi-makespec main.py --hidden-import pkg_resources.py2_warn -n canvas_grab --onefile
+        python patch_spec.py
+        pyinstaller canvas_grab.spec
     - name: copy bundled files
       run: |
         cp README.md dist/

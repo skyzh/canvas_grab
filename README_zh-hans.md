@@ -1,5 +1,7 @@
 # canvas-grab
 
+![Build and Release](https://github.com/skyzh/canvas_grab/workflows/Build%20and%20Release/badge.svg)
+
 将 Canvas 课程系统上的所有文件抓取到本地目录！
 
 ## 入门指南
@@ -13,6 +15,10 @@
 在下载过程中可以随时中断，程序在下次启动时会继续当前进度。
 
 如果需要重新下载全部文件，可以删除检查点文件 `.checkpoint` 和文件下载目录 `files/`。
+
+升级的步骤很简单。用新版的 `canvas_grab` 覆盖旧版即可。如果您希望使用新功能的话，您需要自己修改 `config.toml`。我们发布新版本时保证程序兼容旧配置，与旧版本的行为一致。
+
+如果您有任何问题和建议，请在 [这里](https://github.com/skyzh/canvas_grab/issues) 提交 issue。
 
 ## 配置
 
