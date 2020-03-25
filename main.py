@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import multiprocessing
-multiprocessing.freeze_support()
-
 import canvasapi
 from canvasapi import Canvas
 import configparser
@@ -22,8 +19,10 @@ from sys import exit
 from utils import is_windows, file_regex
 from version import check_latest_version
 import shlex
-
 from config import *
+import multiprocessing
+multiprocessing.freeze_support()
+
 
 if is_windows():
     from win32_setctime import setctime
@@ -32,6 +31,7 @@ checkpoint = {}
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
+current_file_list = []
 
 
 def main():
@@ -92,6 +92,7 @@ def main():
                 except canvasapi.exceptions.ResourceDoesNotExist as e:
                     print(
                         f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
+        scan_stale_files()
     except KeyboardInterrupt:
         print(f"{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
@@ -102,14 +103,15 @@ def main():
             f"{Fore.GREEN}{len(new_files_list)} new or updated files:{Style.RESET_ALL}")
         for f in new_files_list:
             print(f)
-    else:
-        print("All files up to date")
 
     if updated_files_list:
         print(
-            f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version in Canvas:{Style.RESET_ALL}")
+            f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version on Canvas:{Style.RESET_ALL}")
         for f in updated_files_list:
             print(f)
+
+    if not new_files_list and not updated_files_list:
+        print("All files up to date")
 
     if ENABLE_VIDEO:
         print(f"{Fore.GREEN}{len(ffmpeg_commands)} videos resolved{Style.RESET_ALL}")
@@ -133,6 +135,30 @@ def do_checkpoint():
     with open(CHECKPOINT_FILE+'.canvas_tmp', 'w') as file:
         json.dump(checkpoint, file)
     os.replace(CHECKPOINT_FILE+'.canvas_tmp', CHECKPOINT_FILE)
+
+
+def scan_stale_files():
+    print(f"{Fore.CYAN}Scanning stale files{Style.RESET_ALL}")
+    base_path = Path(BASE_DIR)
+    file_list = []
+    for file in current_file_list:
+        file_list.append(str(Path(file)))
+    stale_file_list = []
+    for p in base_path.rglob("*"):
+        if p.is_file() and not p.name.startswith("."):
+            if not str(p) in file_list:
+                print(str(p))
+                stale_file_list.append(p)
+    if stale_file_list:
+        print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} [y/N] ", end="")
+        if input() == "y":
+            for file in stale_file_list:
+                file.unlink()
+            print(f"{Fore.GREEN}Success!{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.GREEN}No action taken.{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.GREEN}No stale files.{Style.RESET_ALL}")
 
 
 def check_download_rule(file, path, json_key) -> (bool, str, bool):
@@ -355,7 +381,7 @@ def process_course(course: canvasapi.canvas.Course):
                 reasons_of_not_download[reason] = prev_cnt + 1
             if update_flag:
                 updated_files_list.append(path)
-
+        current_file_list.append(path)
         do_checkpoint()
 
     if ENABLE_VIDEO:
@@ -376,6 +402,7 @@ def process_course(course: canvasapi.canvas.Course):
 
     for (reason, cnt) in reasons_of_not_download.items():
         print(f"    {Style.DIM}{cnt} files ignored: {reason}{Style.RESET_ALL}")
+
 
 if __name__ == '__main__':
     main()
