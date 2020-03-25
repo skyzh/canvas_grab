@@ -148,14 +148,14 @@ def scan_stale_files():
     for p in base_path.rglob("*"):
         if p.is_file() and not p.name.startswith("."):
             if not str(p) in file_list:
-                print(str(p))
+                print(f"    {str(p)}")
                 stale_file_list.append(p)
     if stale_file_list:
-        print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} [y/N] ", end="")
+        print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} (Press 'y' to continue) ", end="")
         if input() == "y":
             for file in stale_file_list:
                 file.unlink()
-            print(f"{Fore.GREEN}Success!{Style.RESET_ALL}")
+            print(f"{Fore.GREEN}Stale files removed.{Style.RESET_ALL}")
         else:
             print(f"{Fore.GREEN}No action taken.{Style.RESET_ALL}")
     else:
