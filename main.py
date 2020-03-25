@@ -166,7 +166,8 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if json_key in checkpoint:
         if "id" in checkpoint[json_key]:
             if checkpoint[json_key]["id"] != file.id:
-                print(f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
+                print(
+                    f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
                 return (False, "files with duplicated path", update_flag)
 
     return (True, "", update_flag)
@@ -262,7 +263,22 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
                 yield (course.get_file(item.content_id), module_name)
 
 
+def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
+    module_files_id = []
+    for (file, path) in organize_by_module(course):
+        yield (file, path)
+        module_files_id.append(file.id)
+    print(f"    {Fore.CYAN}File not in module{Style.RESET_ALL}")
+    for (file, path) in organize_by_file(course):
+        if not(file.id in module_files_id):
+            yield (file, os.path.join("unmoduled", path))
+
+
 def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
+    if organize_by == "module_with_file":
+        for (file, path) in organize_by_module_with_file(course):
+            yield (file, path)
+        return
     another_mode = ""
     try:
         if organize_by == "file":
@@ -327,7 +343,8 @@ def process_course(course: canvasapi.canvas.Course):
                 if is_windows():
                     setctime(path, c_time)
                 os.utime(path, (a_time, m_time))
-            checkpoint[json_key] = {"updated_at": file.updated_at, "id": file.id}
+            checkpoint[json_key] = {
+                "updated_at": file.updated_at, "id": file.id}
             new_files_list.append(path)
         else:
             if VERBOSE_MODE:
