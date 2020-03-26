@@ -188,10 +188,6 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if path_exist and config.NEVER_OVERWRITE_FILE:
         return (False, "file exists and will not be overwritten (config.NEVER_OVERWRITE_FILE)", update_flag)
 
-    if path_exist and json_key in checkpoint:
-        if checkpoint[json_key]["updated_at"] == updated_at:
-            return (False, "already downloaded and is latest version", update_flag)
-
     if json_key in checkpoint:
         if "id" in checkpoint[json_key] and "session" in checkpoint[json_key]:
             if checkpoint[json_key]["id"] != file.id:
@@ -199,8 +195,11 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
                     print(
                         f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
                     return (False, "files with duplicated path", update_flag)
-                else:
-                    checkpoint[json_key]["session"] = config.SESSION
+        checkpoint[json_key]["session"] = config.SESSION
+    
+    if path_exist and json_key in checkpoint:
+        if checkpoint[json_key]["updated_at"] == updated_at:
+            return (False, "already downloaded and is latest version", update_flag)
 
     return (True, "", update_flag)
 
