@@ -99,6 +99,8 @@ class Config:
             "NEVER_OVERWRITE_FILE", False)
         self.NEVER_DOWNLOAD_AGAIN = config["SYNC"].get(
             "NEVER_DOWNLOAD_AGAIN", False)
+        self.SCAN_STALE_FILE = config["SYNC"].get(
+            "SCAN_STALE_FILE", False)
 
         for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
             self.ALLOW_FILE_EXTENSION.extend(

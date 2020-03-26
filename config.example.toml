@@ -86,6 +86,8 @@ NEVER_OVERWRITE_FILE = false
 # If a file has been downloaded in canvas_grab before, 
 # it won't be downloaded even after it is moved or renamed.
 NEVER_DOWNLOAD_AGAIN = false
+# Scan stale file (those created by yourself and not on Canvas)
+SCAN_STALE_FILE = false
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP
