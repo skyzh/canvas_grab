@@ -193,11 +193,12 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
             return (False, "already downloaded and is latest version", update_flag)
 
     if json_key in checkpoint:
-        if "id" in checkpoint[json_key]:
+        if "id" in checkpoint[json_key] and "session" in checkpoint[json_key]:
             if checkpoint[json_key]["id"] != file.id:
-                print(
-                    f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
-                return (False, "files with duplicated path", update_flag)
+                if checkpoint[json_key]["session"] == config.SESSION:
+                    print(
+                        f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
+                    return (False, "files with duplicated path", update_flag)
 
     return (True, "", update_flag)
 
@@ -374,7 +375,10 @@ def process_course(course: canvasapi.canvas.Course):
                     setctime(path, c_time)
                 os.utime(path, (a_time, m_time))
             checkpoint[json_key] = {
-                "updated_at": file.updated_at, "id": file.id}
+                "updated_at": file.updated_at,
+                "id": file.id,
+                "session": config.SESSION
+            }
             new_files_list.append(path)
         else:
             if config.VERBOSE_MODE:

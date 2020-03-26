@@ -5,7 +5,8 @@ import toml
 import sys
 import os
 from utils import is_windows
-
+import time
+import math
 CONFIG_FILE = "config.toml"
 CONFIG_EXAMPLE = "config.example.toml"
 
@@ -101,6 +102,7 @@ class Config:
             "NEVER_DOWNLOAD_AGAIN", False)
         self.SCAN_STALE_FILE = config["SYNC"].get(
             "SCAN_STALE_FILE", False)
+        self.SESSION = math.floor(time.time())
 
         for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
             self.ALLOW_FILE_EXTENSION.extend(
