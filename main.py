@@ -197,7 +197,6 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
             if checkpoint[json_key]["id"] != file.id:
                 print(
                     f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
-                return (False, "files with duplicated path", update_flag)
 
     return (True, "", update_flag)
 
