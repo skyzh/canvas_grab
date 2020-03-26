@@ -35,6 +35,7 @@ ffmpeg_commands = []
 current_file_list = []
 config = Config()
 
+
 def main():
     colorama.init()
     print("Thank you for using canvas_grab!")
@@ -93,7 +94,8 @@ def main():
                 except canvasapi.exceptions.ResourceDoesNotExist as e:
                     print(
                         f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
-        scan_stale_files()
+        if config.SCAN_STALE_FILE:
+            scan_stale_files()
     except KeyboardInterrupt:
         print(f"{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
@@ -222,7 +224,8 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     folderName = config.NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
-    folderName = re.sub(r'[:*?"<>|]', config.REPLACE_ILLEGAL_CHAR_WITH, folderName)
+    folderName = re.sub(
+        r'[:*?"<>|]', config.REPLACE_ILLEGAL_CHAR_WITH, folderName)
     return folderName
 
 
