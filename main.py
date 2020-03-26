@@ -199,6 +199,8 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
                     print(
                         f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
                     return (False, "files with duplicated path", update_flag)
+                else:
+                    checkpoint[json_key]["session"] = config.SESSION
 
     return (True, "", update_flag)
 
