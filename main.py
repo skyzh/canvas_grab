@@ -17,7 +17,7 @@ import requests
 from download_file_ex import download_file
 import toml
 from sys import exit
-from utils import is_windows, file_regex
+from utils import is_windows, file_regex, remove_empty_dir
 from version import check_latest_version
 import shlex
 from config import Config
@@ -48,7 +48,6 @@ def main():
         print(f"Note: You've enabled video download. You should install the required tools yourself.")
         print(
             f"      This is an experimental functionality and takes up large amount of bandwidth. {Fore.RED}Use at your own risk.{Style.RESET_ALL}")
-
     canvas = Canvas(config.API_URL, config.API_KEY)
 
     try:
@@ -105,13 +104,13 @@ def main():
         print(
             f"{Fore.GREEN}{len(new_files_list)} new or updated files:{Style.RESET_ALL}")
         for f in new_files_list:
-            print(f)
+            print(f"    {f}")
 
     if updated_files_list:
         print(
             f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version on Canvas:{Style.RESET_ALL}")
         for f in updated_files_list:
-            print(f)
+            print(f"    {f}")
 
     if not new_files_list and not updated_files_list:
         print("All files up to date")
@@ -157,6 +156,11 @@ def scan_stale_files():
         if input() == "y":
             for file in stale_file_list:
                 file.unlink()
+            print(f"{Fore.GREEN}Remove empty directories.{Style.RESET_ALL}")
+            try:
+                remove_empty_dir(base_path)
+            except e:
+                print(f"{Fore.Red}Failed to remove empty directories: {e}{Style.RESET_ALL}")
             print(f"{Fore.GREEN}Stale files removed.{Style.RESET_ALL}")
         else:
             print(f"{Fore.GREEN}No action taken.{Style.RESET_ALL}")
@@ -196,7 +200,7 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
                         f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
                     return (False, "files with duplicated path", update_flag)
         checkpoint[json_key]["session"] = config.SESSION
-    
+
     if path_exist and json_key in checkpoint:
         if checkpoint[json_key]["updated_at"] == updated_at:
             return (False, "already downloaded and is latest version", update_flag)
