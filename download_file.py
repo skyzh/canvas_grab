@@ -29,9 +29,12 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None
         print(dict(num_bars=num_bars))
 
     with open(local_filename+'.canvas_tmp', 'wb') as fp:
-        for chunk in tqdm.tqdm(
-            r.iter_content(chunk_size=chunk_size), total=num_bars, unit='KB', desc=desc, bar_format='{l_bar}{bar}{r_bar}', ascii=is_windows()
-        ):
-            fp.write(chunk)
+        with tqdm.tqdm(
+            r.iter_content(chunk_size=chunk_size),
+            total=num_bars, unit='KB',
+            desc=desc, bar_format='{l_bar}{bar}{r_bar}', ascii=is_windows()
+        ) as pbar:
+            for chunk in pbar:
+                fp.write(chunk)
     os.replace(local_filename+'.canvas_tmp', local_filename)
     return
