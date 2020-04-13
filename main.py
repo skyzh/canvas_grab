@@ -21,6 +21,8 @@ from utils import is_windows, file_regex, remove_empty_dir
 from version import check_latest_version
 import shlex
 from config import Config
+import concurrent
+import concurrent.futures
 import multiprocessing
 multiprocessing.freeze_support()
 
@@ -72,6 +74,7 @@ def main():
         print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
     courses = canvas.get_courses()
+    # courses = [canvas.get_course(19233)]
 
     try:
         for course in courses:
@@ -285,18 +288,29 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
 
 
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    for m_idx, module in enumerate(course.get_modules()):
-        print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
-        for item in module.get_module_items():
-            if item.type == "File":
-                module_name = config.MODULE_FOLDER_TEMPLATE
-                module_name = module_name.replace("{NAME}", re.sub(
-                    file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
-                if config.CONSOLIDATE_MODULE_SPACE:
-                    module_name = " ".join(module_name.split())
-                module_name = module_name.replace(
-                    "{IDX}", str(m_idx + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-                yield (course.get_file(item.content_id), module_name)
+    def get_module_file(item, module_name):
+        return (course.get_file(item.content_id), module_name)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_url = {}
+        for m_idx, module in enumerate(course.get_modules()):
+            print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
+            for item in module.get_module_items():
+                if item.type == "File":
+                    module_name = config.MODULE_FOLDER_TEMPLATE
+                    module_name = module_name.replace("{NAME}", re.sub(
+                        file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+                    if config.CONSOLIDATE_MODULE_SPACE:
+                        module_name = " ".join(module_name.split())
+                    module_name = module_name.replace(
+                        "{IDX}", str(m_idx + config.MODULE_FOLDER_IDX_BEGIN_WITH))
+                    future_to_url[executor.submit(get_module_file, item, module_name)] = item.title
+                    
+        for future in concurrent.futures.as_completed(future_to_url):
+            filename = future_to_url[future]
+            try:
+                yield future.result()
+            except Exception as exc:
+                print('%r generated an exception: %s' % (filename, exc))
 
 
 def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
