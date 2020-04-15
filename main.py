@@ -75,7 +75,6 @@ def main():
 
     courses = [course for course in canvas.get_courses()
                if hasattr(course, "name")]
-    # courses = [canvas.get_course(19233)]
 
     try:
         for course in courses:
@@ -141,7 +140,6 @@ def do_checkpoint():
 
 def scan_stale_files(courses):
     print(f"{Fore.CYAN}Scanning stale files{Style.RESET_ALL}")
-    # 请仅在课程目录进行扫描
     base_path = Path(config.BASE_DIR)
 
     file_list = []
@@ -307,13 +305,11 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
                         module_name = " ".join(module_name.split())
                     module_name = module_name.replace(
                         "{IDX}", str(m_idx + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-                    # print(f"submitted future:{module_name}")
                     future_to_url[executor.submit(
                         get_module_file, item, module_name)] = item.title
 
         for future in concurrent.futures.as_completed(future_to_url):
             filename = future_to_url[future]
-            # print(f"finished future:{filename}")
             try:
                 yield future.result()
             except Exception as exc:
