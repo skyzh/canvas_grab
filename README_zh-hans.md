@@ -56,7 +56,6 @@ python main.py
 
 * **获取 API 密钥** 在 Canvas 系统中，依次找到“账户” - “设置” - “创建新访问许可证”.
 * **交大人** 可直接通过[传送门](https://oc.sjtu.edu.cn/profile/settings#access_tokens_holder)生成访问令牌。
-* **提示 Ignored Course** 如果出现"Ignored Course"警告，表明 canvas_grab 无法访问此课程。可能是由于 (1) 课程没有发布 (2) 课程在之前的学期。
 * **提示 An error occurred** 如果出现"An error occurred when processing this course"说明课程中没有任何文件。
 * **提示 File not available** 此文件可能位于未发布的章节， canvas_grab 无法绕过平台的限制。
 * **提示 No module named 'canvasapi'** 请参考“构建并从源代码运行”章节进行构建或直接下载构建好的二进制包。
@@ -67,6 +66,7 @@ python main.py
 * **macOS 提示文件损坏** macOS 的安全机制导致。请在设置-隐私中允许运行，或从源代码直接运行。
 * **跳过导致程序崩溃的课程** 在 `config.toml` 中，把 ID 加入 `IGNORED_COURSE`。
 * **提示 Duplicated files detected** C同一目录下出现了两个同名文件。您需要自己在 Canvas 上下载这个文件。
+* **提示 Ignored Course** 如果出现"Ignored Course"警告，表明 canvas_grab 无法访问此课程。可能是由于 (1) 课程没有发布 (2) 课程在之前的学期。只有 <= 1.7.4 的版本会有这个提示。
 
 ## 截图
 
