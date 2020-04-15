@@ -160,7 +160,9 @@ def scan_stale_files(courses):
                 file.unlink()
             print(f"{Fore.GREEN}Remove empty directories.{Style.RESET_ALL}")
             try:
-                remove_empty_dir(base_path)
+                for course in courses:
+                    cource_path = base_path/parse_course_folder_name(course)
+                    remove_empty_dir(cource_path)
             except Exception as e:
                 print(
                     f"{Fore.Red}Failed to remove empty directories: {e}{Style.RESET_ALL}")
