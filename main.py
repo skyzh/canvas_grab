@@ -73,16 +73,13 @@ def main():
     except:
         print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
-    courses = canvas.get_courses()
+    courses = [course for course in canvas.get_courses()
+               if hasattr(course, "name")]
     # courses = [canvas.get_course(19233)]
 
     try:
         for course in courses:
-            if not hasattr(course, "name"):
-                if config.VERBOSE_MODE:
-                    print(
-                        f"{Fore.YELLOW}Course {course.id}: not available{Style.RESET_ALL}")
-            elif course.id in config.IGNORED_CANVAS_ID:
+            if course.id in config.IGNORED_CANVAS_ID:
                 print(
                     f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
             else:
@@ -97,7 +94,7 @@ def main():
                     print(
                         f"{Fore.RED}An error occoured when processing this course (resourse not exist): {e}{Style.RESET_ALL}")
         if config.SCAN_STALE_FILE:
-            scan_stale_files()
+            scan_stale_files(courses)
     except KeyboardInterrupt:
         print(f"{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
@@ -142,18 +139,22 @@ def do_checkpoint():
     os.replace(config.CHECKPOINT_FILE+'.canvas_tmp', config.CHECKPOINT_FILE)
 
 
-def scan_stale_files():
+def scan_stale_files(courses):
     print(f"{Fore.CYAN}Scanning stale files{Style.RESET_ALL}")
+    # 请仅在课程目录进行扫描
     base_path = Path(config.BASE_DIR)
+
     file_list = []
     for file in current_file_list:
         file_list.append(str(Path(file)))
     stale_file_list = []
-    for p in base_path.rglob("*"):
-        if p.is_file() and not p.name.startswith("."):
-            if not str(p) in file_list:
-                print(f"    {str(p)}")
-                stale_file_list.append(p)
+    for course in courses:
+        cource_path = base_path/parse_course_folder_name(course)
+        for p in cource_path.rglob("*"):
+            if p.is_file() and not p.name.startswith("."):
+                if not str(p) in file_list:
+                    print(f"    {str(p)}")
+                    stale_file_list.append(p)
     if stale_file_list:
         print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} (Press 'y' to continue) ", end="")
         if input() == "y":
@@ -162,8 +163,9 @@ def scan_stale_files():
             print(f"{Fore.GREEN}Remove empty directories.{Style.RESET_ALL}")
             try:
                 remove_empty_dir(base_path)
-            except e:
-                print(f"{Fore.Red}Failed to remove empty directories: {e}{Style.RESET_ALL}")
+            except Exception as e:
+                print(
+                    f"{Fore.Red}Failed to remove empty directories: {e}{Style.RESET_ALL}")
             print(f"{Fore.GREEN}Stale files removed.{Style.RESET_ALL}")
         else:
             print(f"{Fore.GREEN}No action taken.{Style.RESET_ALL}")
@@ -303,10 +305,13 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
                         module_name = " ".join(module_name.split())
                     module_name = module_name.replace(
                         "{IDX}", str(m_idx + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-                    future_to_url[executor.submit(get_module_file, item, module_name)] = item.title
-                    
+                    # print(f"submitted future:{module_name}")
+                    future_to_url[executor.submit(
+                        get_module_file, item, module_name)] = item.title
+
         for future in concurrent.futures.as_completed(future_to_url):
             filename = future_to_url[future]
+            # print(f"finished future:{filename}")
             try:
                 yield future.result()
             except Exception as exc:
@@ -383,7 +388,8 @@ def process_course(course: canvasapi.canvas.Course):
                 pass
             print(
                 f"    {Fore.GREEN}{'Update' if update_flag else 'New'}: {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
-            download_file(file.url, "    Downloading", path)
+            download_file(file.url, "    Downloading",
+                          path, verbose=config.VERBOSE_MODE)
             if config.OVERRIDE_FILE_TIME:
                 c_time = datetime.strptime(
                     file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
