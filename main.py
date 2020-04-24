@@ -21,8 +21,6 @@ from utils import is_windows, file_regex, remove_empty_dir
 from version import check_latest_version
 import shlex
 from config import Config
-import concurrent
-import concurrent.futures
 import multiprocessing
 multiprocessing.freeze_support()
 
@@ -308,44 +306,30 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
 
 
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    def get_module_file(item, module_name):
-        # return get_files_in_course(course, item.content_id), module_name
-        return (course.get_file(item.content_id), module_name)
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_url = {}
-        for module in course.get_modules():
-            module_item_count = module.items_count
-            module_item_position = module.position-1  # it begins with 1
-            module_name = config.MODULE_FOLDER_TEMPLATE
-            module_name = module_name.replace("{NAME}", re.sub(
-                file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
-            if config.CONSOLIDATE_MODULE_SPACE:
-                module_name = " ".join(module_name.split())
-            module_name = module_name.replace(
-                "{IDX}", str(module_item_position + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-            print(
-                f"    Module {Fore.CYAN}{module_name}({module_item_count} items){Style.RESET_ALL}")
-            for item in module.get_module_items():
-                if item.type == "File":
-                    future_to_url[executor.submit(
-                        get_module_file, item, module_name)] = item.title
-                elif item.type in ["Page", "Discussion", "Assignment"]:
-                    page_url = item.html_url
-                elif item.type == "ExternalUrl":
-                    page_url = item.external_url
-                elif item.type == "SubHeader":
-                    pass
-                else:
-                    print(
-                        f"{Fore.RED}Unsupported item type:{Fore.CYAN}{item.type}{Style.RESET_ALL}")
-
-        for future in concurrent.futures.as_completed(future_to_url):
-            filename = future_to_url[future]
-            try:
-                yield future.result()
-            except Exception as exc:
-                print('%r generated an exception: %s' % (filename, exc))
+    for module in course.get_modules():
+        module_item_count = module.items_count
+        module_item_position = module.position-1  # it begins with 1
+        module_name = config.MODULE_FOLDER_TEMPLATE
+        module_name = module_name.replace("{NAME}", re.sub(
+            file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+        if config.CONSOLIDATE_MODULE_SPACE:
+            module_name = " ".join(module_name.split())
+        module_name = module_name.replace(
+            "{IDX}", str(module_item_position + config.MODULE_FOLDER_IDX_BEGIN_WITH))
+        print(
+            f"    Module {Fore.CYAN}{module_name}({module_item_count} items){Style.RESET_ALL}")
+        for item in module.get_module_items():
+            if item.type == "File":
+                yield get_file_in_course(course, item.content_id), module_name
+            elif item.type in ["Page", "Discussion", "Assignment"]:
+                page_url = item.html_url
+            elif item.type == "ExternalUrl":
+                page_url = item.external_url
+            elif item.type == "SubHeader":
+                pass
+            else:
+                print(
+                    f"{Fore.RED}Unsupported item type:{Fore.CYAN}{item.type}{Style.RESET_ALL}")
 
 
 def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
