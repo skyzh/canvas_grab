@@ -21,8 +21,6 @@ from utils import is_windows, file_regex, remove_empty_dir
 from version import check_latest_version
 import shlex
 from config import Config
-import concurrent
-import concurrent.futures
 import multiprocessing
 multiprocessing.freeze_support()
 
@@ -31,6 +29,7 @@ if is_windows():
     from win32_setctime import setctime
 
 checkpoint = {}
+course_files = {}
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
@@ -281,39 +280,65 @@ def resolve_video(page: canvasapi.page.PageRevision):
     pass
 
 
+def check_filelist_cache(course: canvasapi.canvas.Course):
+    if not course_files.__contains__(course.id):
+        if 'files' in [tab.id for tab in course.get_tabs()]:
+            course_files[course.id] = {
+                file.id: file for file in course.get_files()}
+        else:
+            course_files[course.id] = None
+    return course_files[course.id] != None
+
+
+def get_files_in_course(course: canvasapi.canvas.Course):
+    if check_filelist_cache(course):
+        for file in course_files[course.id].values():
+            yield file
+    else:
+        raise canvasapi.exceptions.ResourceDoesNotExist(
+            "File tab is not supported.")
+
+
+def get_file_in_course(course: canvasapi.canvas.Course, file_id: str):
+    if check_filelist_cache(course):
+        return course_files[course.id][file_id]
+    else:
+        return course.get_file(file_id)
+
+
 def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
-    for file in course.get_files():
+    for file in get_files_in_course(course):
         folder = folders[file.folder_id] + "/"
         folder = folder.lstrip("course files/")
         yield (file, folder)
 
 
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    def get_module_file(item, module_name):
-        return (course.get_file(item.content_id), module_name)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_url = {}
-        for m_idx, module in enumerate(course.get_modules()):
-            print(f"    Module {Fore.CYAN}{module.name}{Style.RESET_ALL}")
-            for item in module.get_module_items():
-                if item.type == "File":
-                    module_name = config.MODULE_FOLDER_TEMPLATE
-                    module_name = module_name.replace("{NAME}", re.sub(
-                        file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
-                    if config.CONSOLIDATE_MODULE_SPACE:
-                        module_name = " ".join(module_name.split())
-                    module_name = module_name.replace(
-                        "{IDX}", str(m_idx + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-                    future_to_url[executor.submit(
-                        get_module_file, item, module_name)] = item.title
-
-        for future in concurrent.futures.as_completed(future_to_url):
-            filename = future_to_url[future]
-            try:
-                yield future.result()
-            except Exception as exc:
-                print('%r generated an exception: %s' % (filename, exc))
+    for module in course.get_modules():
+        module_item_count = module.items_count
+        module_item_position = module.position-1  # it begins with 1
+        module_name = config.MODULE_FOLDER_TEMPLATE
+        module_name = module_name.replace("{NAME}", re.sub(
+            file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
+        if config.CONSOLIDATE_MODULE_SPACE:
+            module_name = " ".join(module_name.split())
+        module_name = module_name.replace(
+            "{IDX}", str(module_item_position + config.MODULE_FOLDER_IDX_BEGIN_WITH))
+        print(
+            f"    Module {Fore.CYAN}{module_name}({module_item_count} items){Style.RESET_ALL}")
+        for item in module.get_module_items():
+            if item.type == "File":
+                yield get_file_in_course(course, item.content_id), module_name
+            elif item.type in ["Page", "Discussion", "Assignment"]:
+                page_url = item.html_url
+            elif item.type == "ExternalUrl":
+                page_url = item.external_url
+            elif item.type == "SubHeader":
+                pass
+            else:
+                print(
+                    f"{Fore.RED}Unsupported item type:{Fore.CYAN}{item.type}{Style.RESET_ALL}")
 
 
 def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
@@ -352,7 +377,7 @@ def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasa
         pass
     except Exception:
         raise
-    print(f"    {Fore.YELLOW}{organize_by} not available, falling back to {another_mode}{Style.RESET_ALL}")
+    print(f"    {Fore.YELLOW}{organize_by} mode not available, falling back to {another_mode} mode{Style.RESET_ALL}")
     for (file, path) in get_file_list(course, another_mode):
         yield (file, path)
 
