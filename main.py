@@ -281,7 +281,7 @@ def resolve_video(page: canvasapi.page.PageRevision):
 
 
 def check_filelist_cache(course: canvasapi.canvas.Course):
-    if not course_files.__contains__(course.id):
+    if course.id not in course_files:
         if 'files' in [tab.id for tab in course.get_tabs()]:
             course_files[course.id] = {
                 file.id: file for file in course.get_files()}
@@ -326,7 +326,7 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
         module_name = module_name.replace(
             "{IDX}", str(module_item_position + config.MODULE_FOLDER_IDX_BEGIN_WITH))
         print(
-            f"    Module {Fore.CYAN}{module_name}({module_item_count} items){Style.RESET_ALL}")
+            f"    Module {Fore.CYAN}{module_name} ({module_item_count} items){Style.RESET_ALL}")
         for item in module.get_module_items():
             if item.type == "File":
                 yield get_file_in_course(course, item.content_id), module_name
@@ -337,8 +337,9 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
             elif item.type == "SubHeader":
                 pass
             else:
-                print(
-                    f"{Fore.RED}Unsupported item type:{Fore.CYAN}{item.type}{Style.RESET_ALL}")
+                if config.VERBOSE_MODE:
+                    print(
+                        f"    {Fore.YELLOW}Unsupported item type: {item.type}{Style.RESET_ALL}")
 
 
 def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
