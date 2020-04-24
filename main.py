@@ -282,19 +282,28 @@ def resolve_video(page: canvasapi.page.PageRevision):
 
 def check_filelist_cache(course: canvasapi.canvas.Course):
     if not course_files.__contains__(course.id):
-        course_files[course.id] = {
-            file.id: file for file in course.get_files()}
+        if 'files' in [tab.id for tab in course.get_tabs()]:
+            course_files[course.id] = {
+                file.id: file for file in course.get_files()}
+        else:
+            course_files[course.id] = None
+    return course_files[course.id] != None
 
 
 def get_files_in_course(course: canvasapi.canvas.Course):
-    check_filelist_cache(course)
-    for file in course_files[course.id].values():
-        yield file
+    if check_filelist_cache(course):
+        for file in course_files[course.id].values():
+            yield file
+    else:
+        raise canvasapi.exceptions.ResourceDoesNotExist(
+            "File tab is not supported.")
 
 
 def get_file_in_course(course: canvasapi.canvas.Course, file_id: str):
-    check_filelist_cache(course)
-    return course_files[course.id][file_id]
+    if check_filelist_cache(course):
+        return course_files[course.id][file_id]
+    else:
+        return course.get_file(file_id)
 
 
 def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
