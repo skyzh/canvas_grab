@@ -40,6 +40,6 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None
                     fp.write(chunk)
                     download_size += len(chunk)
         if file_size != 0 and download_size != file_size:
-            raise Exception("File download not complete")
+            raise Exception(f"Incomplete file: expected {file_size}, downloaded {download_size}")
         os.replace(local_filename+'.canvas_tmp', local_filename)
     return
