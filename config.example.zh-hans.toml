@@ -86,6 +86,8 @@ NEVER_OVERWRITE_FILE = false
 NEVER_DOWNLOAD_AGAIN = false
 # 扫描下载文件夹中在 Canvas 上不存在的文件。
 SCAN_STALE_FILE = false
+# 自动检查更新
+ALLOW_VERSION_CHECK = true
 
 [EXTENSION]
 # 自定义扩展名组，可填写在ALLOW_FILE_EXTENSION_GROUP中
