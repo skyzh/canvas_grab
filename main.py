@@ -34,6 +34,7 @@ new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
 current_file_list = []
+failure_file_list = []
 config = Config()
 
 
@@ -108,6 +109,12 @@ def main():
         print(
             f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version on Canvas:{Style.RESET_ALL}")
         for f in updated_files_list:
+            print(f"    {f}")
+    
+    if failure_file_list:
+        print(
+            f"{Fore.YELLOW}{len(failure_file_list)} files are not downloaded:{Style.RESET_ALL}")
+        for f in failure_file_list:
             print(f"    {f}")
 
     if not new_files_list and not updated_files_list:
@@ -433,6 +440,7 @@ def process_course(course: canvasapi.canvas.Course):
             except Exception as e:
                 print(
                     f"    {Fore.YELLOW}Failed to download: {e}{Style.RESET_ALL}")
+                failure_file_list.append(path)
         else:
             if config.VERBOSE_MODE:
                 print(
