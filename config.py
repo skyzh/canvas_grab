@@ -103,6 +103,8 @@ class Config:
         self.SCAN_STALE_FILE = config["SYNC"].get(
             "SCAN_STALE_FILE", False)
         self.SESSION = math.floor(time.time())
+        self.ALLOW_VERSION_CHECK = config["SYNC"].get(
+            "ALLOW_VERSION_CHECK", True)
 
         for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
             self.ALLOW_FILE_EXTENSION.extend(

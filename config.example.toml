@@ -88,6 +88,8 @@ NEVER_OVERWRITE_FILE = false
 NEVER_DOWNLOAD_AGAIN = false
 # Scan stale file (those created by yourself and not on Canvas)
 SCAN_STALE_FILE = false
+# Allow auto check new version
+ALLOW_VERSION_CHECK = true
 
 [EXTENSION]
 # All the groups below can be in ALLOW_FILE_EXTENSION_GROUP
