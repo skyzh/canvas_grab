@@ -412,23 +412,27 @@ def process_course(course: canvasapi.canvas.Course):
                 pass
             print(
                 f"    {Fore.GREEN}{'Update' if update_flag else 'New'}: {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
-            download_file(file.url, "    Downloading",
-                          path, verbose=config.VERBOSE_MODE)
-            if config.OVERRIDE_FILE_TIME:
-                c_time = datetime.strptime(
-                    file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
-                m_time = datetime.strptime(
-                    file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
-                a_time = time.time()
-                if is_windows():
-                    setctime(path, c_time)
-                os.utime(path, (a_time, m_time))
-            checkpoint[json_key] = {
-                "updated_at": file.updated_at,
-                "id": file.id,
-                "session": config.SESSION
-            }
-            new_files_list.append(path)
+            try:
+                download_file(file.url, "    Downloading",
+                            path, verbose=config.VERBOSE_MODE)
+                if config.OVERRIDE_FILE_TIME:
+                    c_time = datetime.strptime(
+                        file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                    m_time = datetime.strptime(
+                        file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                    a_time = time.time()
+                    if is_windows():
+                        setctime(path, c_time)
+                    os.utime(path, (a_time, m_time))
+                checkpoint[json_key] = {
+                    "updated_at": file.updated_at,
+                    "id": file.id,
+                    "session": config.SESSION
+                }
+                new_files_list.append(path)
+            except Exception as e:
+                print(
+                    f"    {Fore.YELLOW}Failed to download: {e}{Style.RESET_ALL}")
         else:
             if config.VERBOSE_MODE:
                 print(
