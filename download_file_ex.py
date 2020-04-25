@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 
 TIMEOUT = 3
-ATTEMPT = 5
+ATTEMPT = 3
 
 
 def need_retrying(exception):
@@ -24,5 +24,5 @@ def download_file(url, desc, filename, verbose=False):
     except Exception as e:
         sys.stderr.flush()
         print(
-            f"    {Fore.RED}Retrying {Path(filename).name} ({e})...{Style.RESET_ALL}")
+            f"    {Fore.RED}Retrying ({e})...{Style.RESET_ALL}")
         raise
