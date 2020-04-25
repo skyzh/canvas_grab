@@ -12,6 +12,7 @@ API_KEY = "PASTE YOUR API_KEY HERE"
 # SEMESTER_ID : LIKE 2019-2020-2
 # CLASSROOM_ID : id used to distinguish two same courses
 # NAME : course name
+# NICKNAME : course alias, use original name if the alias is not set.
 # COURSE_CODE: course code on canvas
 # If your canvas endpoint is not "oc.sjtu.edu.cn", then you can only use
 # "COURSE_CODE" and "NAME"
