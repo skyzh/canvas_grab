@@ -18,7 +18,7 @@ from download_file_ex import download_file
 import toml
 from sys import exit
 from utils import is_windows, file_regex, remove_empty_dir
-from version import check_latest_version
+from version import check_latest_version, VERSION
 import shlex
 from config import Config
 import multiprocessing
@@ -129,7 +129,8 @@ def main():
         with open("download_video.ps1", 'w') as file:
             file.write("\n".join(ffmpeg_commands))
 
-    check_latest_version()
+    if config.ALLOW_VERSION_CHECK:
+        check_latest_version()
 
     print(f"{Fore.GREEN}Done.{Style.RESET_ALL}")
 
