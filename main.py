@@ -231,7 +231,7 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     else:
         r = {}
         
-    if 'original_name' in course.__dict__:
+    if hasattr(course, "original_name"):
         course_name = course.original_name
         course_nickname = course.name
     else:
