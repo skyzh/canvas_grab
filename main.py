@@ -230,12 +230,21 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r = r.groupdict()
     else:
         r = {}
+        
+    if hasattr(course, "original_name"):
+        course_name = course.original_name
+        course_nickname = course.name
+    else:
+        course_name = course.name
+        course_nickname = course.name
+
     template_map = {
         r"{CANVAS_ID}": str(course.id),
         r"{SJTU_ID}": r.get("sjtu_id", ""),
         r"{SEMESTER_ID}": r.get("semester_id", ""),
         r"{CLASSROOM_ID}": r.get("classroom_id", ""),
-        r"{NAME}": re.sub(file_regex, config.REPLACE_ILLEGAL_CHAR_WITH, course.name.replace("（", "(").replace("）", ")")),
+        r"{NAME}": re.sub(file_regex, config.REPLACE_ILLEGAL_CHAR_WITH, course_name.replace("（", "(").replace("）", ")")),
+        r"{NICKNAME}": re.sub(file_regex, config.REPLACE_ILLEGAL_CHAR_WITH, course_nickname.replace("（", "(").replace("）", ")")),
         r"{COURSE_CODE}": course.course_code
     }
 
