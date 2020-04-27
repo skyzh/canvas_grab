@@ -17,7 +17,7 @@ import requests
 from download_file_ex import download_file
 import toml
 from sys import exit
-from utils import is_windows, file_regex, remove_empty_dir
+from utils import is_windows, file_regex, path_regex, remove_empty_dir
 from version import check_latest_version, VERSION
 import shlex
 from config import Config
@@ -42,7 +42,7 @@ def main():
     colorama.init()
     print("Thank you for using canvas_grab!")
     print(
-        f"If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
+        f"You are using version {VERSION}. If you have any questions, please file an issue at {Fore.BLUE}https://github.com/skyzh/canvas_grab/issues{Style.RESET_ALL}")
     print(
         f"You may review {Fore.GREEN}README(_zh-hans).md{Style.RESET_ALL} and {Fore.GREEN}LICENSE{Style.RESET_ALL} shipped with this release")
     config.load_config()
@@ -110,7 +110,7 @@ def main():
             f"{Fore.GREEN}{len(updated_files_list)} files have a more recent version on Canvas:{Style.RESET_ALL}")
         for f in updated_files_list:
             print(f"    {f}")
-    
+
     if failure_file_list:
         print(
             f"{Fore.YELLOW}{len(failure_file_list)} files are not downloaded:{Style.RESET_ALL}")
@@ -220,9 +220,13 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     return (True, "", update_flag)
 
 
+def replaceIlligalChar(filename, regex=path_regex):
+    return re.sub(regex, config.REPLACE_ILLEGAL_CHAR_WITH, filename)
+
+
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in config.CUSTOM_NAME_OVERRIDE:
-        return re.sub(r'[:*?"<>|]', config.REPLACE_ILLEGAL_CHAR_WITH, config.CUSTOM_NAME_OVERRIDE[course.id])
+        return replaceIlligalChar(config.CUSTOM_NAME_OVERRIDE[course.id])
 
     r = re.search(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
@@ -230,7 +234,7 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r = r.groupdict()
     else:
         r = {}
-        
+
     if hasattr(course, "original_name"):
         course_name = course.original_name
         course_nickname = course.name
@@ -243,16 +247,15 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{SJTU_ID}": r.get("sjtu_id", ""),
         r"{SEMESTER_ID}": r.get("semester_id", ""),
         r"{CLASSROOM_ID}": r.get("classroom_id", ""),
-        r"{NAME}": re.sub(file_regex, config.REPLACE_ILLEGAL_CHAR_WITH, course_name.replace("（", "(").replace("）", ")")),
-        r"{NICKNAME}": re.sub(file_regex, config.REPLACE_ILLEGAL_CHAR_WITH, course_nickname.replace("（", "(").replace("）", ")")),
+        r"{NAME}": replaceIlligalChar(course_name.replace("（", "(").replace("）", ")"), file_regex),
+        r"{NICKNAME}": replaceIlligalChar(course_nickname.replace("（", "(").replace("）", ")"), file_regex),
         r"{COURSE_CODE}": course.course_code
     }
 
     folderName = config.NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
-    folderName = re.sub(
-        r'[:*?"<>|]', config.REPLACE_ILLEGAL_CHAR_WITH, folderName)
+    folderName = replaceIlligalChar(folderName)
     return folderName
 
 
@@ -414,7 +417,8 @@ def process_course(course: canvasapi.canvas.Course):
 
     for (file, folder) in get_file_list(course, organize_mode):
         directory = os.path.join(config.BASE_DIR, name, folder)
-        path = os.path.join(directory, file.display_name)
+        filename = replaceIlligalChar(file.display_name, file_regex)
+        path = os.path.join(directory, filename)
 
         json_key = f"{name}/{folder}{file}"
 
@@ -431,7 +435,7 @@ def process_course(course: canvasapi.canvas.Course):
                 f"    {Fore.GREEN}{'Update' if update_flag else 'New'}: {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             try:
                 download_file(file.url, "    Downloading",
-                            path, verbose=config.VERBOSE_MODE)
+                              path, verbose=config.VERBOSE_MODE)
                 if config.OVERRIDE_FILE_TIME:
                     c_time = datetime.strptime(
                         file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
@@ -471,6 +475,7 @@ def process_course(course: canvasapi.canvas.Course):
                     json_key = f"{name}/{page.title}-{filename}"
                     path = os.path.join(
                         config.BASE_DIR, name, f"{page.title}-{filename}")
+                    path = replaceIlligalChar(path)
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
                         ffmpeg_commands.append(

@@ -8,6 +8,7 @@ def is_windows():
 
 
 file_regex = r"[\\\/:\*\?\"<>\|]"
+path_regex = r"[:*?\"<>|]"
 
 
 def remove_empty_dir(base: Path) -> bool:
