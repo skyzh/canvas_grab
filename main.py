@@ -183,6 +183,9 @@ def scan_stale_files(courses):
 def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if file.url == "":
         return (False, "file not available", False)
+    
+    if file.size is None:
+        return (False, f"file link not available", False)
 
     update_flag = False
     updated_at = file.updated_at
