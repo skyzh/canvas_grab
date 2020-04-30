@@ -333,7 +333,7 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
     for file in get_files_in_course(course):
         folder = folders[file.folder_id] + "/"
-        folder = folder.lstrip("course files/")
+        folder = folder[len("course files/"):]
         yield (file, folder)
 
 
