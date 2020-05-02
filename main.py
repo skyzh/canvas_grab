@@ -442,9 +442,9 @@ def process_course(course: canvasapi.canvas.Course):
                               path, file.size, verbose=config.VERBOSE_MODE)
                 if config.OVERRIDE_FILE_TIME:
                     c_time = datetime.strptime(
-                        file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                        file.created_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
                     m_time = datetime.strptime(
-                        file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                        file.updated_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
                     a_time = time.time()
                     if is_windows():
                         setctime(path, c_time)
