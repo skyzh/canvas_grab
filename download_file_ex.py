@@ -13,10 +13,10 @@ def need_retrying(exception):
 
 
 @retry(retry_on_exception=need_retrying, stop_max_attempt_number=ATTEMPT, wait_fixed=1000)
-def download_file(url, desc, filename, verbose=False):
+def download_file(url, desc, filename, file_size, verbose=False):
     try:
         sys.stderr.flush()
-        df(url, desc, filename, verbose, req_timeout=TIMEOUT)
+        df(url, desc, filename, file_size, verbose, req_timeout=TIMEOUT)
         sys.stderr.flush()
     except KeyboardInterrupt:
         sys.stderr.flush()

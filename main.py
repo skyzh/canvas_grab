@@ -183,7 +183,7 @@ def scan_stale_files(courses):
 def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if file.url == "":
         return (False, "file not available", False)
-    
+
     if file.size is None:
         return (False, f"file link not available", False)
 
@@ -439,12 +439,12 @@ def process_course(course: canvasapi.canvas.Course):
                 f"    {Fore.GREEN}{'Update' if update_flag else 'New'}: {file.display_name} ({file.size // 1024 / 1000}MB){Style.RESET_ALL}")
             try:
                 download_file(file.url, "    Downloading",
-                              path, verbose=config.VERBOSE_MODE)
+                              path, file.size, verbose=config.VERBOSE_MODE)
                 if config.OVERRIDE_FILE_TIME:
                     c_time = datetime.strptime(
-                        file.created_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                        file.created_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
                     m_time = datetime.strptime(
-                        file.updated_at, '%Y-%m-%dT%H:%M:%S%z').timestamp()
+                        file.updated_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
                     a_time = time.time()
                     if is_windows():
                         setctime(path, c_time)
