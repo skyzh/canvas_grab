@@ -9,28 +9,23 @@ import sys
 import time
 
 
-def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None)):
+def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5, None)):
     """
     Download file with progressbar
 
     Usage:
         download_file('http://web4host.net/5MB.zip')  
     """
-    if not filename:
-        local_filename = os.path.join(".", url.split('/')[-1])
-    else:
-        local_filename = filename
     with requests.get(url, stream=True, timeout=req_timeout) as r:
         r.raise_for_status()
         file_size = int(r.headers.get('Content-Length', 0))
-        chunk = 1
         chunk_size = 1024
         num_bars = int(file_size / chunk_size) + 1
         if verbose:
             print("size = %d, url = %s" % (file_size, url))
         download_size = 0
 
-        with open(local_filename+'.canvas_tmp', 'wb') as fp:
+        with open(filename+'.canvas_tmp', 'wb') as fp:
             with tqdm.tqdm(
                 r.iter_content(chunk_size=chunk_size),
                 total=num_bars, unit='KB',
@@ -39,7 +34,8 @@ def download_file(url, desc, filename=False, verbose=False, req_timeout=(5, None
                 for chunk in pbar:
                     fp.write(chunk)
                     download_size += len(chunk)
-        if file_size != 0 and download_size != file_size:
-            raise Exception(f"Incomplete file: expected {file_size}, downloaded {download_size}")
-        os.replace(local_filename+'.canvas_tmp', local_filename)
+        if download_size != file_size:
+            raise Exception(
+                f"Incomplete file: expected {file_size}, downloaded {download_size}")
+        os.replace(filename+'.canvas_tmp', filename)
     return
