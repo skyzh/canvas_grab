@@ -18,7 +18,6 @@ def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5,
     """
     with requests.get(url, stream=True, timeout=req_timeout) as r:
         r.raise_for_status()
-        file_size = int(r.headers.get('Content-Length', 0))
         chunk_size = 1024
         num_bars = int(file_size / chunk_size) + 1
         if verbose:
