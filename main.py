@@ -175,7 +175,7 @@ def scan_stale_files(courses):
                     remove_empty_dir(cource_path)
             except Exception as e:
                 print(
-                    f"{Fore.Red}Failed to remove empty directories: {e}{Style.RESET_ALL}")
+                    f"{Fore.RED}Failed to remove empty directories: {e}{Style.RESET_ALL}")
             print(f"{Fore.GREEN}Stale files removed.{Style.RESET_ALL}")
         else:
             print(f"{Fore.GREEN}No action taken.{Style.RESET_ALL}")
