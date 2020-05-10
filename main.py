@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
 
-import canvasapi
-from canvasapi import Canvas
 import configparser
-import colorama
-from colorama import Fore, Back, Style
 import json
-import re
-import pathlib
-from pathlib import Path
+import multiprocessing
 import os
+import pathlib
+import re
+import shlex
+import sys
 import time
 from datetime import datetime
-import sys
-import requests
-from download_file_ex import download_file
-import toml
+from pathlib import Path
 from sys import exit
-from utils import is_windows, file_regex, path_regex, remove_empty_dir
-from version import check_latest_version, VERSION
-import shlex
+
+import canvasapi
+import colorama
+import requests
+import toml
+from canvasapi import Canvas
+from colorama import Back, Fore, Style
+
 from config import Config
-import multiprocessing
+from download_file_ex import download_file
+from utils import file_regex, is_windows, path_regex, remove_empty_dir
+from version import VERSION, check_latest_version
+
 multiprocessing.freeze_support()
 
 

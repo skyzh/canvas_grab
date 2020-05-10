@@ -1,5 +1,5 @@
 import requests
-from colorama import Fore, Back, Style
+from colorama import Back, Fore, Style
 from packaging import version as ver_parser
 
 GITHUB_RELEASE_URL = "https://api.github.com/repos/skyzh/canvas_grab/releases/latest"

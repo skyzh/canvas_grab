@@ -1,12 +1,15 @@
-from colorama import Fore, Back, Style
-import pathlib
-from pathlib import Path
-import toml
-import sys
-import os
-from utils import is_windows
-import time
 import math
+import os
+import pathlib
+import sys
+import time
+from pathlib import Path
+
+import toml
+from colorama import Back, Fore, Style
+
+from utils import is_windows
+
 CONFIG_FILE = "config.toml"
 CONFIG_EXAMPLE = "config.example.toml"
 

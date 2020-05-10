@@ -1,8 +1,10 @@
-from download_file import download_file as df
-from retrying import retry
-from colorama import Fore, Style
-from pathlib import Path
 import sys
+from pathlib import Path
+
+from colorama import Fore, Style
+from retrying import retry
+
+from download_file import download_file as df
 
 TIMEOUT = 3
 ATTEMPT = 3
