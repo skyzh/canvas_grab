@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 __author__ = "github.com/ruxi"
 __license__ = "MIT"
-from utils import is_windows
 import os.path
-import tqdm     # progress bar
-import requests
 import sys
 import time
+
+import requests
+import tqdm  # progress bar
+
+from utils import is_windows
 
 
 def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5, None)):
@@ -14,7 +16,7 @@ def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5,
     Download file with progressbar
 
     Usage:
-        download_file('http://web4host.net/5MB.zip')  
+        download_file('http://web4host.net/5MB.zip')
     """
     with requests.get(url, stream=True, timeout=req_timeout) as r:
         r.raise_for_status()

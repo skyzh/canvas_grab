@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from colorama import Fore, Back, Style
+
+from colorama import Back, Fore, Style
 
 
 def is_windows():
