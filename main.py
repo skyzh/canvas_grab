@@ -78,6 +78,9 @@ def main():
 
     courses = [course for course in canvas.get_courses()
                if hasattr(course, "name")]
+    if config.WHITELIST_CANVAS_ID:
+        print(f"{Fore.BLUE}Whilelist mode enabled{Style.RESET_ALL}")
+        courses = [course for course in courses if course.id in config.WHITELIST_CANVAS_ID]
 
     try:
         for course in courses:
