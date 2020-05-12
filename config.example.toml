@@ -25,6 +25,8 @@ NAME_TEMPLATE = "{NAME}"
 REPLACE_ILLEGAL_CHAR_WITH = "-"
 # Ignore courses
 IGNORED_CANVAS_ID = [10001, 10002, 10003]
+# Whitelist courses, if not empty, only courses in whitelist will be downloaded
+WHITELIST_CANVAS_ID = []
 # Module folder name template
 MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
 # Module folder IDX start number
