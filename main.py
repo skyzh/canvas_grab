@@ -18,8 +18,10 @@ import requests
 import toml
 from canvasapi import Canvas
 from colorama import Back, Fore, Style
+
 from checkpoint import Checkpoint, CheckpointItem
 from config import Config
+from course_files import CourseFiles
 from download_file_ex import download_file
 from utils import file_regex, is_windows, path_regex, remove_empty_dir
 from version import VERSION, check_latest_version
@@ -31,7 +33,7 @@ if is_windows():
     from win32_setctime import setctime
 
 checkpoint = None
-course_files = {}
+course_files = CourseFiles()
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
@@ -73,8 +75,7 @@ def main():
     except FileNotFoundError:
         print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
-    courses = [course for course in canvas.get_courses()
-               if hasattr(course, "name")]
+    courses = [course for course in canvas.get_courses() if hasattr(course, "name")]
     if config.WHITELIST_CANVAS_ID:
         print(f"{Fore.BLUE}Whilelist mode enabled{Style.RESET_ALL}")
         courses = [
@@ -256,20 +257,22 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     folderName = config.NAME_TEMPLATE
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
+
     folderName = replaceIlligalChar(folderName)
     return folderName
 
 
-def resolve_video(page: canvasapi.page.PageRevision):
-    title = page.title
+def resolve_video(page: canvasapi.page.PageRevision) -> (bool, str):
     if config.VERBOSE_MODE:
-        print(f"    {Fore.GREEN}Resolving page {title}{Style.RESET_ALL}")
+        print(f"    {Fore.GREEN}Resolving page {page.title}{Style.RESET_ALL}")
+
     if not hasattr(page, "body") or page.body is None:
         if config.VERBOSE_MODE:
             print(
                 f"    {Fore.RED}This page has no attribute 'body'{Style.RESET_ALL}")
         yield (False, "failed to resolve page")
         return
+
     links = re.findall(r"\"(https:\/\/vshare.sjtu.edu.cn\/.*?)\"", page.body)
     if links:
         if config.VERBOSE_MODE:
@@ -298,38 +301,11 @@ def resolve_video(page: canvasapi.page.PageRevision):
             yield (False, "failed to resolve video")
             continue
         yield (True, video_link[0])
-    pass
-
-
-def check_filelist_cache(course: canvasapi.canvas.Course):
-    if course.id not in course_files:
-        if 'files' in [tab.id for tab in course.get_tabs()]:
-            course_files[course.id] = {
-                file.id: file for file in course.get_files()}
-        else:
-            course_files[course.id] = None
-    return course_files[course.id] != None
-
-
-def get_files_in_course(course: canvasapi.canvas.Course):
-    if check_filelist_cache(course):
-        for file in course_files[course.id].values():
-            yield file
-    else:
-        raise canvasapi.exceptions.ResourceDoesNotExist(
-            "File tab is not supported.")
-
-
-def get_file_in_course(course: canvasapi.canvas.Course, file_id: str):
-    if check_filelist_cache(course):
-        return course_files[course.id][file_id]
-    else:
-        return course.get_file(file_id)
 
 
 def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     folders = {folder.id: folder.full_name for folder in course.get_folders()}
-    for file in get_files_in_course(course):
+    for file in course_files.get_files(course):
         folder = folders[file.folder_id] + "/"
         if folder.startswith("course files/"):
             folder = folder[len("course files/"):]
@@ -351,7 +327,7 @@ def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.Fil
             f"    Module {Fore.CYAN}{module_name} ({module_item_count} items){Style.RESET_ALL}")
         for item in module.get_module_items():
             if item.type == "File":
-                yield get_file_in_course(course, item.content_id), module_name
+                yield course_files.get_file(course, item.content_id), module_name
             elif item.type in ["Page", "Discussion", "Assignment"]:
                 page_url = item.html_url
             elif item.type == "ExternalUrl":
@@ -476,13 +452,11 @@ def process_course(course: canvasapi.canvas.Course):
                 if result == True:
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
-                    path = os.path.join(
-                        config.BASE_DIR, name, f"{page.title}-{filename}")
+                    path = os.path.join(config.BASE_DIR, name, f"{page.title}-{filename}")
                     path = replaceIlligalChar(path)
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
-                        ffmpeg_commands.append(
-                            f"{config.FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
+                        ffmpeg_commands.append(f"{config.FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
                 else:
                     prev_cnt = reasons_of_not_download.get(msg, 0)
                     reasons_of_not_download[msg] = prev_cnt + 1
