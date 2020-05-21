@@ -77,7 +77,8 @@ def main():
                if hasattr(course, "name")]
     if config.WHITELIST_CANVAS_ID:
         print(f"{Fore.BLUE}Whilelist mode enabled{Style.RESET_ALL}")
-        courses = [course for course in courses if course.id in config.WHITELIST_CANVAS_ID]
+        courses = [
+            course for course in courses if course.id in config.WHITELIST_CANVAS_ID]
 
     try:
         for course in courses:
@@ -208,7 +209,8 @@ def check_download_rule(file: canvasapi.canvas.File, path: Path, json_key: str) 
 
     if history:
         if history.id != file.id and history.session == config.SESSION:
-            print(f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
+            print(
+                f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
             return (False, "files with duplicated path", update_flag)
 
         checkpoint[json_key].session = config.SESSION
@@ -424,7 +426,8 @@ def process_course(course: canvasapi.canvas.Course):
 
         json_key = f"{name}/{folder}{file}"
 
-        can_download, reason, update_flag = check_download_rule(file, path, json_key)
+        can_download, reason, update_flag = check_download_rule(
+            file, path, json_key)
 
         if can_download:
             Path(directory).mkdir(parents=True, exist_ok=True)
@@ -447,7 +450,8 @@ def process_course(course: canvasapi.canvas.Course):
                         setctime(path, c_time)
                     os.utime(path, (a_time, m_time))
 
-                checkpoint[json_key] = CheckpointItem(file.updated_at_date, file.id, config.SESSION)
+                checkpoint[json_key] = CheckpointItem(
+                    file.updated_at_date, file.id, config.SESSION)
 
                 new_files_list.append(path)
             except Exception as e:

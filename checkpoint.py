@@ -50,7 +50,7 @@ class Checkpoint:
 
         for k, v in self._checkpoint.items():
             v['updated_at'] = datetime.strptime(
-                        v['updated_at'], r'%Y-%m-%dT%H:%M:%S%z')
+                v['updated_at'], r'%Y-%m-%dT%H:%M:%S%z')
             self._checkpoint[k] = CheckpointItem(**v)
 
     def dump(self):
