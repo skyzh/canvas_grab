@@ -75,7 +75,8 @@ def main():
     except FileNotFoundError:
         print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
-    courses = [course for course in canvas.get_courses() if hasattr(course, "name")]
+    courses = [course for course in canvas.get_courses()
+               if hasattr(course, "name")]
     if config.WHITELIST_CANVAS_ID:
         print(f"{Fore.BLUE}Whilelist mode enabled{Style.RESET_ALL}")
         courses = [
@@ -452,11 +453,13 @@ def process_course(course: canvasapi.canvas.Course):
                 if result == True:
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
-                    path = os.path.join(config.BASE_DIR, name, f"{page.title}-{filename}")
+                    path = os.path.join(
+                        config.BASE_DIR, name, f"{page.title}-{filename}")
                     path = replaceIlligalChar(path)
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
-                        ffmpeg_commands.append(f"{config.FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
+                        ffmpeg_commands.append(
+                            f"{config.FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
                 else:
                     prev_cnt = reasons_of_not_download.get(msg, 0)
                     reasons_of_not_download[msg] = prev_cnt + 1
