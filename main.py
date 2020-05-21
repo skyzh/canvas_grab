@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import configparser
-import json
 import multiprocessing
 import os
 import pathlib
@@ -19,7 +18,7 @@ import requests
 import toml
 from canvasapi import Canvas
 from colorama import Back, Fore, Style
-
+from checkpoint import Checkpoint, CheckpointItem
 from config import Config
 from download_file_ex import download_file
 from utils import file_regex, is_windows, path_regex, remove_empty_dir
@@ -31,7 +30,7 @@ multiprocessing.freeze_support()
 if is_windows():
     from win32_setctime import setctime
 
-checkpoint = {}
+checkpoint = None
 course_files = {}
 new_files_list = []
 updated_files_list = []
@@ -67,13 +66,11 @@ def main():
             input()
         exit()
 
-    os.makedirs(Path(config.CHECKPOINT_FILE).parent, exist_ok=True)
-
     try:
-        with open(config.CHECKPOINT_FILE, 'r') as file:
-            global checkpoint
-            checkpoint = json.load(file)
-    except:
+        global checkpoint
+        checkpoint = Checkpoint(config.CHECKPOINT_FILE)
+        checkpoint.load()
+    except FileNotFoundError:
         print(f"{Fore.RED}No checkpoint found{Style.RESET_ALL}")
 
     courses = [course for course in canvas.get_courses()
@@ -103,7 +100,7 @@ def main():
     except KeyboardInterrupt:
         print(f"{Fore.RED}Terminated due to keyboard interrupt.{Style.RESET_ALL}")
 
-    do_checkpoint()
+    checkpoint.dump()
 
     if new_files_list:
         print(
@@ -145,12 +142,6 @@ def main():
         input()
 
 
-def do_checkpoint():
-    with open(config.CHECKPOINT_FILE+'.canvas_tmp', 'w') as file:
-        json.dump(checkpoint, file)
-    os.replace(config.CHECKPOINT_FILE+'.canvas_tmp', config.CHECKPOINT_FILE)
-
-
 def scan_stale_files(courses):
     print(f"{Fore.CYAN}Scanning stale files{Style.RESET_ALL}")
     base_path = Path(config.BASE_DIR)
@@ -160,7 +151,7 @@ def scan_stale_files(courses):
         file_list.append(str(Path(file)))
     stale_file_list = []
     for course in courses:
-        cource_path = base_path/parse_course_folder_name(course)
+        cource_path = base_path / parse_course_folder_name(course)
         for p in cource_path.rglob("*"):
             if p.is_file() and not p.name.startswith("."):
                 if not str(p) in file_list:
@@ -174,7 +165,7 @@ def scan_stale_files(courses):
             print(f"{Fore.GREEN}Remove empty directories.{Style.RESET_ALL}")
             try:
                 for course in courses:
-                    cource_path = base_path/parse_course_folder_name(course)
+                    cource_path = base_path / parse_course_folder_name(course)
                     remove_empty_dir(cource_path)
             except Exception as e:
                 print(
@@ -186,7 +177,7 @@ def scan_stale_files(courses):
         print(f"{Fore.GREEN}No stale files.{Style.RESET_ALL}")
 
 
-def check_download_rule(file, path, json_key) -> (bool, str, bool):
+def check_download_rule(file: canvasapi.canvas.File, path: Path, json_key: str) -> (bool, str, bool):
     if file.url == "":
         return (False, "file not available", False)
 
@@ -194,12 +185,14 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
         return (False, f"file link not available", False)
 
     update_flag = False
-    updated_at = file.updated_at
+    updated_at = file.updated_at_date
     path_exist = Path(path).exists()
 
-    if json_key in checkpoint:
-        if checkpoint[json_key]["updated_at"] != updated_at:
-            update_flag = True
+    global checkpoint
+    history = checkpoint.get(json_key)
+
+    if history and history.updated_at != updated_at:
+        update_flag = True
 
     if not any(file.display_name.lower().endswith(pf) for pf in config.ALLOW_FILE_EXTENSION):
         return (False, "filtered by extension", update_flag)
@@ -207,23 +200,20 @@ def check_download_rule(file, path, json_key) -> (bool, str, bool):
     if file.size >= config.MAX_SINGLE_FILE_SIZE * 1024 * 1024:
         return (False, f"size limit exceed (>= {config.MAX_SINGLE_FILE_SIZE} MB)", update_flag)
 
-    if json_key in checkpoint and config.NEVER_DOWNLOAD_AGAIN:
+    if history and config.NEVER_DOWNLOAD_AGAIN:
         return (False, "file has been downloaded before (config.NEVER_DOWNLOAD_AGAIN)", update_flag)
 
     if path_exist and config.NEVER_OVERWRITE_FILE:
         return (False, "file exists and will not be overwritten (config.NEVER_OVERWRITE_FILE)", update_flag)
 
-    if json_key in checkpoint:
-        if "id" in checkpoint[json_key] and "session" in checkpoint[json_key]:
-            if checkpoint[json_key]["id"] != file.id:
-                if checkpoint[json_key]["session"] == config.SESSION:
-                    print(
-                        f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
-                    return (False, "files with duplicated path", update_flag)
-        checkpoint[json_key]["session"] = config.SESSION
+    if history:
+        if history.id != file.id and history.session == config.SESSION:
+            print(f"    {Fore.YELLOW}Duplicated files detected. ({file.display_name}){Style.RESET_ALL}")
+            return (False, "files with duplicated path", update_flag)
 
-    if path_exist and json_key in checkpoint:
-        if checkpoint[json_key]["updated_at"] == updated_at:
+        checkpoint[json_key].session = config.SESSION
+
+        if path_exist and history.updated_at == updated_at:
             return (False, "already downloaded and is latest version", update_flag)
 
     return (True, "", update_flag)
@@ -283,7 +273,7 @@ def resolve_video(page: canvasapi.page.PageRevision):
         if config.VERBOSE_MODE:
             print(
                 f"    {Style.DIM}unsupported link: vshare.sjtu.edu.cn{Style.RESET_ALL}")
-        for i in range(len(links)):
+        for _ in range(len(links)):
             yield (False, "unsupported video link")
 
     links = re.findall(r"\"(https:\/\/v.sjtu.edu.cn\/.*?)\"", page.body)
@@ -347,7 +337,7 @@ def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File,
 def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
     for module in course.get_modules():
         module_item_count = module.items_count
-        module_item_position = module.position-1  # it begins with 1
+        module_item_position = module.position - 1  # it begins with 1
         module_name = config.MODULE_FOLDER_TEMPLATE
         module_name = module_name.replace("{NAME}", re.sub(
             file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
@@ -414,6 +404,8 @@ def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasa
 
 
 def process_course(course: canvasapi.canvas.Course):
+    global checkpoint
+
     name = parse_course_folder_name(course)
     print(
         f"Course {Fore.CYAN}{course.course_code} (ID: {course.id}){Style.RESET_ALL}")
@@ -432,8 +424,7 @@ def process_course(course: canvasapi.canvas.Course):
 
         json_key = f"{name}/{folder}{file}"
 
-        can_download, reason, update_flag = check_download_rule(
-            file, path, json_key)
+        can_download, reason, update_flag = check_download_rule(file, path, json_key)
 
         if can_download:
             Path(directory).mkdir(parents=True, exist_ok=True)
@@ -455,11 +446,9 @@ def process_course(course: canvasapi.canvas.Course):
                     if is_windows():
                         setctime(path, c_time)
                     os.utime(path, (a_time, m_time))
-                checkpoint[json_key] = {
-                    "updated_at": file.updated_at,
-                    "id": file.id,
-                    "session": config.SESSION
-                }
+
+                checkpoint[json_key] = CheckpointItem(file.updated_at_date, file.id, config.SESSION)
+
                 new_files_list.append(path)
             except Exception as e:
                 print(
@@ -475,7 +464,7 @@ def process_course(course: canvasapi.canvas.Course):
             if update_flag:
                 updated_files_list.append(path)
         current_file_list.append(path)
-        do_checkpoint()
+        checkpoint.dump()
 
     if config.ENABLE_VIDEO:
         for page in course.get_pages():
