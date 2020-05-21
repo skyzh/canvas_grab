@@ -49,7 +49,8 @@ class Checkpoint:
             self._checkpoint = json.load(fp)
 
         for k, v in self._checkpoint.items():
-            v['updated_at'] = datetime.fromisoformat(v['updated_at'])
+            v['updated_at'] = datetime.strptime(
+                        v['updated_at'], r'%Y-%m-%dT%H:%M:%S%z')
             self._checkpoint[k] = CheckpointItem(**v)
 
     def dump(self):
