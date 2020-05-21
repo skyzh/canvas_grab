@@ -26,7 +26,7 @@ def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5,
             print("size = %d, url = %s" % (file_size, url))
         download_size = 0
 
-        with open(filename+'.canvas_tmp', 'wb') as fp:
+        with open(filename + '.canvas_tmp', 'wb') as fp:
             with tqdm.tqdm(
                 r.iter_content(chunk_size=chunk_size),
                 total=num_bars, unit='KB',
@@ -38,5 +38,5 @@ def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5,
         if download_size != file_size:
             raise Exception(
                 f"Incomplete file: expected {file_size}, downloaded {download_size}")
-        os.replace(filename+'.canvas_tmp', filename)
+        os.replace(filename + '.canvas_tmp', filename)
     return

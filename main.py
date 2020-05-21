@@ -18,10 +18,9 @@ import requests
 import toml
 from canvasapi import Canvas
 from colorama import Back, Fore, Style
-
+from file_organizer import FileOrganizer
 from checkpoint import Checkpoint, CheckpointItem
 from config import Config
-from course_files import CourseFiles
 from download_file_ex import download_file
 from utils import file_regex, is_windows, path_regex, remove_empty_dir
 from version import VERSION, check_latest_version
@@ -33,7 +32,6 @@ if is_windows():
     from win32_setctime import setctime
 
 checkpoint = None
-course_files = CourseFiles()
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
@@ -303,82 +301,37 @@ def resolve_video(page: canvasapi.page.PageRevision) -> (bool, str):
         yield (True, video_link[0])
 
 
-def organize_by_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    folders = {folder.id: folder.full_name for folder in course.get_folders()}
-    for file in course_files.get_files(course):
-        folder = folders[file.folder_id] + "/"
-        if folder.startswith("course files/"):
-            folder = folder[len("course files/"):]
-        yield (file, folder)
-
-
-def organize_by_module(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    for module in course.get_modules():
-        module_item_count = module.items_count
-        module_item_position = module.position - 1  # it begins with 1
-        module_name = config.MODULE_FOLDER_TEMPLATE
-        module_name = module_name.replace("{NAME}", re.sub(
-            file_regex, "_", module.name.replace("（", "(").replace("）", ")")))
-        if config.CONSOLIDATE_MODULE_SPACE:
-            module_name = " ".join(module_name.split())
-        module_name = module_name.replace(
-            "{IDX}", str(module_item_position + config.MODULE_FOLDER_IDX_BEGIN_WITH))
-        print(
-            f"    Module {Fore.CYAN}{module_name} ({module_item_count} items){Style.RESET_ALL}")
-        for item in module.get_module_items():
-            if item.type == "File":
-                yield course_files.get_file(course, item.content_id), module_name
-            elif item.type in ["Page", "Discussion", "Assignment"]:
-                page_url = item.html_url
-            elif item.type == "ExternalUrl":
-                page_url = item.external_url
-            elif item.type == "SubHeader":
-                pass
-            else:
-                if config.VERBOSE_MODE:
-                    print(
-                        f"    {Fore.YELLOW}Unsupported item type: {item.type}{Style.RESET_ALL}")
-
-
-def organize_by_module_with_file(course: canvasapi.canvas.Course) -> (canvasapi.canvas.File, str):
-    module_files_id = []
-    for (file, path) in organize_by_module(course):
-        yield (file, path)
-        module_files_id.append(file.id)
-    print(f"    {Fore.CYAN}File not in module{Style.RESET_ALL}")
-    for (file, path) in organize_by_file(course):
-        if not(file.id in module_files_id):
-            yield (file, os.path.join("unmoduled", path))
-
-
 def get_file_list(course: canvasapi.canvas.Course, organize_by: str) -> (canvasapi.canvas.File, str):
-    if organize_by == "module_with_file":
-        for (file, path) in organize_by_module_with_file(course):
-            yield (file, path)
-        return
-    another_mode = ""
-    try:
-        if organize_by == "file":
-            another_mode = "module"
-            for (file, path) in organize_by_file(course):
-                yield (file, path)
-        elif organize_by == "module":
-            another_mode = "file"
-            for (file, path) in organize_by_module(course):
-                yield (file, path)
-        else:
-            print(
-                f"    {Fore.RED}unsupported organize mode: {config.ORGANIZE_BY}{Style.RESET_ALL}")
-        return
-    except canvasapi.exceptions.ResourceDoesNotExist:
-        pass
-    except canvasapi.exceptions.Unauthorized:
-        pass
-    except Exception:
-        raise
-    print(f"    {Fore.YELLOW}{organize_by} mode not available, falling back to {another_mode} mode{Style.RESET_ALL}")
-    for (file, path) in get_file_list(course, another_mode):
-        yield (file, path)
+    if not isinstance(organize_by, FileOrganizer.By):
+        organize_by = FileOrganizer.By(organize_by)
+
+    another_mode = {
+        FileOrganizer.By.MODULE: FileOrganizer.By.FILE,
+        FileOrganizer.By.FILE: FileOrganizer.By.MODULE,
+        FileOrganizer.By.MODULE_WITH_FILE: None
+    }[organize_by]
+
+    for mode in [organize_by, another_mode]:
+        try:
+            for (file, path) in FileOrganizer(course, mode, config).get():
+                yield(file, path)
+            return
+        except canvasapi.exceptions.ResourceDoesNotExist:
+            pass
+        except canvasapi.exceptions.Unauthorized:
+            pass
+        except Exception:
+            raise
+
+        print(f"    {Fore.RED}unsupported organize mode: {mode.value}{Style.RESET_ALL}")
+
+        if mode == FileOrganizer.By.MODULE_WITH_FILE:
+            return
+        elif mode == organize_by:
+            print(f"    {Fore.YELLOW}{organize_by.value} mode not available, falling back to {another_mode.value} mode{Style.RESET_ALL}")
+        elif mode == another_mode:
+            # FIXME: THIS IS A FATAL STATE, NEED A BETTER RESPONSE
+            pass
 
 
 def process_course(course: canvasapi.canvas.Course):
