@@ -76,41 +76,34 @@ class Config:
         self.API_URL = config["API"]["API_URL"]
         self.API_KEY = config["API"]["API_KEY"]
         self.NAME_TEMPLATE = config["COURSE_FOLDER"]["NAME_TEMPLATE"]
-        self.MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get(
-            "MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
-        self.MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get(
-            "MODULE_FOLDER_IDX_BEGIN_WITH", 0)
-        self.CONSOLIDATE_MODULE_SPACE = config["COURSE_FOLDER"].get(
-            "CONSOLIDATE_MODULE_SPACE", False)
+        self.MODULE_FOLDER_TEMPLATE = config["COURSE_FOLDER"].get("MODULE_FOLDER_TEMPLATE", "{IDX} {NAME}")
+        self.MODULE_FOLDER_IDX_BEGIN_WITH = config["COURSE_FOLDER"].get("MODULE_FOLDER_IDX_BEGIN_WITH", 0)
+        self.CONSOLIDATE_MODULE_SPACE = config["COURSE_FOLDER"].get("CONSOLIDATE_MODULE_SPACE", False)
         self.REPLACE_ILLEGAL_CHAR_WITH = config["COURSE_FOLDER"]["REPLACE_ILLEGAL_CHAR_WITH"]
-        self.CUSTOM_NAME_OVERRIDE = {int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
-                                     for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])}
-        self.CUSTOM_ORGANIZE = {int(i["CANVAS_ID"]): str(i["ORGANIZE_BY"])
-                                for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])}
-        self.IGNORED_CANVAS_ID = config["COURSE_FOLDER"].get(
-            "IGNORED_CANVAS_ID", [])
+        self.CUSTOM_NAME_OVERRIDE = {
+            int(i["CANVAS_ID"]): str(i["FOLDER_NAME"])
+            for i in config["COURSE_FOLDER"].get("CUSTOM_NAME", [])
+        }
+        self.CUSTOM_ORGANIZE = {
+            int(i["CANVAS_ID"]): str(i["ORGANIZE_BY"])
+            for i in config["COURSE_FOLDER"].get("ORGANIZE_BY", [])
+        }
+        self.IGNORED_CANVAS_ID = config["COURSE_FOLDER"].get("IGNORED_CANVAS_ID", [])
         self.CHECKPOINT_FILE = config["CHECKPOINT"]["CHECKPOINT_FILE"]
         self.BASE_DIR = config["SYNC"]["BASE_DIR"]
         self.OVERRIDE_FILE_TIME = config["SYNC"]["OVERRIDE_FILE_TIME"]
         self.MAX_SINGLE_FILE_SIZE = config["SYNC"]["MAX_SINGLE_FILE_SIZE"]
         self.ALLOW_FILE_EXTENSION = []
-        self.ALLOW_FILE_EXTENSION.extend(
-            config["SYNC"]["ALLOW_FILE_EXTENSION"])
+        self.ALLOW_FILE_EXTENSION.extend(config["SYNC"]["ALLOW_FILE_EXTENSION"])
         self.ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
         self.FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
         self.ORGANIZE_BY = config["SYNC"].get("ORGANIZE_BY", "file")
-        self.NEVER_OVERWRITE_FILE = config["SYNC"].get(
-            "NEVER_OVERWRITE_FILE", False)
-        self.NEVER_DOWNLOAD_AGAIN = config["SYNC"].get(
-            "NEVER_DOWNLOAD_AGAIN", False)
-        self.SCAN_STALE_FILE = config["SYNC"].get(
-            "SCAN_STALE_FILE", False)
+        self.NEVER_OVERWRITE_FILE = config["SYNC"].get("NEVER_OVERWRITE_FILE", False)
+        self.NEVER_DOWNLOAD_AGAIN = config["SYNC"].get("NEVER_DOWNLOAD_AGAIN", False)
+        self.SCAN_STALE_FILE = config["SYNC"].get("SCAN_STALE_FILE", False)
         self.SESSION = math.floor(time.time())
-        self.ALLOW_VERSION_CHECK = config["SYNC"].get(
-            "ALLOW_VERSION_CHECK", True)
-        self.WHITELIST_CANVAS_ID = config["COURSE_FOLDER"].get(
-            "WHITELIST_CANVAS_ID", [])
+        self.ALLOW_VERSION_CHECK = config["SYNC"].get("ALLOW_VERSION_CHECK", True)
+        self.WHITELIST_CANVAS_ID = config["COURSE_FOLDER"].get("WHITELIST_CANVAS_ID", [])
 
         for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
-            self.ALLOW_FILE_EXTENSION.extend(
-                config["EXTENSION"].get(ext_groups, []))
+            self.ALLOW_FILE_EXTENSION.extend(config["EXTENSION"].get(ext_groups, []))
