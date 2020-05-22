@@ -45,7 +45,7 @@ class Checkpoint:
         return key in self._checkpoint
 
     def load(self):
-        with open(self._path, 'r') as fp:
+        with open(self._path, 'r', encoding='utf8') as fp:
             self._checkpoint = json.load(fp)
 
         for k, v in self._checkpoint.items():
@@ -55,6 +55,6 @@ class Checkpoint:
 
     def dump(self):
         tmp = self._path.with_name(self._path.name + '.canvas_tmp')
-        with open(tmp, 'w') as file:
-            json.dump(self._checkpoint, file, cls=CheckpointItemEncoder)
+        with open(tmp, 'w', encoding='utf8') as file:
+            json.dump(self._checkpoint, file, ensure_ascii=False, indent=2, cls=CheckpointItemEncoder)
         os.replace(tmp, self._path)
