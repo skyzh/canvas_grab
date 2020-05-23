@@ -11,7 +11,7 @@ __all__ = ['Checkpoint', 'CheckpointItem']
 class CheckpointItem:
     updated_at: datetime
     id: str
-    session: str
+    session: str = ''
 
 
 class CheckpointItemEncoder(json.JSONEncoder):
