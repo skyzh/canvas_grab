@@ -3,7 +3,7 @@ from colorama import Back, Fore, Style
 from packaging import version as ver_parser
 
 GITHUB_RELEASE_URL = "https://api.github.com/repos/skyzh/canvas_grab/releases/latest"
-VERSION = "v1.7.7"
+VERSION = "v1.7.8"
 
 
 def check_latest_version():
