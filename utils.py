@@ -29,3 +29,14 @@ def remove_empty_dir(base: Path) -> bool:
         print(f"    {str(base)}")
         base.rmdir()
     return is_empty
+
+
+def apply_datetime_attr(path, created_at: str, updated_at: str):
+    c_time = datetime.strptime(
+        created_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
+    m_time = datetime.strptime(
+        updated_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
+    a_time = time.time()
+    if is_windows():
+        setctime(path, c_time)
+    os.utime(path, (a_time, m_time))

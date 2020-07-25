@@ -74,8 +74,10 @@ class FileOrganizer:
                     yield file_manager.get_file(self._course, item.content_id), module_name
                 elif item.type in ["Page", "Discussion", "Assignment"]:
                     _page_url = item.html_url
+                    yield Link(item.title, _page_url), module_name
                 elif item.type == "ExternalUrl":
                     _page_url = item.external_url
+                    yield Link(item.title, _page_url), module_name
                 elif item.type == "SubHeader":
                     pass
                 else:
@@ -97,3 +99,10 @@ class FileOrganizer:
         for (file, path) in self._by_file():
             if file.id not in module_files_id:
                 yield (file, os.path.join("unmoduled", path))
+
+
+class Link:
+    def __init__(self, title, url):
+        self.display_name = title
+        self.url = url
+        self.id = None

@@ -18,11 +18,12 @@ import requests
 import toml
 from canvasapi import Canvas
 from colorama import Back, Fore, Style
-from file_organizer import FileOrganizer
+from file_organizer import FileOrganizer, Link
 from checkpoint import Checkpoint, CheckpointItem
 from config import Config
 from download_file_ex import download_file
-from utils import file_regex, is_windows, path_regex, remove_empty_dir
+from download_link import download_link
+from utils import file_regex, is_windows, path_regex, remove_empty_dir, apply_datetime_attr
 from version import VERSION, check_latest_version
 
 multiprocessing.freeze_support()
@@ -353,6 +354,19 @@ def process_course(course: canvasapi.canvas.Course):
         filename = replaceIlligalChar(file.display_name, file_regex)
         path = os.path.join(directory, filename)
 
+        if type(file) == Link:
+            if config.ENABLE_LINK:
+                Path(directory).mkdir(parents=True, exist_ok=True)
+                download_link(file.url, path)
+                if config.OVERRIDE_FILE_TIME:
+                    # cannot be implemented
+                    # apply_datetime_attr(path, file.created_at, file.updated_at)
+                    pass
+            elif config.VERBOSE_MODE:
+                print(
+                    f"    {Style.DIM}Ignore {file.display_name}: {'ENABLE_LINK disabled'}{Style.RESET_ALL}")
+            continue
+
         json_key = f"{name}/{folder}{file}"
 
         can_download, reason, update_flag = check_download_rule(
@@ -370,15 +384,7 @@ def process_course(course: canvasapi.canvas.Course):
                 download_file(file.url, "    Downloading",
                               path, file.size, verbose=config.VERBOSE_MODE)
                 if config.OVERRIDE_FILE_TIME:
-                    c_time = datetime.strptime(
-                        file.created_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
-                    m_time = datetime.strptime(
-                        file.updated_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
-                    a_time = time.time()
-                    if is_windows():
-                        setctime(path, c_time)
-                    os.utime(path, (a_time, m_time))
-
+                    apply_datetime_attr(path, file.created_at, file.updated_at)
                 checkpoint[json_key] = CheckpointItem(
                     file.updated_at_date, file.id, config.SESSION)
 

@@ -96,6 +96,7 @@ class Config:
         self.ALLOW_FILE_EXTENSION = []
         self.ALLOW_FILE_EXTENSION.extend(config["SYNC"]["ALLOW_FILE_EXTENSION"])
         self.ENABLE_VIDEO = config["SYNC"].get("ENABLE_VIDEO", False)
+        self.ENABLE_LINK = config["SYNC"].get("ENABLE_LINK", True)
         self.FFMPEG_PATH = config["SYNC"].get("FFMPEG_PATH", "ffmpeg")
         self.ORGANIZE_BY = config["SYNC"].get("ORGANIZE_BY", "file")
         self.NEVER_OVERWRITE_FILE = config["SYNC"].get("NEVER_OVERWRITE_FILE", False)
