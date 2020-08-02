@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import time
+from datetime import datetime
 
 from colorama import Back, Fore, Style
 
@@ -8,8 +10,11 @@ def is_windows():
     return os.name == "nt"
 
 
-file_regex = r"[\\\/:\*\?\"<>\|]"
-path_regex = r"[:*?\"<>|]"
+if is_windows():
+    from win32_setctime import setctime
+
+file_regex = r"[\t\\\/:\*\?\"<>\|]"
+path_regex = r"[\t:*?\"<>|]"
 
 
 def remove_empty_dir(base: Path) -> bool:

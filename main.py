@@ -8,7 +8,6 @@ import re
 import shlex
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
 from sys import exit
 
@@ -29,14 +28,12 @@ from version import VERSION, check_latest_version
 multiprocessing.freeze_support()
 
 
-if is_windows():
-    from win32_setctime import setctime
-
 checkpoint = None
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
 current_file_list = []
+current_link_list = []
 failure_file_list = []
 config = Config()
 
@@ -149,6 +146,8 @@ def scan_stale_files(courses):
 
     file_list = []
     for file in current_file_list:
+        file_list.append(str(Path(file)))
+    for file in current_link_list:
         file_list.append(str(Path(file)))
     stale_file_list = []
     for course in courses:
@@ -350,14 +349,17 @@ def process_course(course: canvasapi.canvas.Course):
         organize_mode = config.CUSTOM_ORGANIZE[course.id]
 
     for (file, folder) in get_file_list(course, organize_mode):
-        directory = os.path.join(config.BASE_DIR, name, folder)
+        directory = os.path.join(config.BASE_DIR, name, folder).rstrip()
         filename = replaceIlligalChar(file.display_name, file_regex)
         path = os.path.join(directory, filename)
+        json_key = f"{name}/{folder}{file}"
 
         if type(file) == Link:
             if config.ENABLE_LINK:
                 Path(directory).mkdir(parents=True, exist_ok=True)
+                path += '.url' if is_windows() else '.html'
                 download_link(file.url, path)
+                current_link_list.append(path)
                 if config.OVERRIDE_FILE_TIME:
                     # cannot be implemented
                     # apply_datetime_attr(path, file.created_at, file.updated_at)
@@ -366,8 +368,6 @@ def process_course(course: canvasapi.canvas.Course):
                 print(
                     f"    {Style.DIM}Ignore {file.display_name}: {'ENABLE_LINK disabled'}{Style.RESET_ALL}")
             continue
-
-        json_key = f"{name}/{folder}{file}"
 
         can_download, reason, update_flag = check_download_rule(
             file, path, json_key)
