@@ -8,7 +8,6 @@ import re
 import shlex
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
 from sys import exit
 
@@ -18,24 +17,23 @@ import requests
 import toml
 from canvasapi import Canvas
 from colorama import Back, Fore, Style
-from file_organizer import FileOrganizer
+from file_organizer import FileOrganizer, Link
 from checkpoint import Checkpoint, CheckpointItem
 from config import Config
 from download_file_ex import download_file
-from utils import file_regex, is_windows, path_regex, remove_empty_dir
+from download_link import download_link
+from utils import file_regex, is_windows, path_regex, remove_empty_dir, apply_datetime_attr
 from version import VERSION, check_latest_version
 
 multiprocessing.freeze_support()
 
-
-if is_windows():
-    from win32_setctime import setctime
 
 checkpoint = None
 new_files_list = []
 updated_files_list = []
 ffmpeg_commands = []
 current_file_list = []
+current_link_list = []
 failure_file_list = []
 config = Config()
 
@@ -148,6 +146,8 @@ def scan_stale_files(courses):
 
     file_list = []
     for file in current_file_list:
+        file_list.append(str(Path(file)))
+    for file in current_link_list:
         file_list.append(str(Path(file)))
     stale_file_list = []
     for course in courses:
@@ -349,11 +349,25 @@ def process_course(course: canvasapi.canvas.Course):
         organize_mode = config.CUSTOM_ORGANIZE[course.id]
 
     for (file, folder) in get_file_list(course, organize_mode):
-        directory = os.path.join(config.BASE_DIR, name, folder)
+        directory = os.path.join(config.BASE_DIR, name, folder).rstrip()
         filename = replaceIlligalChar(file.display_name, file_regex)
         path = os.path.join(directory, filename)
-
         json_key = f"{name}/{folder}{file}"
+
+        if type(file) == Link:
+            if config.ENABLE_LINK:
+                Path(directory).mkdir(parents=True, exist_ok=True)
+                path += '.url' if is_windows() else '.html'
+                download_link(file.url, path)
+                current_link_list.append(path)
+                if config.OVERRIDE_FILE_TIME:
+                    # cannot be implemented
+                    # apply_datetime_attr(path, file.created_at, file.updated_at)
+                    pass
+            elif config.VERBOSE_MODE:
+                print(
+                    f"    {Style.DIM}Ignore {file.display_name}: {'ENABLE_LINK disabled'}{Style.RESET_ALL}")
+            continue
 
         can_download, reason, update_flag = check_download_rule(
             file, path, json_key)
@@ -370,15 +384,7 @@ def process_course(course: canvasapi.canvas.Course):
                 download_file(file.url, "    Downloading",
                               path, file.size, verbose=config.VERBOSE_MODE)
                 if config.OVERRIDE_FILE_TIME:
-                    c_time = datetime.strptime(
-                        file.created_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
-                    m_time = datetime.strptime(
-                        file.updated_at, r'%Y-%m-%dT%H:%M:%S%z').timestamp()
-                    a_time = time.time()
-                    if is_windows():
-                        setctime(path, c_time)
-                    os.utime(path, (a_time, m_time))
-
+                    apply_datetime_attr(path, file.created_at, file.updated_at)
                 checkpoint[json_key] = CheckpointItem(
                     file.updated_at_date, file.id, config.SESSION)
 

@@ -69,6 +69,8 @@ OVERRIDE_FILE_TIME = true
 VERBOSE = false
 # Enable video download from v.sjtu.edu.cn
 ENABLE_VIDEO = false
+# Enable web page link download
+ENABLE_LINK = true
 # ffmpeg binary path
 # If ffmpeg is inside your PATH, just use "ffmpeg"
 # If not, specify ffmpeg binary before running canvas_grab

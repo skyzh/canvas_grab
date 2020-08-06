@@ -68,6 +68,8 @@ OVERRIDE_FILE_TIME = true
 VERBOSE = false
 # 是否开启视频下载功能
 ENABLE_VIDEO = false
+# 是否开启网页链接下载功能
+ENABLE_LINK = true
 # ffmpeg 可执行文件路径
 # 若 ffmpeg 在您的环境变量 PATH 中，填写 "ffmpeg" 即可。
 # 如果不是这样，请在运行 canvas_grab 之前设置好这个选项。
