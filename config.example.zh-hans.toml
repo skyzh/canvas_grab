@@ -27,6 +27,8 @@ REPLACE_ILLEGAL_CHAR_WITH = "-"
 IGNORED_CANVAS_ID = [10001, 10002, 10003]
 # 课程白名单。如果不为空，仅白名单内的课程会被下载。
 WHITELIST_CANVAS_ID = []
+# 只获取 x 天以内创建的课程
+RETAIN_COURSE_DAYS = 120
 # 单元文件夹命名模版
 MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
 # 单元文件夹 "IDX" 的初值

@@ -27,6 +27,8 @@ REPLACE_ILLEGAL_CHAR_WITH = "-"
 IGNORED_CANVAS_ID = [10001, 10002, 10003]
 # Whitelist courses, if not empty, only courses in whitelist will be downloaded
 WHITELIST_CANVAS_ID = []
+# Only fetch course from X days ago
+RETAIN_COURSE_DAYS = 120
 # Module folder name template
 MODULE_FOLDER_TEMPLATE = "{IDX} {NAME}"
 # Module folder IDX start number

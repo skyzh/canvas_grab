@@ -105,6 +105,7 @@ class Config:
         self.SESSION = math.floor(time.time())
         self.ALLOW_VERSION_CHECK = config["SYNC"].get("ALLOW_VERSION_CHECK", True)
         self.WHITELIST_CANVAS_ID = config["COURSE_FOLDER"].get("WHITELIST_CANVAS_ID", [])
+        self.RETAIN_COURSE_DAYS = config["COURSE_FOLDER"].get("RETAIN_COURSE_DAYS", 0)
 
         for ext_groups in config["SYNC"]["ALLOW_FILE_EXTENSION_GROUP"]:
             self.ALLOW_FILE_EXTENSION.extend(config["EXTENSION"].get(ext_groups, []))
