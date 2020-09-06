@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import configparser
+from datetime import datetime
 import multiprocessing
 import os
 import pathlib
@@ -76,12 +77,16 @@ def main():
         print(f"{Fore.BLUE}Whilelist mode enabled{Style.RESET_ALL}")
         courses = [
             course for course in courses if course.id in config.WHITELIST_CANVAS_ID]
-
     try:
         for course in courses:
+            delta = -(datetime.strptime(
+                course.start_at, r'%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None) - datetime.now()).days
             if course.id in config.IGNORED_CANVAS_ID:
                 print(
-                    f"{Fore.CYAN}Ignored Course: {course.course_code}{Style.RESET_ALL}")
+                    f"{Fore.CYAN}Explicitly Ignored Course: {course.course_code}{Style.RESET_ALL}")
+            elif config.RETAIN_COURSE_DAYS != 0 and delta > config.RETAIN_COURSE_DAYS:
+                print(
+                    f"{Fore.CYAN}Outdated Course: {course.course_code}{Style.RESET_ALL}")
             else:
                 try:
                     process_course(course)
@@ -408,7 +413,7 @@ def process_course(course: canvasapi.canvas.Course):
     if config.ENABLE_VIDEO:
         for page in course.get_pages():
             for (result, msg) in resolve_video(page.show_latest_revision()):
-                if result == True:
+                if result:
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
                     path = os.path.join(config.BASE_DIR, name, f"{page.title}-{filename}")
