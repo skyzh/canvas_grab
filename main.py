@@ -413,7 +413,7 @@ def process_course(course: canvasapi.canvas.Course):
     if config.ENABLE_VIDEO:
         for page in course.get_pages():
             for (result, msg) in resolve_video(page.show_latest_revision()):
-                if result == True:
+                if result:
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
                     path = os.path.join(config.BASE_DIR, name, f"{page.title}-{filename}")
