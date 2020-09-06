@@ -147,30 +147,30 @@ def main():
 
 def scan_stale_files(courses):
     print(f"{Fore.CYAN}Scanning stale files{Style.RESET_ALL}")
-    base_path=Path(config.BASE_DIR)
+    base_path = Path(config.BASE_DIR)
 
-    file_list=[]
+    file_list = []
     for file in current_file_list:
         file_list.append(str(Path(file)))
     for file in current_link_list:
         file_list.append(str(Path(file)))
-    stale_file_list=[]
+    stale_file_list = []
     for course in courses:
-        cource_path=base_path / parse_course_folder_name(course)
+        cource_path = base_path / parse_course_folder_name(course)
         for p in cource_path.rglob("*"):
             if p.is_file() and not p.name.startswith("."):
                 if not str(p) in file_list:
                     print(f"    {str(p)}")
                     stale_file_list.append(p)
     if stale_file_list:
-        print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} (Press 'y' to continue) ", end = "")
+        print(f"{Fore.RED}Remove {len(stale_file_list)} files?{Style.RESET_ALL} (Press 'y' to continue) ", end="")
         if input() == "y":
             for file in stale_file_list:
                 file.unlink()
             print(f"{Fore.GREEN}Remove empty directories.{Style.RESET_ALL}")
             try:
                 for course in courses:
-                    cource_path=base_path / parse_course_folder_name(course)
+                    cource_path = base_path / parse_course_folder_name(course)
                     remove_empty_dir(cource_path)
             except Exception as e:
                 print(
@@ -189,15 +189,15 @@ def check_download_rule(file: canvasapi.canvas.File, path: Path, json_key: str) 
     if file.size is None:
         return (False, f"file link not available", False)
 
-    update_flag=False
-    updated_at=file.updated_at_date
-    path_exist=Path(path).exists()
+    update_flag = False
+    updated_at = file.updated_at_date
+    path_exist = Path(path).exists()
 
     global checkpoint
-    history=checkpoint.get(json_key)
+    history = checkpoint.get(json_key)
 
     if history and history.updated_at != updated_at:
-        update_flag=True
+        update_flag = True
 
     if not any(file.display_name.lower().endswith(pf) for pf in config.ALLOW_FILE_EXTENSION):
         return (False, "filtered by extension", update_flag)
