@@ -79,8 +79,11 @@ def main():
             course for course in courses if course.id in config.WHITELIST_CANVAS_ID]
     try:
         for course in courses:
-            delta = -(datetime.strptime(
-                course.start_at, r'%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None) - datetime.now()).days
+            if course.start_at:
+                delta = -(datetime.strptime(
+                    course.start_at, r'%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None) - datetime.now()).days
+            else:
+                delta = 0
             if course.id in config.IGNORED_CANVAS_ID:
                 print(
                     f"{Fore.CYAN}Explicitly Ignored Course: {course.course_code}{Style.RESET_ALL}")
