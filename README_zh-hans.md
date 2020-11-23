@@ -78,7 +78,8 @@ python main.py
 [@danyang685](https://github.com/danyang685),
 [@BugenZhao](https://github.com/BugenZhao),
 [@ElectronicElephant](https://github.com/ElectronicElephant),
-[@LuminousXLB](https://github.com/LuminousXLB)
+[@LuminousXLB](https://github.com/LuminousXLB),
+[@squnit](https://github.com/squnit)
 
 ## 许可证
 
