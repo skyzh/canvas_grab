@@ -228,13 +228,13 @@ def check_download_rule(file: canvasapi.canvas.File, path: Path, json_key: str) 
     return (True, "", update_flag)
 
 
-def replaceIlligalChar(filename, regex=path_regex):
+def replaceIllegalChar(filename, regex=path_regex):
     return re.sub(regex, config.REPLACE_ILLEGAL_CHAR_WITH, filename)
 
 
 def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     if course.id in config.CUSTOM_NAME_OVERRIDE:
-        return replaceIlligalChar(config.CUSTOM_NAME_OVERRIDE[course.id])
+        return replaceIllegalChar(config.CUSTOM_NAME_OVERRIDE[course.id])
 
     r = re.search(
         r"\((?P<semester_id>[0-9\-]+)\)-(?P<sjtu_id>[A-Za-z0-9]+)-(?P<classroom_id>.+)-(?P<name>.+)\Z", course.course_code)
@@ -255,8 +255,8 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
         r"{SJTU_ID}": r.get("sjtu_id", ""),
         r"{SEMESTER_ID}": r.get("semester_id", ""),
         r"{CLASSROOM_ID}": r.get("classroom_id", ""),
-        r"{NAME}": replaceIlligalChar(course_name.replace("（", "(").replace("）", ")"), file_regex),
-        r"{NICKNAME}": replaceIlligalChar(course_nickname.replace("（", "(").replace("）", ")"), file_regex),
+        r"{NAME}": replaceIllegalChar(course_name.replace("（", "(").replace("）", ")"), file_regex),
+        r"{NICKNAME}": replaceIllegalChar(course_nickname.replace("（", "(").replace("）", ")"), file_regex),
         r"{COURSE_CODE}": course.course_code
     }
 
@@ -264,7 +264,7 @@ def parse_course_folder_name(course: canvasapi.canvas.Course) -> str:
     for old, new in template_map.items():
         folderName = folderName.replace(old, new)
 
-    folderName = replaceIlligalChar(folderName)
+    folderName = replaceIllegalChar(folderName)
     return folderName
 
 
@@ -358,7 +358,7 @@ def process_course(course: canvasapi.canvas.Course):
 
     for (file, folder) in get_file_list(course, organize_mode):
         directory = os.path.join(config.BASE_DIR, name, folder).rstrip()
-        filename = replaceIlligalChar(file.display_name, file_regex)
+        filename = replaceIllegalChar(file.display_name, file_regex)
         path = os.path.join(directory, filename)
         json_key = f"{name}/{folder}{file}"
 
@@ -420,7 +420,7 @@ def process_course(course: canvasapi.canvas.Course):
                     filename = msg.split("/")[-2]
                     json_key = f"{name}/{page.title}-{filename}"
                     path = os.path.join(config.BASE_DIR, name, f"{page.title}-{filename}")
-                    path = replaceIlligalChar(path)
+                    path = replaceIllegalChar(path)
                     if not Path(path).exists():
                         quoted_path = shlex.quote(path)
                         ffmpeg_commands.append(f"{config.FFMPEG_PATH} -i '{msg}' -c copy -bsf:a aac_adtstoasc {quoted_path}")
