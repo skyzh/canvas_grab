@@ -60,6 +60,6 @@ def normalize_path(filename, regex=path_regex):
 
 def truncate_name(name, length=40):
     if len(name) > length:
-        return name[:length-3] + "..."
+        return name[:length - 3] + "..."
     else:
         return name
