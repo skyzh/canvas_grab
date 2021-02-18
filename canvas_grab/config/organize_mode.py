@@ -5,7 +5,7 @@ from PyInquirer import prompt
 class OrganizeMode(Configurable):
 
     def __init__(self):
-        self.mode = ''
+        self.mode = 'module'
 
     def to_config(self):
         return {
@@ -26,7 +26,8 @@ class OrganizeMode(Configurable):
                     {'name': 'As-is in file list', 'value': 'file'},
                     {'name': 'Custom',
                      'value': 'custom', 'disabled': 'not supported yet'},
-                ]
+                ],
+                'default': self.mode
             }
         ]
         answers = prompt(questions)

@@ -42,6 +42,12 @@ pip install -r requirements.windows.txt
 python main.py
 ```
 
+## Configure
+
+The setup wizard will automatically create a configuration for you.
+You can change `config.toml` to fit your needs. If you need to
+re-configure, run `./main.py configure` or `python main.py configure`.
+
 ## Common Issues
 
 * **Acquire API token** Access Token can be obtained at "Account - Settings - New Access Token".

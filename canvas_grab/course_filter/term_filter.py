@@ -5,10 +5,16 @@ from canvas_grab.utils import group_by, summarize_courses
 
 class TermFilter(BaseFilter):
     def __init__(self):
-        self.terms = []
+        self.terms = [-1]
 
     def filter_course(self, courses):
-        return list(filter(lambda course: course.enrollment_term_id in self.terms, courses))
+        terms = self.terms.copy()
+        if -1 in terms:
+            terms = [
+                max(map(lambda course: course.enrollment_term_id, courses))]
+            print(f'Choosing Term {terms[0]}')
+
+        return list(filter(lambda course: course.enrollment_term_id in terms, courses))
 
     def to_config(self):
         return {
@@ -24,12 +30,14 @@ class TermFilter(BaseFilter):
         for (term, courses) in groups.items():
             choices.append({
                 'name': f'Term {term}: {summarize_courses(courses)}',
-                'value': term
+                'value': term,
+                'checked': term in self.terms
             })
         choices = sorted(choices, key=lambda choice: choice['value'])
         choices.append({
             'name': 'Latest term only',
-            'value': -1
+            'value': -1,
+            'checked': -1 in self.terms
         })
         choices.reverse()
         while True:

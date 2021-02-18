@@ -6,10 +6,18 @@ from pathlib import Path
 import toml
 from termcolor import colored
 from canvasapi.exceptions import ResourceDoesNotExist
+import sys
 
 
 class CanvasGrabCliError(Exception):
     pass
+
+
+def request_reconfigure():
+    if len(sys.argv) >= 2:
+        if sys.argv[1] == 'configure':
+            return True
+    return False
 
 
 if __name__ == '__main__':
@@ -19,7 +27,7 @@ if __name__ == '__main__':
     config = canvas_grab.config.Config()
     if config_file.exists():
         config.from_config(toml.loads(config_file.read_text(encoding='utf8')))
-    else:
+    if not config_file.exists() or request_reconfigure():
         config.interact()
         Path('config.toml').write_text(
             toml.dumps(config.to_config()), encoding='utf8')
