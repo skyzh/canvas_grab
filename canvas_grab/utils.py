@@ -1,5 +1,6 @@
 from time import time
 import os
+import re
 
 
 def group_by(items, predicate):
@@ -51,3 +52,7 @@ def apply_datetime_attr(path, c_time: int, m_time: int):
     if is_windows():
         setctime(path, c_time)
     os.utime(path, (a_time, m_time))
+
+
+def normalize_path(filename, regex=path_regex):
+    return re.sub(regex, '_', filename)
