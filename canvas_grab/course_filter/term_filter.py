@@ -8,7 +8,7 @@ class TermFilter(BaseFilter):
         self.terms = []
 
     def filter_course(self, courses):
-        return list(map(lambda course: course.enrollment_term_id in self.terms, courses))
+        return list(filter(lambda course: course.enrollment_term_id in self.terms, courses))
 
     def to_config(self):
         return {

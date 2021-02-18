@@ -8,7 +8,7 @@ class PerFilter(BaseFilter):
         self.course_id = []
 
     def filter_course(self, courses):
-        return list(map(lambda course: course.id in self.course_id, courses))
+        return list(filter(lambda course: course.id in self.course_id, courses))
 
     def to_config(self):
         return {
