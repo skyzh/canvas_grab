@@ -1,8 +1,1 @@
-canvasapi
-colorama
-requests
-tqdm
-retrying
-toml
-packaging
 win32_setctime

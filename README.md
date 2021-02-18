@@ -1,54 +1,27 @@
 # canvas-grab
 
-![Build and Release](https://github.com/skyzh/canvas_grab/workflows/Build%20and%20Release/badge.svg)
-
 Grab all files on Canvas LMS to local directory.
 
-[中文说明](https://github.com/skyzh/canvas_grab/blob/master/README_zh-hans.md)
-
+This is v2 version of canvas_grab. For legacy version, refer to
+[legacy](https://github.com/skyzh/canvas_grab/tree/legacy) branch.
 ## Getting Started
 
-If you have Python installed, download latest release
-[here](https://github.com/skyzh/canvas_grab/archive/master.zip),
-and follow the steps in "Build and Run from Source"
+1. Install Python
+2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or `git clone https://github.com/skyzh/canvas_grab`
+3. `pip install -r requirements.txt`, and `pip install -r requirements.windows.txt` if using Windows
+4. `python main.py` and follow the wizard
 
-Otherwise, you may download prebuilt binary [here](https://github.com/skyzh/canvas_grab/releases). Here's a `canvas_grab(.exe)` file.
-
-The program will ask you for an API key when running for the 
-first time. You may obtain API key in Canvas settings. If you
-want further customization, you may edit `config.toml`. Refer to
-Configuration section.
+See `Build and Run from Source` for more details.
 
 You may interrupt the downloading process at any time. The program will automatically resume from where it stopped.
 
-To re-download all files, remove checkpoint file `.checkpoint` and downloaded files folder `files/`.
-
-To upgrade, just replace `canvas_grab` with a more recent version. If you want to use new
-features, you should edit `config.toml` to manually enable it, as we persist program
-behavior when upgrade.
+To upgrade, just replace `canvas_grab` with a more recent version.
 
 If you have any questions, feel free to file an issue [here](https://github.com/skyzh/canvas_grab/issues).
 
-## Configuration
-
-You may configure canvas_grab in `config.toml`.
-You can edit `config.toml` with your favourite text editor.
-Refer to `config.example.toml` or `config.example.zh-hans.toml`
-for documentation.
-
-## Features
-
-- **All Canvas-based sites are supported** Just specify Canvas endpoint in config.
-- **Auto checkpoint** A file will only be downloaded once. And the program will update the file if there's any update on Canvas.
-- **File size and type filter** You can specify maximum allowed file size. You may also filter files by their extensions.
-- **Auto retrying** If your network connection is not stable, the program will automatically retry downloading. You may interrupt at any time.
-- **Smart sorting** All files will be saved to their corresponding folder on Canvas. Furthermore, you may set course root folder name with placeholders like `{CANVAS_ID}-{NAME}`.
-- **Organize by Module or by File** You can set file organization mode in config.
-- **Video URL resolution** Currently we support resolve video URL from `v.sjtu.edu.cn`. Install `ffmpeg` and enable this functionality. Note that this is an EXPERIMENTAL functionality. Use at your own risk.
-
 ## Build and Run from Source
 
-First of all, please install Python 3.7+.
+First of all, please install Python 3.8+, and download source code.
 
 For macOS or Linux users：
 
@@ -59,6 +32,7 @@ pip3 install -r requirements.txt
 
 For Windows users:
 ```powershell
+pip install -r requirements.txt
 pip install -r requirements.windows.txt
 python main.py
 ```
@@ -71,17 +45,8 @@ python main.py
 * **File not available** This file might have been included in an unpublished unit. canvas_grab cannot bypass restrictions.
 * **No module named 'canvasapi'** You haven't installed the dependencies. Follow steps in "build and run from source" or download prebuilt binaries.
 * **Error when checking update** It's normal if you don't have a stable connection to GitHub. You may regularly check updates by visiting this repo.
-* **Unsupported Link** canvas_grab only supports resolving URL from `v.sjtu.edu.cn`. `vshare.sjtu.edu.cn` is not supported.
 * **Reserved escape sequence used** please use "/" as the path seperator instead of "\\".
-* **Download FFMPEG** Download ffmpeg executable [here](https://www.ffmpeg.org/download.html).
-* **Invalid prebuilt binary on macOS** You should allow this application to run in "Preferences - Privacy"
-* **Skip a course causing error** edit `config.toml`, add ID into `IGNORED_COURSE`.
 * **Duplicated files detected** There're two files of same name in same folder. You should download it from Canvas yourself.
-* **Ignored course** If you see the warning "Ignored Course", then canvas_grab has no access to a course. This is because (1) Course not available (2) Course from previous semesters are hidden. This will only show in version <= 1.7.4.
-
-## Screenshot
-
-![image](https://user-images.githubusercontent.com/4198311/77220717-ee38b800-6b7d-11ea-8b5c-ac9b18fded5e.png)
 
 ## [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors)
 
