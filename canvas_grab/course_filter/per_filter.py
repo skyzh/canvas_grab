@@ -24,7 +24,8 @@ class PerFilter(BaseFilter):
             choices.append({
                 'name': f'{course.name} (Term {course.enrollment_term_id})',
                 'value': course.id,
-                'term': course.enrollment_term_id
+                'term': course.enrollment_term_id,
+                'checked': course.id in self.course_id
             })
         choices = sorted(choices, key=lambda choice: choice['term'])
         choices.reverse()

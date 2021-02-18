@@ -16,18 +16,22 @@ def get_filter(filter_name):
     return None
 
 
+def get_name(course_filter):
+    if isinstance(course_filter, TermFilter):
+        return 'term'
+    if isinstance(course_filter, AllFilter):
+        return 'all'
+    if isinstance(course_filter, PerFilter):
+        return 'per'
+    return ''
+
+
 class CourseFilter(Configurable):
     def __init__(self):
         self.course_filter = None
 
     def to_config(self):
-        filter_name = ''
-        if isinstance(self.course_filter, TermFilter):
-            filter_name = 'term'
-        if isinstance(self.course_filter, AllFilter):
-            filter_name = 'all'
-        if isinstance(self.course_filter, PerFilter):
-            filter_name = 'per'
+        filter_name = get_name(self.course_filter)
         return {
             'type': filter_name,
             'config': self.course_filter.to_config()
@@ -39,16 +43,18 @@ class CourseFilter(Configurable):
         self.course_filter.from_config(config['config'])
 
     def interact(self, courses):
+        choices = [
+            {'name': 'All courses', 'value': 'all'},
+            {'name': 'Filter by term', 'value': 'term'},
+            {'name': 'Select individual courses', 'value': 'per'}
+        ]
         questions = [
             {
                 'type': 'list',
                 'message': 'Select course filter mode',
                 'name': 'course_filter',
-                'choices': [
-                    {'name': 'All courses', 'value': 'all'},
-                    {'name': 'Filter by term', 'value': 'term'},
-                    {'name': 'Select individual courses', 'value': 'per'}
-                ]
+                'choices': choices,
+                'default': get_name(self.course_filter) or 'all'
             }
         ]
         answers = prompt(questions)

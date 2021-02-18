@@ -6,7 +6,7 @@ from canvasapi import Canvas
 class Endpoint(Configurable):
 
     def __init__(self):
-        self.endpoint = ''
+        self.endpoint = 'https://oc.sjtu.edu.cn'
         self.api_key = ''
 
     def to_config(self):
@@ -25,12 +25,13 @@ class Endpoint(Configurable):
                 'type': 'input',
                 'name': 'endpoint',
                 'message': 'Canvas API endpoint',
-                'default': 'https://oc.sjtu.edu.cn'
+                'default': self.endpoint
             },
             {
                 'type': 'input',
                 'name': 'api_key',
-                'message': 'API Key'
+                'message': 'API Key',
+                'default': self.api_key
             }
         ]
         answers = prompt(questions)
