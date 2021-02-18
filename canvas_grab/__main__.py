@@ -30,6 +30,7 @@ def main():
     print(
         f'You may review {colored("README.md", "green")} and {colored("LICENSE", "green")} shipped with this release')
     print('--------------------')
+
     # Then, load config and start setup wizard
 
     config_file = Path('config.toml')
@@ -55,9 +56,10 @@ def main():
     print(f'{len(available_courses) - len(filtered_courses)} courses ignored due to course filter configuration')
 
     course_name_parser = canvas_grab.course_parser.CourseParser()
-    for course in filtered_courses:
+    for idx, course in enumerate(filtered_courses):
         course_name = course.name
-        print(f'Course {colored(course_name, "cyan")} (ID: {course.id})')
+        print(
+            f'({idx+1}/{len(filtered_courses)}) Course {colored(course_name, "cyan")} (ID: {course.id})')
         # take on-disk snapshot
         parsed_name = course_name_parser.get_parsed_name(course)
         print(f'  Download to {colored(parsed_name, "cyan")}')

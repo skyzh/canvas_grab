@@ -4,7 +4,7 @@ from retrying import retry
 from termcolor import colored
 
 from .download_file import download_file as df
-from .utils import apply_datetime_attr
+from .utils import apply_datetime_attr, truncate_name
 
 TIMEOUT = 3
 ATTEMPT = 3
@@ -31,7 +31,7 @@ def download_file(url, desc, filename, file_size, verbose=False):
 
 class Transfer(object):
     def transfer(self, base_path, plans):
-        for key, plan in plans:
+        for idx, (key, plan) in enumerate(plans):
             path = f'{base_path}/{key}'
             Path(path).parent.mkdir(parents=True, exist_ok=True)
             try:
@@ -41,5 +41,6 @@ class Transfer(object):
             if plan.url == '':
                 print("  " + colored(f'{key} not available yet', 'yellow'))
                 continue
-            download_file(plan.url, plan.name, path, plan.size)
+            download_file(
+                plan.url, f'({idx+1}/{len(plans)}) ' + truncate_name(plan.name), path, plan.size)
             apply_datetime_attr(path, plan.created_at, plan.modified_at)
