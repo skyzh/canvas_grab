@@ -21,7 +21,8 @@ def download_file(url, desc, filename, file_size, verbose=False, req_timeout=(5,
                 total=file_size, unit='B',
                 unit_scale=True,
                 unit_divisor=1024,
-                desc=desc, bar_format='{l_bar}{bar}{r_bar}', ascii=is_windows()
+                desc=desc, bar_format='{l_bar}{bar}{r_bar}', ascii=is_windows(),
+                leave=False
             ) as pbar:
                 for chunk in r.iter_content(chunk_size=chunk_size):
                     fp.write(chunk)

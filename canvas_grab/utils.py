@@ -56,3 +56,10 @@ def apply_datetime_attr(path, c_time: int, m_time: int):
 
 def normalize_path(filename, regex=path_regex):
     return re.sub(regex, '_', filename)
+
+
+def truncate_name(name, length=40):
+    if len(name) > length:
+        return name[:length-3] + "..."
+    else:
+        return name
