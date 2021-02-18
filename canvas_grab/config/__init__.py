@@ -19,13 +19,16 @@ class Config(Configurable):
         return {
             'endpoint': self.endpoint.to_config(),
             'course_filter': self.course_filter.to_config(),
-            'organize_mode': self.organize_mode.to_config()
+            'organize_mode': self.organize_mode.to_config(),
+            'download_folder': self.download_folder
         }
 
     def from_config(self, config):
         self.endpoint.from_config(config['endpoint'])
         self.course_filter.from_config(config['course_filter'])
         self.organize_mode.from_config(config['organize_mode'])
+        self.download_folder = config.get(
+            'download_folder', self.download_folder)
 
     def interact(self):
         self.endpoint.interact()
