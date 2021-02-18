@@ -2,14 +2,19 @@
 
 Grab all files on Canvas LMS to local directory.
 
-This is v2 version of canvas_grab. For legacy version, refer to
-[legacy](https://github.com/skyzh/canvas_grab/tree/legacy) branch.
+*Less is More.* In canvas_grab v2, we focus on stability and ease of use.
+Now you don't have to tweaking dozens of configurations. We have a very
+simple setup wizard to help you get started!
+
+For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/legacy) branch.
+
 ## Getting Started
 
 1. Install Python
 2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or `git clone https://github.com/skyzh/canvas_grab`
 3. `pip install -r requirements.txt`, and `pip install -r requirements.windows.txt` if using Windows
-4. `python main.py` and follow the wizard
+4. Run `python main.py`
+5. Get your API key at Canvas profile and you're ready to go!
 
 See `Build and Run from Source` for more details.
 
