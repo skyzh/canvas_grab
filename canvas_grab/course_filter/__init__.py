@@ -3,17 +3,7 @@ from .term_filter import TermFilter
 from .base_filter import BaseFilter
 from .per_filter import PerFilter
 from canvas_grab.configurable import Configurable
-from PyInquirer import prompt
-
-
-def get_filter(filter_name):
-    if filter_name == 'term':
-        return TermFilter()
-    if filter_name == 'all':
-        return AllFilter()
-    if filter_name == 'per':
-        return PerFilter()
-    return None
+import questionary
 
 
 def get_name(course_filter):
@@ -28,36 +18,44 @@ def get_name(course_filter):
 
 class CourseFilter(Configurable):
     def __init__(self):
-        self.course_filter = None
+        self.filter_name = 'all'
+        self.all_filter = AllFilter()
+        self.term_filter = TermFilter()
+        self.per_filter = PerFilter()
+
+    def get_filter(self):
+        if self.filter_name == 'term':
+            return self.term_filter
+        if self.filter_name == 'all':
+            return self.all_filter
+        if self.filter_name == 'per':
+            return self.per_filter
+        return None
 
     def to_config(self):
-        filter_name = get_name(self.course_filter)
         return {
-            'type': filter_name,
-            'config': self.course_filter.to_config()
+            'filter_name': self.filter_name,
+            'all_filter': self.all_filter.to_config(),
+            'term_filter': self.term_filter.to_config(),
+            'per_filter': self.per_filter.to_config()
         }
 
     def from_config(self, config):
-        filter_name = config.get('type', '')
-        self.course_filter = get_filter(filter_name)
-        self.course_filter.from_config(config['config'])
+        self.filter_name = config['filter_name']
+        self.all_filter.from_config(config['all_filter'])
+        self.term_filter.from_config(config['term_filter'])
+        self.per_filter.from_config(config['per_filter'])
 
     def interact(self, courses):
         choices = [
-            {'name': 'All courses', 'value': 'all'},
-            {'name': 'Filter by term', 'value': 'term'},
-            {'name': 'Select individual courses', 'value': 'per'}
+            questionary.Choice('All courses', 'all'),
+            questionary.Choice('Filter by term', 'term'),
+            questionary.Choice('Select individual courses', 'per')
         ]
-        questions = [
-            {
-                'type': 'list',
-                'message': 'Select course filter mode',
-                'name': 'course_filter',
-                'choices': choices,
-                'default': get_name(self.course_filter) or 'all'
-            }
-        ]
-        answers = prompt(questions)
-        filter_name = answers['course_filter']
-        self.course_filter = get_filter(filter_name)
-        self.course_filter.interact(courses)
+        current_id = ['all', 'term', 'per'].index(self.filter_name)
+        self.filter_name = questionary.select(
+            'Select course filter mode',
+            choices,
+            default=choices[current_id]
+        ).ask()
+        self.get_filter().interact(courses)

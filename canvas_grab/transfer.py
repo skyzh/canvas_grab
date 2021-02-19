@@ -31,16 +31,30 @@ def download_file(url, desc, filename, file_size, verbose=False):
 
 class Transfer(object):
     def transfer(self, base_path, plans):
-        for idx, (key, plan) in enumerate(plans):
+        for idx, (op, key, plan) in enumerate(plans):
             path = f'{base_path}/{key}'
-            Path(path).parent.mkdir(parents=True, exist_ok=True)
-            try:
-                Path(path).unlink()
-            except Exception as e:
-                pass
-            if plan.url == '':
-                print("  " + colored(f'{key} not available yet', 'yellow'))
-                continue
-            download_file(
-                plan.url, f'({idx+1}/{len(plans)}) ' + truncate_name(plan.name), path, plan.size)
-            apply_datetime_attr(path, plan.created_at, plan.modified_at)
+            if op == 'add' or op == 'update':
+                Path(path).parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    Path(path).unlink()
+                except Exception as e:
+                    pass
+                if plan.url == '':
+                    print("  " + colored(f'{key} not available yet', 'yellow'))
+                    continue
+                download_file(
+                    plan.url, f'({idx+1}/{len(plans)}) ' + truncate_name(plan.name), path, plan.size)
+                apply_datetime_attr(path, plan.created_at, plan.modified_at)
+
+            if op == 'delete':
+                try:
+                    Path(path).unlink()
+                except Exception as e:
+                    print(colored(f'Failed to remove file {path} {e}', 'red'))
+
+            if op == 'add':
+                print(f'  {colored("+", "green")} {path}')
+            if op == 'update':
+                print(f'  {colored("=", "green")} {path}')
+            if op == 'delete':
+                print(f'  {colored("-", "yellow")} {path}')
