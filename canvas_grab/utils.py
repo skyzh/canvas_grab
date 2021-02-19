@@ -63,3 +63,10 @@ def truncate_name(name, length=40):
         return name[:length - 3] + "..."
     else:
         return name
+
+
+def find_choice(choices, value):
+    for choice in choices:
+        if choice.value == value:
+            return choice
+    return None

@@ -1,34 +1,43 @@
+import questionary
 from canvas_grab.configurable import Configurable
-from PyInquirer import prompt
+from canvas_grab.utils import find_choice
 
 
 class OrganizeMode(Configurable):
 
     def __init__(self):
         self.mode = 'module'
+        self.delete_file = False
 
     def to_config(self):
         return {
-            'mode': self.mode
+            'mode': self.mode,
+            'delete_file': self.delete_file
         }
 
     def from_config(self, config):
         self.mode = config['mode']
+        self.delete_file = config['delete_file']
 
     def interact(self):
-        questions = [
-            {
-                'type': 'list',
-                'name': 'mode',
-                'message': 'Select default file organization mode',
-                'choices': [
-                    {'name': 'By module (recommended)', 'value': 'module'},
-                    {'name': 'As-is in file list', 'value': 'file'},
-                    {'name': 'Custom',
-                     'value': 'custom', 'disabled': 'not supported yet'},
-                ],
-                'default': self.mode
-            }
+        choices = [
+            questionary.Choice('By module (recommended)', 'module'),
+            questionary.Choice('As-is in file list', 'file'),
+            questionary.Choice('Custom', 'custom',
+                               disabled='not supported yet')
         ]
-        answers = prompt(questions)
-        self.from_config(answers)
+        self.mode = questionary.select(
+            'Select default file organization mode',
+            choices,
+            default=find_choice(choices, self.mode)
+        ).ask()
+        choices = [
+            questionary.Choice(
+                "Delete local files if they disappears on Canvas", True),
+            questionary.Choice("Always keep local files", False)
+        ]
+        self.delete_file = questionary.select(
+            'How to handle deleted files on Canvas',
+            choices,
+            default=find_choice(choices, self.delete_file)
+        ).ask()

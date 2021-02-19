@@ -1,4 +1,4 @@
-from PyInquirer import prompt
+import questionary
 from .base_filter import BaseFilter
 from canvas_grab.utils import group_by, summarize_courses
 
@@ -20,26 +20,19 @@ class PerFilter(BaseFilter):
 
     def interact(self, courses):
         choices = []
-        for course in courses:
-            choices.append({
-                'name': f'{course.name} (Term {course.enrollment_term_id})',
-                'value': course.id,
-                'term': course.enrollment_term_id,
-                'checked': course.id in self.course_id
-            })
-        choices = sorted(choices, key=lambda choice: choice['term'])
-        choices.reverse()
+        sorted_courses = sorted(
+            courses, key=lambda course: course.enrollment_term_id)
+        sorted_courses.reverse()
+        for course in sorted_courses:
+            choices.append(questionary.Choice(
+                f'{course.name} (Term {course.enrollment_term_id})',
+                course.id,
+                checked=course.id in self.course_id
+            ))
         while True:
-            questions = [
-                {
-                    'type': 'checkbox',
-                    'message': 'Select courses to download',
-                    'name': 'per_course_filter',
-                    'choices': choices
-                }
-            ]
-            answers = prompt(questions)
-            self.course_id = answers['per_course_filter']
+            self.course_id = questionary.checkbox(
+                'Select courses to download',
+                choices).ask()
             if len(self.course_id) == 0:
                 print('At least one course must be selected.')
             else:

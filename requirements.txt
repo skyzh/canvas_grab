@@ -5,5 +5,5 @@ tqdm
 retrying
 toml
 packaging
-PyInquirer
 termcolor
+questionary

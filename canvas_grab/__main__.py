@@ -35,9 +35,16 @@ def main():
 
     config_file = Path('config.toml')
     config = canvas_grab.config.Config()
+    require_reconfigure = False
     if config_file.exists():
-        config.from_config(toml.loads(config_file.read_text(encoding='utf8')))
-    if not config_file.exists() or request_reconfigure():
+        try:
+            config.from_config(toml.loads(
+                config_file.read_text(encoding='utf8')))
+        except KeyError as e:
+            print(
+                f'It seems that you have upgraded canvas_grab. Please reconfigure. ({colored(e, "red")} not found)')
+            require_reconfigure = True
+    if not config_file.exists() or request_reconfigure() or require_reconfigure:
         config.interact()
         Path('config.toml').write_text(
             toml.dumps(config.to_config()), encoding='utf8')
@@ -51,7 +58,7 @@ def main():
         courses)
     print(
         f'Found {len(courses)} courses in total ({len(not_available)} of which not available)')
-    filtered_courses = config.course_filter.course_filter.filter_course(
+    filtered_courses = config.course_filter.get_filter().filter_course(
         available_courses)
     print(f'{len(available_courses) - len(filtered_courses)} courses ignored due to course filter configuration')
 
@@ -87,7 +94,7 @@ def main():
                 continue
             break
         # generate transfer plan
-        planner = canvas_grab.planner.Planner()
+        planner = canvas_grab.planner.Planner(config.organize_mode.delete_file)
         plans = planner.plan(canvas_snapshot, on_disk_snapshot)
         print(colored(
             f'  Updating {len(plans)} files ({len(canvas_snapshot)} files on remote)'))
