@@ -59,6 +59,10 @@ re-configure, run `./main.py configure` or `python main.py configure`.
 * **Reserved escape sequence used** please use "/" as the path seperator instead of "\\".
 * **Duplicated files detected** There're two files of same name in same folder. You should download it from Canvas yourself.
 
+## Screenshot
+
+![image](https://user-images.githubusercontent.com/4198311/108496621-4673bf00-72e5-11eb-8978-8b8bdd4efea5.png)
+
 ## [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors)
 
 [@skyzh](https://github.com/skyzh), 
