@@ -3,7 +3,7 @@
 Grab all files on Canvas LMS to local directory.
 
 *Less is More.* In canvas_grab v2, we focus on stability and ease of use.
-Now you don't have to tweaking dozens of configurations. We have a very
+Now you don't have to tweak dozens of configurations. We have a very
 simple setup wizard to help you get started!
 
 For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/legacy) branch.
@@ -11,11 +11,11 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 ## Getting Started
 
 1. Install Python
-2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or `git clone https://github.com/skyzh/canvas_grab`
+2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or
+   `git clone https://github.com/skyzh/canvas_grab`
 3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
-5. Get your API key at Canvas profile and you're ready to go!
-
-See `Build and Run from Source` for more details.
+   Please refer to `Build and Run from Source` for more information.
+4. Get your API key at Canvas profile and you're ready to go!
 
 You may interrupt the downloading process at any time. The program will automatically resume from where it stopped.
 
@@ -27,16 +27,23 @@ If you have any questions, feel free to file an issue [here](https://github.com/
 
 First of all, please install Python 3.8+, and download source code.
 
-For macOS or Linux users：
+We have prepared a simple script to automatically install dependencies and run canvas_grab.
+
+For macOS or Linux users, open a Terminal and run:
 
 ```bash
 ./canvas_grab.sh
 ```
 
 For Windows users:
-```powershell
-.\canvas_grab.ps1
-```
+
+1. Right-click Windows icon on taskbar, and select "Run Powershell (Administrator)".
+2. Run `Set-ExecutionPolicy Restricted` in Powershell.
+3. Open `canvas_grab` source file in file browser, Shift + Right-click on blank area, and select `Run Powershell here`.
+4. Now you can start canvas_grab with a simple command:
+    ```powershell
+    .\canvas_grab.ps1
+    ```
 
 ## Configure
 
@@ -66,7 +73,8 @@ re-configure, run `./canvas_grab.sh configure`.
 [@BugenZhao](https://github.com/BugenZhao),
 [@ElectronicElephant](https://github.com/ElectronicElephant),
 [@LuminousXLB](https://github.com/LuminousXLB),
-[@squnit](https://github.com/squnit)
+[@squnit](https://github.com/squnit),
+[@Kienyew](https://github.com/Kienyew)
 
 ## License
 
