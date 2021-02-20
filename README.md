@@ -12,8 +12,7 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 
 1. Install Python
 2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or `git clone https://github.com/skyzh/canvas_grab`
-3. `pip install -r requirements.txt`, and `pip install -r requirements.windows.txt` if using Windows
-4. Run `python main.py`
+3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
 5. Get your API key at Canvas profile and you're ready to go!
 
 See `Build and Run from Source` for more details.
@@ -31,22 +30,19 @@ First of all, please install Python 3.8+, and download source code.
 For macOS or Linux users：
 
 ```bash
-pip3 install -r requirements.txt
-./main.py
+./canvas_grab.sh
 ```
 
 For Windows users:
 ```powershell
-pip install -r requirements.txt
-pip install -r requirements.windows.txt
-python main.py
+.\canvas_grab.ps1
 ```
 
 ## Configure
 
 The setup wizard will automatically create a configuration for you.
 You can change `config.toml` to fit your needs. If you need to
-re-configure, run `./main.py configure` or `python main.py configure`.
+re-configure, run `./canvas_grab.sh configure`.
 
 ## Common Issues
 
