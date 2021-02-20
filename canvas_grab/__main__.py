@@ -73,7 +73,6 @@ def main():
         on_disk_path = f'{config.download_folder}/{parsed_name}'
         on_disk_snapshot = canvas_grab.snapshot.OnDiskSnapshot(
             on_disk_path).take_snapshot()
-        on_disk_snapshot = config.file_filter.filter_files(on_disk_snapshot)
 
         # take canvas snapshot
         mode = config.organize_mode.mode
