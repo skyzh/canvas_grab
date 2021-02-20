@@ -53,8 +53,8 @@ class Transfer(object):
                     print(colored(f'Failed to remove file {path} {e}', 'red'))
 
             if op == 'add':
-                print(f'  {colored("+", "green")} {path}')
+                print(f'  {colored("+", "green")} {key}')
             if op == 'update':
-                print(f'  {colored("=", "green")} {path}')
+                print(f'  {colored("=", "green")} {key}')
             if op == 'delete':
-                print(f'  {colored("-", "yellow")} {path}')
+                print(f'  {colored("-", "yellow")} {key}')

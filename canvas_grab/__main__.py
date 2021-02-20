@@ -73,6 +73,8 @@ def main():
         on_disk_path = f'{config.download_folder}/{parsed_name}'
         on_disk_snapshot = canvas_grab.snapshot.OnDiskSnapshot(
             on_disk_path).take_snapshot()
+        on_disk_snapshot = config.file_filter.filter_files(on_disk_snapshot)
+
         # take canvas snapshot
         mode = config.organize_mode.mode
         canvas_snapshot_module = canvas_grab.snapshot.CanvasModuleSnapshot(
@@ -93,6 +95,8 @@ def main():
                     colored(f'{mode} not supported, falling back to alternative mode', 'yellow'))
                 continue
             break
+        canvas_snapshot = config.file_filter.filter_files(canvas_snapshot)
+
         # generate transfer plan
         planner = canvas_grab.planner.Planner(config.organize_mode.delete_file)
         plans = planner.plan(canvas_snapshot, on_disk_snapshot)
