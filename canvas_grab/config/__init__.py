@@ -5,6 +5,7 @@ from termcolor import colored
 from .endpoint import Endpoint
 from .organize_mode import OrganizeMode
 from canvas_grab.course_filter import CourseFilter
+from canvas_grab.file_filter import FileFilter
 from canvas_grab.utils import filter_available_courses
 
 
@@ -14,13 +15,15 @@ class Config(Configurable):
         self.course_filter = CourseFilter()
         self.organize_mode = OrganizeMode()
         self.download_folder = 'files'
+        self.file_filter = FileFilter()
 
     def to_config(self):
         return {
             'endpoint': self.endpoint.to_config(),
             'course_filter': self.course_filter.to_config(),
             'organize_mode': self.organize_mode.to_config(),
-            'download_folder': self.download_folder
+            'download_folder': self.download_folder,
+            'file_filter': self.file_filter.to_config()
         }
 
     def from_config(self, config):
@@ -29,6 +32,7 @@ class Config(Configurable):
         self.endpoint.from_config(config['endpoint'])
         self.organize_mode.from_config(config['organize_mode'])
         self.course_filter.from_config(config['course_filter'])
+        self.file_filter.from_config(config['file_filter'])
 
     def interact(self):
         self.endpoint.interact()
@@ -40,4 +44,5 @@ class Config(Configurable):
             f'There are {len(courses)} currently enrolled courses and {len(not_enrolled)} courses not available.')
         self.course_filter.interact(courses)
         self.organize_mode.interact()
+        self.file_filter.interact()
         print("Other settings won't be covered in this wizard. Please look into `config.toml` if you want to modify.")
