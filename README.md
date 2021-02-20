@@ -38,7 +38,7 @@ For macOS or Linux users, open a Terminal and run:
 For Windows users:
 
 1. Right-click Windows icon on taskbar, and select "Run Powershell (Administrator)".
-2. Run `Set-ExecutionPolicy Restricted` in Powershell.
+2. Run `Set-ExecutionPolicy Unrestricted` in Powershell.
 3. Open `canvas_grab` source file in file browser, Shift + Right-click on blank area, and select `Run Powershell here`.
 4. Now you can start canvas_grab with a simple command:
     ```powershell
