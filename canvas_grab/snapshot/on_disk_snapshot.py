@@ -13,7 +13,7 @@ class OnDiskSnapshot(Snapshot):
         for item in base.rglob('*'):
             if item.is_file() and not item.name.startswith('.'):
                 stat = item.stat()
-                self.snapshot[str(item.relative_to(base))] = SnapshotFile(
+                self.snapshot[item.relative_to(base).as_posix()] = SnapshotFile(
                     item.name, stat.st_size, int(stat.st_mtime))
         return self.snapshot
 
