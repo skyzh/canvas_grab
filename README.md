@@ -39,8 +39,13 @@ For Windows users:
 
 1. Right-click Windows icon on taskbar, and select "Run Powershell (Administrator)".
 2. Run `Set-ExecutionPolicy Unrestricted` in Powershell.
-3. Open `canvas_grab` source file in file browser, Shift + Right-click on blank area, and select `Run Powershell here`.
-4. Now you can start canvas_grab with a simple command:
+3. If some courses in Canvas LMS have very long module names that exceed Windows limits (which will causes "No such file" error
+   when downloading), run the following command to enable long path support.
+   ```
+   Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name LongPathsEnabled -Type DWord -Value 1 
+   ```
+4. Open `canvas_grab` source file in file browser, Shift + Right-click on blank area, and select `Run Powershell here`.
+5. Now you can start canvas_grab with a simple command:
     ```powershell
     .\canvas_grab.ps1
     ```
