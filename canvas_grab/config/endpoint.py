@@ -21,9 +21,9 @@ class Endpoint(Configurable):
 
     def interact(self):
         self.endpoint = questionary.text(
-            'Canvas API endpoint', default=self.endpoint).ask()
+            'Canvas API endpoint', default=self.endpoint).unsafe_ask()
         self.api_key = questionary.text(
-            'API Key', default=self.api_key, instruction="Please visit profile page of Canvas LMS to generate an access token").ask()
+            'API Key', default=self.api_key, instruction="Please visit profile page of Canvas LMS to generate an access token").unsafe_ask()
 
     def login(self):
         return Canvas(self.endpoint, self.api_key)

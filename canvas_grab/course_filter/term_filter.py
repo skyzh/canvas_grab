@@ -48,7 +48,7 @@ class TermFilter(BaseFilter):
             self.terms = questionary.checkbox(
                 'Select terms to download',
                 choices
-            ).ask()
+            ).unsafe_ask()
             if len(self.terms) == 0:
                 print('At least one term must be selected.')
             elif -1 in self.terms and len(self.terms) != 1:

@@ -57,5 +57,5 @@ class CourseFilter(Configurable):
             'Select course filter mode',
             choices,
             default=choices[current_id]
-        ).ask()
+        ).unsafe_ask()
         self.get_filter().interact(courses)

@@ -45,7 +45,11 @@ def main():
                 f'It seems that you have upgraded canvas_grab. Please reconfigure. ({colored(e, "red")} not found)')
             require_reconfigure = True
     if not config_file.exists() or request_reconfigure() or require_reconfigure:
-        config.interact()
+        try:
+            config.interact()
+        except KeyboardInterrupt:
+            print("User canceled the configuration process")
+            return
         Path('config.toml').write_text(
             toml.dumps(config.to_config()), encoding='utf8')
 

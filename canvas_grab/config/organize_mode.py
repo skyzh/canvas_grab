@@ -30,7 +30,7 @@ class OrganizeMode(Configurable):
             'Select default file organization mode',
             choices,
             default=find_choice(choices, self.mode)
-        ).ask()
+        ).unsafe_ask()
         choices = [
             questionary.Choice(
                 "Delete local files if they disappears on Canvas", True),
@@ -40,4 +40,4 @@ class OrganizeMode(Configurable):
             'How to handle deleted files on Canvas',
             choices,
             default=find_choice(choices, self.delete_file)
-        ).ask()
+        ).unsafe_ask()

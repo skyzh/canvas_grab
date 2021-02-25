@@ -54,7 +54,7 @@ For Windows users:
 
 The setup wizard will automatically create a configuration for you.
 You can change `config.toml` to fit your needs. If you need to
-re-configure, run `./canvas_grab.sh configure`.
+re-configure, run `./configure.sh` or `./configure.ps1`.
 
 ## Common Issues
 
