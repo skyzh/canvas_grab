@@ -32,7 +32,7 @@ class PerFilter(BaseFilter):
         while True:
             self.course_id = questionary.checkbox(
                 'Select courses to download',
-                choices).ask()
+                choices).unsafe_ask()
             if len(self.course_id) == 0:
                 print('At least one course must be selected.')
             else:

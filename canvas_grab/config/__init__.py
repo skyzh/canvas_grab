@@ -1,5 +1,6 @@
 from canvas_grab.configurable import Configurable
 from canvasapi import Canvas
+from canvasapi.exceptions import InvalidAccessToken
 from termcolor import colored
 
 from .endpoint import Endpoint
@@ -35,10 +36,17 @@ class Config(Configurable):
         self.file_filter.from_config(config['file_filter'])
 
     def interact(self):
-        self.endpoint.interact()
-        canvas = self.endpoint.login()
-        print(
-            f'You are logged in as {colored(canvas.get_current_user(), "cyan")}')
+        while True:
+            self.endpoint.interact()
+            canvas = self.endpoint.login()
+            try:
+                print(
+                    f'You are logged in as {colored(canvas.get_current_user(), "cyan")}')
+            except InvalidAccessToken:
+                print(f'Failed to login')
+                continue
+            break
+
         courses, not_enrolled = filter_available_courses(canvas.get_courses())
         print(
             f'There are {len(courses)} currently enrolled courses and {len(not_enrolled)} courses not available.')

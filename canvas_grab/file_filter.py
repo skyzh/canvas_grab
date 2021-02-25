@@ -61,7 +61,7 @@ class FileFilter(Configurable):
         while True:
             self.allowed_group = questionary.checkbox(
                 'Select allowed extensions',
-                choices).ask()
+                choices).unsafe_ask()
             if len(self.allowed_group) == 0:
                 print('At least one extension group must be selected.')
             elif 'All' in self.allowed_group and len(self.allowed_group) != 1:
