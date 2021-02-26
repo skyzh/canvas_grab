@@ -40,7 +40,7 @@ class Transfer(object):
                 except Exception as e:
                     pass
                 if plan.url == '':
-                    print("  " + colored(f'{key} not available yet', 'yellow'))
+                    print(f'  {colored("x (not available)", "yellow")} {key}')
                     continue
                 download_file(
                     plan.url, f'({idx+1}/{len(plans)}) ' + truncate_name(plan.name), path, plan.size)
@@ -58,3 +58,5 @@ class Transfer(object):
                 print(f'  {colored("=", "green")} {key}')
             if op == 'delete':
                 print(f'  {colored("-", "yellow")} {key}')
+            if op == 'ignore':
+                print(f'  {colored("x (ignored)", "yellow")} {key}')

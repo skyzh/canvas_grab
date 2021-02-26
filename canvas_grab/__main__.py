@@ -98,11 +98,11 @@ def main():
                     colored(f'{mode} not supported, falling back to alternative mode', 'yellow'))
                 continue
             break
-        canvas_snapshot = config.file_filter.filter_files(canvas_snapshot)
 
         # generate transfer plan
         planner = canvas_grab.planner.Planner(config.organize_mode.delete_file)
-        plans = planner.plan(canvas_snapshot, on_disk_snapshot)
+        plans = planner.plan(
+            canvas_snapshot, on_disk_snapshot, config.file_filter)
         print(colored(
             f'  Updating {len(plans)} files ({len(canvas_snapshot)} files on remote)'))
         # start download
