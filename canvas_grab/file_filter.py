@@ -1,6 +1,7 @@
 import questionary
 from canvas_grab.configurable import Configurable
 from canvas_grab.utils import find_choice
+from canvas_grab.snapshot import SnapshotLink
 
 FILE_GROUP = {
     'Video': [".mp4", ".avi", ".mkv"],
@@ -28,7 +29,7 @@ class FileFilter(Configurable):
         if 'All' in self.allowed_group:
             return snapshot
         allowed = self.allowed_extensions()
-        return {k: v for k, v in snapshot.items() if any(map(lambda ext: k.endswith(ext), allowed))}
+        return {k: v for k, v in snapshot.items() if any(map(lambda ext: k.endswith(ext), allowed)) or isinstance(v, SnapshotLink)}
 
     def to_config(self):
         return {
