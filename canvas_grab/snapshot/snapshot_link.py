@@ -12,6 +12,7 @@ class SnapshotLink:
         return f'''<html>
 <head>
     <title>{escape(self.name)}</title>
+    <meta charset="UTF-8" />
     <meta http-equiv="refresh" content="0; URL={self.url}" />
 </head>
 <body>
