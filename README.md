@@ -11,8 +11,9 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 ## Getting Started
 
 1. Install Python
-2. Download https://github.com/skyzh/canvas_grab/archive/master.zip or
-   `git clone https://github.com/skyzh/canvas_grab`
+2. Download canvas_grab source code. There are typically two ways of doing this.
+   * Go to [Release Page](https://github.com/skyzh/canvas_grab/releases) and download `{version}.zip`.
+   * Or `git clone https://github.com/skyzh/canvas_grab`.
 3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
    Please refer to `Build and Run from Source` for more information.
 4. Get your API key at Canvas profile and you're ready to go!
@@ -71,15 +72,10 @@ re-configure, run `./configure.sh` or `./configure.ps1`.
 
 ![image](https://user-images.githubusercontent.com/4198311/108496621-4673bf00-72e5-11eb-8978-8b8bdd4efea5.png)
 
-## [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors)
+## Contributors
 
-[@skyzh](https://github.com/skyzh), 
-[@danyang685](https://github.com/danyang685),
-[@BugenZhao](https://github.com/BugenZhao),
-[@ElectronicElephant](https://github.com/ElectronicElephant),
-[@LuminousXLB](https://github.com/LuminousXLB),
-[@squnit](https://github.com/squnit),
-[@Kienyew](https://github.com/Kienyew)
+See [Contributors](https://github.com/skyzh/canvas_grab/graphs/contributors) list.
+[@skyzh](https://github.com/skyzh), [@danyang685](https://github.com/danyang685) are two core maintainers.
 
 ## License
 
