@@ -9,10 +9,6 @@ from canvasapi.exceptions import ResourceDoesNotExist
 import sys
 
 
-class CanvasGrabCliError(Exception):
-    pass
-
-
 def request_reconfigure():
     if len(sys.argv) >= 2:
         if sys.argv[1] == 'configure':
@@ -79,16 +75,7 @@ def main():
             on_disk_path).take_snapshot()
 
         # take canvas snapshot
-        mode = config.organize_mode.mode
-        canvas_snapshot_module = canvas_grab.snapshot.CanvasModuleSnapshot(
-            course)
-        canvas_snapshot_file = canvas_grab.snapshot.CanvasFileSnapshot(course)
-        if mode == 'module':
-            canvas_snapshots = [canvas_snapshot_module, canvas_snapshot_file]
-        elif mode == 'file':
-            canvas_snapshots = [canvas_snapshot_file, canvas_snapshot_module]
-        else:
-            raise CanvasGrabCliError(f"Unsupported organize mode {mode}")
+        canvas_snapshots = config.organize_mode.get_snapshots(course)
         canvas_snapshot = {}
         for canvas_snapshot_obj in canvas_snapshots:
             try:

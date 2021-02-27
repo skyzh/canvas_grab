@@ -1,6 +1,8 @@
 import questionary
 from canvas_grab.configurable import Configurable
 from canvas_grab.utils import find_choice
+from canvas_grab.snapshot import CanvasFileSnapshot, CanvasModuleSnapshot
+from canvas_grab.error import CanvasGrabCliError
 
 
 class OrganizeMode(Configurable):
@@ -8,6 +10,24 @@ class OrganizeMode(Configurable):
     def __init__(self):
         self.mode = 'module'
         self.delete_file = False
+
+    def get_snapshots(self, course):
+        if self.mode == 'module_link':
+            canvas_snapshot_module = CanvasModuleSnapshot(
+                course, True)
+        else:
+            canvas_snapshot_module = CanvasModuleSnapshot(
+                course)
+        canvas_snapshot_file = CanvasFileSnapshot(course)
+
+        if self.mode == 'module' or self.mode == 'module_link':
+            canvas_snapshots = [canvas_snapshot_module, canvas_snapshot_file]
+        elif self.mode == 'file':
+            canvas_snapshots = [canvas_snapshot_file, canvas_snapshot_module]
+        else:
+            raise CanvasGrabCliError(f"Unsupported organize mode {mode}")
+
+        return canvas_snapshots
 
     def to_config(self):
         return {
@@ -22,6 +42,8 @@ class OrganizeMode(Configurable):
     def interact(self):
         choices = [
             questionary.Choice('By module (recommended)', 'module'),
+            questionary.Choice(
+                'By module with pages and links', 'module_link'),
             questionary.Choice('As-is in file list', 'file'),
             questionary.Choice('Custom', 'custom',
                                disabled='not supported yet')
