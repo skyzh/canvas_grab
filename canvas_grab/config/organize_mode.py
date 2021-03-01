@@ -41,10 +41,14 @@ class OrganizeMode(Configurable):
 
     def interact(self):
         choices = [
-            questionary.Choice('By module (recommended)', 'module'),
             questionary.Choice(
-                'By module with pages and links', 'module_link'),
-            questionary.Choice('As-is in file list', 'file'),
+                'Organize by module, only download files', 'module'),
+            questionary.Choice(
+                'Organize by module, download files, links and pages', 'module_link'),
+            questionary.Choice(
+                'As-is in file list', 'file'),
+            questionary.Choice(
+                'As-is in file list, plus links and pages', 'file_link', disabled='not supported yet'),
             questionary.Choice('Custom', 'custom',
                                disabled='not supported yet')
         ]

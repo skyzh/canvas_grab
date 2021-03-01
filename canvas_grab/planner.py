@@ -24,9 +24,10 @@ class Planner(object):
                     content_length = len(from_item.content().encode('utf-8'))
                     if to_item.size != content_length:
                         plans.append(('update', key, from_item))
-
-        # Remove files
         for key, to_item in snapshot_to.items():
             if key not in snapshot_from_filter:
-                plans.append(('delete', key, to_item))
+                if self.remove_local_file:
+                    plans.append(('delete', key, to_item))
+                else:
+                    plans.append(('try-remove', key, to_item))
         return plans
