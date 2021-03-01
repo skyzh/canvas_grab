@@ -94,7 +94,8 @@ def main():
             f'  Updating {len(plans)} files ({len(canvas_snapshot)} files on remote)'))
         # start download
         transfer = canvas_grab.transfer.Transfer()
-        transfer.transfer(on_disk_path, plans)
+        transfer.transfer(
+            on_disk_path, f'{config.download_folder}/_canvas_grab_archive', plans)
 
     canvas_grab.version.check_latest_version()
 
