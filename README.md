@@ -17,6 +17,7 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
    Please refer to `Build and Run from Source` for more information.
 4. Get your API key at Canvas profile and you're ready to go!
+5. Please don't modify any file inside download folder (e.g take notes, add supplementary items). They will be overwritten upon each run.
 
 You may interrupt the downloading process at any time. The program will automatically resume from where it stopped.
 
