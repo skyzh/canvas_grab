@@ -1,4 +1,4 @@
-from canvas_grab.configurable import Configurable
+from ..configurable import Configurable
 
 
 class BaseFilter(Configurable):
