@@ -22,11 +22,6 @@ class CanvasModuleSnapshot(object):
     def take_snapshot(self):
         course = self.course
 
-        folders = {
-            folder.id: folder.full_name
-            for folder in course.get_folders()
-        }
-
         files_cache = {}
         if 'files' in [tab.id for tab in course.get_tabs()]:
             for file in course.get_files():
