@@ -1,13 +1,13 @@
-from canvas_grab.configurable import Configurable
+from ..configurable import Configurable
 from canvasapi import Canvas
 from canvasapi.exceptions import InvalidAccessToken
 from termcolor import colored
 
 from .endpoint import Endpoint
 from .organize_mode import OrganizeMode
-from canvas_grab.course_filter import CourseFilter
-from canvas_grab.file_filter import FileFilter
-from canvas_grab.utils import filter_available_courses
+from ..course_filter import CourseFilter
+from ..file_filter import FileFilter
+from ..utils import filter_available_courses
 
 
 class Config(Configurable):

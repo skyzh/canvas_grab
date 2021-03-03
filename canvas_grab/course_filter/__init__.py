@@ -2,7 +2,7 @@ from .all_filter import AllFilter
 from .term_filter import TermFilter
 from .base_filter import BaseFilter
 from .per_filter import PerFilter
-from canvas_grab.configurable import Configurable
+from ..configurable import Configurable
 import questionary
 
 
