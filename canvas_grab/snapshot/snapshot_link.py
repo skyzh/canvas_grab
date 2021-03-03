@@ -4,11 +4,18 @@ from html import escape
 
 @dataclass
 class SnapshotLink:
+    """A snapshot of link, which only includes metadata.
+    """
     name: str
     url: str = ''
     module_name: str = ''
 
     def content(self):
+        """Generate HTML content of the link
+
+        Returns:
+            str: HTML content string
+        """
         return f'''<html>
 <head>
     <title>{escape(self.name)}</title>
