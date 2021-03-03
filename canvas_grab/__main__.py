@@ -68,10 +68,11 @@ def get_options():
     # TODO quiet mode
     greeting()
 
+    print(f'Using config {args.config_file}')
     config_file = Path(args.config_file)
     config = canvas_grab.config.Config()
     config_fail = False
-    if (not args.reconfigure) and config_file.exists():
+    if config_file.exists():
         try:
             config.from_config(toml.loads(
                 config_file.read_text(encoding='utf8')))
