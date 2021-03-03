@@ -19,24 +19,25 @@ def get_options():
             f'You are using version {canvas_grab.__version__}. If you have any questions, please file an issue at {colored("https://github.com/skyzh/canvas_grab/issues", "blue")}')
         print(
             f'You may review {colored("README.md", "green")} and {colored("LICENSE", "green")} shipped with this release')
-        print(f'You may run this code with argument {colored(f"-h","cyan")} for command line usage')
+        print(
+            f'You may run this code with argument {colored(f"-h","cyan")} for command line usage')
         print('--------------------')
 
     # Argument Parser initiation
     parser = argparse.ArgumentParser(
         description='Grab all files on Canvas LMS to local directory.')
-    
+
     # Interactive
     interactive_group = parser.add_mutually_exclusive_group()
     interactive_group.add_argument("-i", "--interactive", dest="interactive", action="store_true",
                                    default=True, help="Set the program to run in interactive mode (default action)")
     interactive_group.add_argument("-I", "--non-interactive", "--no-input", dest="interactive", action="store_false", default=True,
                                    help="Set the program to run in non-interactive mode. This can be used to exit immediately in case of profile corruption without getting stuck with the input.")
-    
+
     # Reconfiguration
     parser.add_argument("-r", "--reconfigure", "--configure", dest="reconfigure", help="Reconfigure the tool.",
                         action="store_true")
-    
+
     # Location Specification
     parser.add_argument("-o", "--download-folder", "--output",
                         dest="download", help="Set the download folder.")
@@ -49,8 +50,8 @@ def get_options():
     #                 action="store_true")
     parser.add_argument("--version", action="version",
                         version=canvas_grab.__version__)
-    parser.add_argument("-k","--keep-version","--no-update",dest="noupdate",action="store_true",
-                                   default=False, help="Skip update checking. This will be helpful without a stable network connection and prevent reconfiguration.")
+    parser.add_argument("-k", "--keep-version", "--no-update", dest="noupdate", action="store_true",
+                        default=False, help="Skip update checking. This will be helpful without a stable network connection and prevent reconfiguration.")
 
     args = parser.parse_args()
 
@@ -83,7 +84,7 @@ def get_options():
     if args.download:
         config.download_folder = args.download
 
-    return args.interactive, args.noupdate,config
+    return args.interactive, args.noupdate, config
 
 
 def main():
@@ -142,7 +143,7 @@ def main():
         transfer = canvas_grab.transfer.Transfer()
         transfer.transfer(
             on_disk_path, f'{config.download_folder}/_canvas_grab_archive', plans)
-    
+
     if not noupdate:
         canvas_grab.version.check_latest_version()
 
