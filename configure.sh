@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./canvas_grab.sh configure
+./canvas_grab.sh --configure
