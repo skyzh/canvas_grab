@@ -1,4 +1,4 @@
-from canvas_grab.configurable import Configurable
+from ..configurable import Configurable
 from canvasapi import Canvas
 import questionary
 

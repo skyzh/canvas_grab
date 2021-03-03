@@ -102,11 +102,14 @@ def main():
     courses = list(canvas.get_courses())
     available_courses, not_available = canvas_grab.utils.filter_available_courses(
         courses)
-    print(
-        f'Found {len(courses)} courses in total ({len(not_available)} of which not available)')
     filtered_courses = config.course_filter.get_filter().filter_course(
         available_courses)
-    print(f'{len(available_courses) - len(filtered_courses)} courses ignored due to course filter configuration')
+
+    total_course_count = len(courses)
+    not_available_count = len(not_available)
+    filtered_count = len(available_courses) - len(filtered_courses)
+    print(colored(
+        f'{total_course_count} courses in total, {not_available_count} not available, {filtered_count} filtered', 'cyan'))
 
     course_name_parser = canvas_grab.course_parser.CourseParser()
     for idx, course in enumerate(filtered_courses):
@@ -137,7 +140,7 @@ def main():
         plans = planner.plan(
             canvas_snapshot, on_disk_snapshot, config.file_filter)
         print(colored(
-            f'  Updating {len(plans)} files ({len(canvas_snapshot)} files on remote)'))
+            f'  Updating {len(plans)} objects ({len(canvas_snapshot)} remote objects -> {len(on_disk_snapshot)} local objects)'))
         # start download
         transfer = canvas_grab.transfer.Transfer()
         transfer.transfer(

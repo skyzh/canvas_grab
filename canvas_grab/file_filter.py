@@ -1,7 +1,7 @@
 import questionary
-from canvas_grab.configurable import Configurable
-from canvas_grab.utils import find_choice
-from canvas_grab.snapshot import SnapshotLink
+from .configurable import Configurable
+from .utils import find_choice
+from .snapshot import SnapshotLink
 
 FILE_GROUP = {
     'Video': [".mp4", ".avi", ".mkv"],

@@ -1,6 +1,6 @@
 import questionary
 from .base_filter import BaseFilter
-from canvas_grab.utils import group_by, summarize_courses
+from ..utils import group_by, summarize_courses
 
 
 class PerFilter(BaseFilter):

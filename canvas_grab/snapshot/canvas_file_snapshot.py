@@ -1,34 +1,49 @@
 from .snapshot_file import from_canvas_file
+from .snapshot_link import SnapshotLink
+from ..request_batcher import RequestBatcher
 from canvasapi.exceptions import ResourceDoesNotExist
 
 
 class CanvasFileSnapshot(object):
-    def __init__(self, course):
+    def __init__(self, course, with_link=False):
         self.course = course
+        self.with_link = with_link
         self.snapshot = {}
+
+    def add_to_snapshot(self, key, value):
+        if key in self.snapshot:
+            print(colored(
+                f'  Duplicated file found: {key}, please download it using web browser.', 'yellow'))
+            return
+        self.snapshot[key] = value
 
     def take_snapshot(self):
         course = self.course
+        request_batcher = RequestBatcher(course)
 
-        if 'files' not in [tab.id for tab in course.get_tabs()]:
+        files = request_batcher.get_files()
+        if files is None:
             raise ResourceDoesNotExist("File tab is not supported.")
 
-        folders = {
-            folder.id: folder.full_name
-            for folder in course.get_folders()
-        }
+        folders = request_batcher.get_folders()
 
-        for file in course.get_files():
-            folder = folders[file.folder_id] + "/"
+        for _, file in files.items():
+            folder = folders[file.folder_id].full_name + "/"
             if folder.startswith("course files/"):
                 folder = folder[len("course files/"):]
             snapshot_file = from_canvas_file(file)
             filename = f'{folder}{snapshot_file.name}'
-            if filename in self.snapshot:
-                print(colored(
-                    f'  Duplicated file found: {filename}, please download it using web browser.', 'yellow'))
-                continue
-            self.snapshot[filename] = snapshot_file
+            self.add_to_snapshot(filename, snapshot_file)
+
+        print(f'  {len(files)} files in total')
+        if self.with_link:
+            pages = request_batcher.get_pages() or []
+            for page in pages:
+                key = f'pages/{page.title}.html'
+                value = SnapshotLink(
+                    page.title, page.html_url, "Page")
+                self.add_to_snapshot(key, value)
+            print(f'  {len(pages)} pages in total')
 
         return self.snapshot
 
