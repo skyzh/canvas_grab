@@ -89,7 +89,7 @@ def get_options():
         except KeyboardInterrupt:
             print("User canceled the configuration process")
             return
-        Path(config_file).write_text(
+        config_file.write_text(
             toml.dumps(config.to_config()), encoding='utf8')
     if args.download:
         config.download_folder = args.download
