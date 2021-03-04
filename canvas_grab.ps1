@@ -21,3 +21,5 @@ if (-Not(Test-Path -Path venv)) {
 }
 
 python main.py $args
+
+pause
