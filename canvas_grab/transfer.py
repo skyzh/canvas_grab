@@ -1,4 +1,5 @@
 import sys
+import os
 from pathlib import Path
 from retrying import retry
 from termcolor import colored
@@ -74,3 +75,14 @@ class Transfer(object):
                 print(f'  {colored("? (ignored)", "yellow")} {key}')
             if op == 'try-remove':
                 print(f'  {colored("? (not on remote)", "yellow")} {key}')
+
+        self.clean_tree(base_path)
+
+    def clean_tree(self, path):
+        path = Path(path)
+        children = list(path.glob('*'))
+        for child in children:
+            if child.is_dir():
+                self.clean_tree(child)
+        if not children:
+            path.rmdir()
