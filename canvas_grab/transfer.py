@@ -78,11 +78,18 @@ class Transfer(object):
 
         self.clean_tree(base_path)
 
-    def clean_tree(self, path):
+    def clean_tree(self, path) -> bool:
+        """Remove empty folder recursively.
+        Returns True if folder is deleted.
+        """
         path = Path(path)
-        children = list(path.glob('*'))
-        for child in children:
-            if child.is_dir():
-                self.clean_tree(child)
-        if not children:
+        if not path.is_dir():
+            return True
+        children = cleaned_children = list(path.glob('*'))
+        for child_idx in reversed(range(len(children))):
+            if children[child_idx].is_dir() and self.clean_tree(children[child_idx]):
+                del cleaned_children[child_idx]
+        if not cleaned_children:
             path.rmdir()
+            return True
+        return False
