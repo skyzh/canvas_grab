@@ -38,7 +38,7 @@ class RequestBatcher:
         if files is None:
             return self.course.get_file(file_id)
         else:
-            return files[file_id]
+            return files.get(file_id, self.course.get_file(file_id))
 
     def get_modules(self):
         if 'modules' not in self.get_tabs():
