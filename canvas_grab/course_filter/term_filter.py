@@ -4,6 +4,12 @@ from ..utils import group_by, summarize_courses
 
 
 class TermFilter(BaseFilter):
+    """Filter courses by term.
+
+    ``TermFilter`` selects all courses from selected terms. The allowed terms IDs are stored
+    in a list. If `terms == [-1]`, then only the latest term will be selected.
+    """
+
     def __init__(self):
         self.terms = [-1]
 

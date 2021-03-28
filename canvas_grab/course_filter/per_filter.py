@@ -4,6 +4,12 @@ from ..utils import group_by, summarize_courses
 
 
 class PerFilter(BaseFilter):
+    """Filter single courses.
+
+    ``PerFilter`` filters every single courses as selected by user. IDs of courses
+    will be stored in a list.
+    """
+
     def __init__(self):
         self.course_id = []
 

@@ -1,11 +1,16 @@
 import questionary
-from ..configurable import Configurable
+from ..configurable import Configurable, Interactable
 from ..utils import find_choice
 from ..snapshot import CanvasFileSnapshot, CanvasModuleSnapshot
 from ..error import CanvasGrabCliError
 
 
-class OrganizeMode(Configurable):
+class OrganizeMode(Configurable, Interactable):
+    """OrganizeMode decides how data are stored on disk.
+
+    Currently, there are four modes: module (with link) and
+    as-is (with link).
+    """
 
     def __init__(self):
         self.mode = 'module'

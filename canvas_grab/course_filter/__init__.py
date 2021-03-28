@@ -2,7 +2,7 @@ from .all_filter import AllFilter
 from .term_filter import TermFilter
 from .base_filter import BaseFilter
 from .per_filter import PerFilter
-from ..configurable import Configurable
+from ..configurable import Configurable, Interactable
 import questionary
 
 
@@ -16,7 +16,13 @@ def get_name(course_filter):
     return ''
 
 
-class CourseFilter(Configurable):
+class CourseFilter(Configurable, Interactable):
+    """Configures ``CourseFilter`` for Canvas Grab.
+
+    Current filter will be stored in ``filter_name``. Filter configurations are
+    stored separately in their corresponding sections in config file.
+    """
+
     def __init__(self):
         self.filter_name = 'all'
         self.all_filter = AllFilter()

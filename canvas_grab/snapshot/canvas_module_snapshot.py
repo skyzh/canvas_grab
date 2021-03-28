@@ -11,7 +11,7 @@ from ..request_batcher import RequestBatcher
 class CanvasModuleSnapshot(Snapshot):
     """Take a snapshot of files on Canvas, organized by module tab.
 
-    CanvasModuleSnapshot generates a snapshot of Canvas by scanning the module tab.
+    ``CanvasModuleSnapshot`` generates a snapshot of Canvas by scanning the module tab.
     This is useful if 1) "File" tab is not available 2) Users want to organize files
     by module. If "File" tab is available, the snapshot-taker will first acquire all
     files in "File" tab, which batches the requests and greatly improves performance.
