@@ -15,6 +15,7 @@ class Configurable(object):
         """
         pass
 
+
 class Interactable(object):
     def interact(self):
         """Get configuration from user input
