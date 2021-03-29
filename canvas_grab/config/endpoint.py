@@ -1,9 +1,11 @@
-from ..configurable import Configurable
+from ..configurable import Configurable, Interactable
 from canvasapi import Canvas
 import questionary
 
 
-class Endpoint(Configurable):
+class Endpoint(Configurable, Interactable):
+    """Endpoint stores Canvas LMS endpoint and API key.
+    """
 
     def __init__(self):
         self.endpoint = 'https://oc.sjtu.edu.cn'

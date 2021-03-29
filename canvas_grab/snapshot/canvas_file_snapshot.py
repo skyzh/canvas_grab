@@ -10,7 +10,7 @@ from canvasapi.exceptions import ResourceDoesNotExist
 class CanvasFileSnapshot(Snapshot):
     """Takes a snapshot of files on Canvas, organized by file tab.
 
-    CanvasFileSnapshot generates a snapshot of files on Canvas. In this snapshot mode,
+    ``CanvasFileSnapshot`` generates a snapshot of files on Canvas. In this snapshot mode,
     all files under "File" tab will be scanned as-is. Besides, it will add pages into
     the snapshot at `pages/xxx` path, if `with_link` option is enabled.
     """

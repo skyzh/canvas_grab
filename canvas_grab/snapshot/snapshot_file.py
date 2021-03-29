@@ -14,7 +14,7 @@ class SnapshotFile:
 
 
 def from_canvas_file(file):
-    """Create a `SnapshotFile` from canvasapi file object
+    """Create a ``SnapshotFile`` from canvasapi file object
 
     Args:
         file (canvasapi.file.File): File object to use

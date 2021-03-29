@@ -1,4 +1,4 @@
-from ..configurable import Configurable
+from ..configurable import Configurable, Interactable
 from canvasapi import Canvas
 from canvasapi.exceptions import InvalidAccessToken
 from termcolor import colored
@@ -10,7 +10,10 @@ from ..file_filter import FileFilter
 from ..utils import filter_available_courses
 
 
-class Config(Configurable):
+class Config(Configurable, Interactable):
+    """Config stores all configurations used by Canvas Grab.
+    """
+
     def __init__(self):
         self.endpoint = Endpoint()
         self.course_filter = CourseFilter()
