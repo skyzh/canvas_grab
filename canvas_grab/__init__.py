@@ -5,6 +5,7 @@ from . import planner
 from . import transfer
 from . import version
 from . import course_parser
+from . import get_options
 from . import __main__
 
 __version__ = version.VERSION

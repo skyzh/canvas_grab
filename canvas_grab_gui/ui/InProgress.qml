@@ -30,7 +30,7 @@ ColumnLayout {
         }
         ProgressBar {
             id: bar
-            value: 0.5
+            value: progress
             Layout.fillWidth: true
             Layout.rightMargin: 10
         }
