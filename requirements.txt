@@ -7,3 +7,4 @@ toml
 packaging
 termcolor
 questionary
+PySide6
