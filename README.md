@@ -14,7 +14,7 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 2. Download canvas_grab source code. There are typically three ways of doing this.
    * Go to [Release Page](https://github.com/skyzh/canvas_grab/releases) and download `{version}.zip`.
    * Or `git clone https://github.com/skyzh/canvas_grab`.
-   * Use SJTU GitLab, see [Relase Page](https://git.sjtu.edu.cn/iskyzh/canvas_grab/-/tags), or
+   * Use SJTU GitLab, see [Release Page](https://git.sjtu.edu.cn/iskyzh/canvas_grab/-/tags), or
      visit https://git.sjtu.edu.cn/iskyzh/canvas_grab
 3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
    Please refer to `Build and Run from Source` for more information.
