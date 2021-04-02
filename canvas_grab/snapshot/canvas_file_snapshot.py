@@ -48,9 +48,15 @@ class CanvasFileSnapshot(Snapshot):
         Returns:
             dict: snapshot of Canvas in `SnapshotFile` or `SnapshotLink` type.
         """
+        for _ in self.yield_take_snapshot():
+            pass
+        return self.get_snapshot()
+
+    def yield_take_snapshot(self):
         course = self.course
         request_batcher = RequestBatcher(course)
 
+        yield (0, '请稍候', '正在获取文件列表')
         files = request_batcher.get_files()
         if files is None:
             raise ResourceDoesNotExist("File tab is not supported.")
@@ -66,7 +72,10 @@ class CanvasFileSnapshot(Snapshot):
             self.add_to_snapshot(filename, snapshot_file)
 
         print(f'  {len(files)} files in total')
+        yield (0.1, None, f'共 {len(files)} 个文件')
+
         if self.with_link:
+            yield (None, '正在解析链接', None)
             pages = request_batcher.get_pages() or []
             for page in pages:
                 key = f'pages/{page.title}.html'
@@ -74,8 +83,7 @@ class CanvasFileSnapshot(Snapshot):
                     page.title, page.html_url, "Page")
                 self.add_to_snapshot(key, value)
             print(f'  {len(pages)} pages in total')
-
-        return self.snapshot
+            yield (0.2, '请稍候', f'共 {len(pages)} 个链接')
 
     def get_snapshot(self):
         """Get the previously-taken snapshot

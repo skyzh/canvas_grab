@@ -20,7 +20,7 @@ def need_retrying(exception):
 def download_file(url, desc, filename, file_size, verbose=False):
     try:
         sys.stderr.flush()
-        df(url, desc, filename, file_size, verbose, req_timeout=TIMEOUT)
+        yield from df(url, desc, filename, file_size, verbose, req_timeout=TIMEOUT)
         sys.stderr.flush()
     except KeyboardInterrupt:
         sys.stderr.flush()
@@ -36,6 +36,14 @@ class Transfer(object):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
 
     def transfer(self, base_path, archive_base_path, plans):
+        for _ in self.yield_transfer():
+            pass
+
+    def sub_transfer_progress(self, of, total, download_progress):
+        return 0.2 + (float(of) + download_progress) / total * 0.8
+
+    def yield_transfer(self, base_path, archive_base_path, plans):
+        yield (None, '传输文件中...', None)
         for idx, (op, key, plan) in enumerate(plans):
             path = f'{base_path}/{key}'
             archive_path = f'{archive_base_path}/{path}'
@@ -50,8 +58,10 @@ class Transfer(object):
                     print(f'  {colored("? (not available)", "yellow")} {key}')
                     continue
                 if isinstance(plan, SnapshotFile):
-                    download_file(
+                    download_file_task = download_file(
                         plan.url, f'({idx+1}/{len(plans)}) ' + truncate_name(plan.name), path, plan.size)
+                    for progress in download_file_task:
+                        yield (self.sub_transfer_progress(idx, len(plans), progress), None, None)
                     apply_datetime_attr(
                         path, plan.created_at, plan.modified_at)
                 elif isinstance(plan, SnapshotLink):
@@ -67,14 +77,19 @@ class Transfer(object):
 
             if op == 'add':
                 print(f'  {colored("+", "green")} {key}')
+                yield (None, None, f'下载 {key}')
             if op == 'update':
                 print(f'  {colored("=", "green")} {key}')
+                yield (None, None, f'更新 {key}')
             if op == 'delete':
                 print(f'  {colored("-", "yellow")} {key}')
+                yield (None, None, f'删除 {key}')
             if op == 'ignore':
                 print(f'  {colored("? (ignored)", "yellow")} {key}')
+                yield (None, None, f'忽略 {key}')
             if op == 'try-remove':
                 print(f'  {colored("? (not on remote)", "yellow")} {key}')
+                yield (None, None, f'忽略 {key}')
 
         self.clean_tree(base_path)
 

@@ -10,6 +10,7 @@ from .sync_model import SyncModel
 from colorama import init
 from termcolor import colored
 from time import sleep
+from canvasapi.exceptions import ResourceDoesNotExist
 
 
 class Main:
@@ -20,7 +21,7 @@ class Main:
         config = self._config
         canvas = config.endpoint.login()
         user = canvas.get_current_user()
-        self._model.update_login_user(user)
+        self._model.on_update_login_user.emit(str(user))
         courses = list(canvas.get_courses())
         available_courses, not_available = canvas_grab.utils.filter_available_courses(
             courses)
@@ -30,13 +31,13 @@ class Main:
         total_course_count = len(courses)
         not_available_count = len(not_available)
         filtered_count = len(available_courses) - len(filtered_courses)
-        self._model.done_fetching_courses(
+        self._model.on_done_fetching_courses.emit(
             f'您已经以 {user} 身份登录。共有 {total_course_count} 门课程需同步，其中 {not_available_count} 门无法访问，{filtered_count} 门已被过滤。')
 
         course_name_parser = canvas_grab.course_parser.CourseParser()
         for idx, course in enumerate(filtered_courses):
             course_name = course.name
-            self._model.new_course_in_progress(
+            self._model.on_new_course_in_progress.emit(
                 f'({idx+1}/{len(filtered_courses)}) {course_name} (ID: {course.id})')
             # take on-disk snapshot
             parsed_name = course_name_parser.get_parsed_name(course)
@@ -50,7 +51,11 @@ class Main:
             canvas_snapshot = {}
             for canvas_snapshot_obj in canvas_snapshots:
                 try:
-                    canvas_snapshot = canvas_snapshot_obj.take_snapshot()
+                    for progress_item in canvas_snapshot_obj.yield_take_snapshot():
+                        (progress, status_text, progress_text) = progress_item
+                        self._model.on_snapshot_in_progress.emit(
+                            progress, status_text, progress_text)
+                    canvas_snapshot = canvas_snapshot_obj.get_snapshot()
                 except ResourceDoesNotExist:
                     print(
                         colored(f'{mode} not supported, falling back to alternative mode', 'yellow'))
@@ -63,16 +68,26 @@ class Main:
                 canvas_snapshot, on_disk_snapshot, config.file_filter)
             print(colored(
                 f'  Updating {len(plans)} objects '))
+
             # start download
             transfer = canvas_grab.transfer.Transfer()
-            transfer.transfer(
+            transfer_task = transfer.yield_transfer(
                 on_disk_path, f'{config.download_folder}/_canvas_grab_archive', plans)
-            self._model.finish_course(
+
+            for progress_item in transfer_task:
+                (progress, status_text, progress_text) = progress_item
+                self._model.on_download_in_progress.emit(
+                    progress, status_text, progress_text)
+
+            self._model.on_finish_course.emit(
                 f'{course_name} (ID: {course.id})',
                 f'更新了 {len(plans)} 个文件。(远程 {len(canvas_snapshot)} -> 本地 {len(on_disk_snapshot)})')
 
         if not self._noupdate:
             canvas_grab.version.check_latest_version()
+
+    def _exit_handler(self):
+        os._exit(0)
 
     def main(self):
         init()
@@ -84,6 +99,8 @@ class Main:
             return
 
         app = QGuiApplication(sys.argv)
+        app.setQuitOnLastWindowClosed(True)
+        app.aboutToQuit.connect(self._exit_handler)
         engine = QQmlApplicationEngine()
         engine.rootContext().setContextProperty('py_sync_model', self._model)
         engine.load(os.path.join(os.path.dirname(__file__), "ui/main.qml"))
