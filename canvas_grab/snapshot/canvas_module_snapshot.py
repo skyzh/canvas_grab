@@ -47,12 +47,20 @@ class CanvasModuleSnapshot(Snapshot):
 
          Returns:
              dict: snapshot of Canvas in `SnapshotFile` or `SnapshotLink` type.
-         """
+        """
+        for _ in self.yield_take_snapshot():
+            pass
+        return self.get_snapshot()
+
+    def yield_take_snapshot(self):
         course = self.course
         request_batcher = RequestBatcher(course)
         accessed_files = []
+        yield (0, '请稍候', '正在获取模块列表')
 
-        for _, module in (request_batcher.get_modules() or {}).items():
+        modules = (request_batcher.get_modules() or {}).items()
+        download_idx = 0
+        for _, module in modules:
             # replace invalid characters in name
             name = re.sub(file_regex, "_", module.name)
             # consolidate spaces
@@ -67,6 +75,9 @@ class CanvasModuleSnapshot(Snapshot):
             module_item_count = module.items_count
             print(
                 f'  Module {colored(module_name, "cyan")} ({module_item_count} items)')
+
+            yield (download_idx / len(modules) * 0.2, '正在获取模块列表', f'{module_name} (包含 {module_item_count} 个对象)')
+            download_idx += 1
 
             for item in module.get_module_items():
                 if item.type == 'File':
@@ -94,8 +105,7 @@ class CanvasModuleSnapshot(Snapshot):
                     unmoduled_files += 1
             print(
                 f'  {colored("Unmoduled files", "cyan")} ({unmoduled_files} items)')
-
-        return self.snapshot
+            yield (0.2, '正在获取模块列表', f'还有 {unmoduled_files} 个不在模块中的文件')
 
     def get_snapshot(self):
         """Get the previously-taken snapshot

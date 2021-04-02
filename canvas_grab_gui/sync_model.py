@@ -17,6 +17,12 @@ class SyncModel(QAbstractListModel):
              'status_text': "请稍候",
              'progress_text': "正在登录到 Canvas LMS",
              'progress': 0.0}]
+        self.on_update_login_user.connect(self.update_login_user)
+        self.on_done_fetching_courses.connect(self.done_fetching_courses)
+        self.on_new_course_in_progress.connect(self.new_course_in_progress)
+        self.on_snapshot_in_progress.connect(self.snapshot_in_progress)
+        self.on_download_in_progress.connect(self.download_in_progress)
+        self.on_finish_course.connect(self.finish_course)
 
     def data(self, index, role=Qt.DisplayRole):
         row = index.row()
@@ -46,11 +52,9 @@ class SyncModel(QAbstractListModel):
             SyncModel.IconNameRole: b'iconName'
         }
 
-    def update(self, func):
-        self.beginResetModel()
-        func()
-        self.endResetModel()
+    on_update_login_user = Signal(str)
 
+    @Slot(str)
     def update_login_user(self, user):
         self.beginResetModel()
         self.items[0]['progress_text'] = f'以 {user} 的身份登录'
@@ -58,6 +62,9 @@ class SyncModel(QAbstractListModel):
         self.items[0]['progress'] = 0.5
         self.endResetModel()
 
+    on_done_fetching_courses = Signal(str)
+
+    @Slot(str)
     def done_fetching_courses(self, text):
         self.beginResetModel()
         self.items[0] = {
@@ -67,6 +74,9 @@ class SyncModel(QAbstractListModel):
         }
         self.endResetModel()
 
+    on_new_course_in_progress = Signal(str)
+
+    @Slot(str)
     def new_course_in_progress(self, text):
         self.beginResetModel()
         self.items = [self.items[0], {
@@ -77,6 +87,35 @@ class SyncModel(QAbstractListModel):
         }] + self.items[1:]
         self.endResetModel()
 
+    on_snapshot_in_progress = Signal(float, str, str)
+
+    @Slot(float, str, str)
+    def snapshot_in_progress(self, progress, status_text, progress_text):
+        self.beginResetModel()
+        if status_text is not None:
+            self.items[1]['status_text'] = status_text
+        if progress_text is not None:
+            self.items[1]['progress_text'] = progress_text
+        if progress is not None:
+            self.items[1]['progress'] = progress
+        self.endResetModel()
+
+    on_download_in_progress = Signal(float, str, str)
+
+    @Slot(float, str, str)
+    def download_in_progress(self, progress, status_text, progress_text):
+        self.beginResetModel()
+        if status_text != "":
+            self.items[1]['status_text'] = status_text
+        if progress_text != "":
+            self.items[1]['progress_text'] = progress_text
+        if progress > 0:
+            self.items[1]['progress'] = progress
+        self.endResetModel()
+
+    on_finish_course = Signal(str, str)
+
+    @Slot(str, str)
     def finish_course(self, title, text):
         self.beginResetModel()
         self.items = [self.items[0], {
