@@ -36,7 +36,7 @@ class Transfer(object):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
 
     def transfer(self, base_path, archive_base_path, plans):
-        for _ in self.yield_transfer():
+        for _ in self.yield_transfer(base_path, archive_base_path, plans):
             pass
 
     def sub_transfer_progress(self, of, total, download_progress):
