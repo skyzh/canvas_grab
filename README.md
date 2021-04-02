@@ -11,9 +11,11 @@ For legacy version, refer to [legacy](https://github.com/skyzh/canvas_grab/tree/
 ## Getting Started
 
 1. Install Python
-2. Download canvas_grab source code. There are typically two ways of doing this.
+2. Download canvas_grab source code. There are typically three ways of doing this.
    * Go to [Release Page](https://github.com/skyzh/canvas_grab/releases) and download `{version}.zip`.
    * Or `git clone https://github.com/skyzh/canvas_grab`.
+   * Use SJTU GitLab, see [Relase Page](https://git.sjtu.edu.cn/iskyzh/canvas_grab/-/tags), or
+     visit https://git.sjtu.edu.cn/iskyzh/canvas_grab
 3. Run `./canvas_grab.sh` (Linux, macOS) or `.\canvas_grab.ps1` (Windows) in Terminal.
    Please refer to `Build and Run from Source` for more information.
 4. Get your API key at Canvas profile and you're ready to go!
@@ -72,6 +74,8 @@ re-configure, run `./configure.sh` or `./configure.ps1`.
 ## Screenshot
 
 ![image](https://user-images.githubusercontent.com/4198311/108496621-4673bf00-72e5-11eb-8978-8b8bdd4efea5.png)
+
+![gui](https://user-images.githubusercontent.com/4198311/113378330-4e755300-93a9-11eb-81a9-c494a8cc7488.png)
 
 ## Contributors
 
