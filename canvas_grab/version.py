@@ -4,7 +4,7 @@ from packaging import version as ver_parser
 from termcolor import colored
 
 GITHUB_RELEASE_URL = "https://api.github.com/repos/skyzh/canvas_grab/releases/latest"
-VERSION = "2.0.8-alpha"
+VERSION = "2.1.1-alpha"
 
 
 def check_latest_version():
