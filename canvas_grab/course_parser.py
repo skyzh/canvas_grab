@@ -9,7 +9,7 @@ class CourseParser(object):
         if r is not None:
             r = r.groupdict()
         else:
-            return course.name
+            return normalize_path(course.name)
 
         if hasattr(course, 'original_name'):
             course_name = course.original_name
