@@ -3,6 +3,8 @@ from time import sleep
 
 
 class SyncModel(QAbstractListModel):
+    """Model of listing information on Canvas Grab GUI
+    """
     NameRole = Qt.UserRole + 1
     StatusRole = Qt.UserRole + 2
     StatusTextRole = Qt.UserRole + 3

@@ -32,6 +32,9 @@ def download_file(url, desc, filename, file_size, verbose=False):
 
 
 class Transfer(object):
+    """Transfer files with Transfer class
+    """
+
     def create_parent_folder(self, path):
         Path(path).parent.mkdir(parents=True, exist_ok=True)
 
