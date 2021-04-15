@@ -2,10 +2,23 @@ from .snapshot import SnapshotFile, SnapshotLink
 
 
 class Planner(object):
+    """Planner generates a transfer plan from two snapshots
+    """
+
     def __init__(self, remove_local_file):
         self.remove_local_file = remove_local_file
 
     def plan(self, snapshot_from, snapshot_to, file_filter):
+        """plan a transfer
+
+        Args:
+            snapshot_from (dict): source snapshot
+            snapshot_to (dict): target snapshot
+            file_filter (canvas_grab.file_filter.FileFilter): file filter
+
+        Returns:
+            transfer plan
+        """
         snapshot_from_filter = file_filter.filter_files(snapshot_from)
 
         plans = []

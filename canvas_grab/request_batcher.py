@@ -1,4 +1,7 @@
 class RequestBatcher:
+    """RequestBatcher automatically batches requests with batch API
+    """
+
     def __init__(self, course):
         self.course = course
         self.cache = {}
