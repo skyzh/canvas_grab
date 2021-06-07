@@ -4,7 +4,7 @@ from termcolor import colored
 from .snapshot import Snapshot
 from .snapshot_file import from_canvas_file
 from .snapshot_link import SnapshotLink
-from ..utils import file_regex
+from ..utils import normalize_path, file_regex
 from ..request_batcher import RequestBatcher
 
 
@@ -82,16 +82,14 @@ class CanvasModuleSnapshot(Snapshot):
             for item in module.get_module_items():
                 if item.type == 'File':
                     file_id = item.content_id
-                    file = request_batcher.get_file(file_id)
-                    file.display_name = re.sub(file_regex, '_', file.display_name)
-                    snapshot_file = from_canvas_file(file)
+                    snapshot_file = from_canvas_file(
+                        request_batcher.get_file(file_id))
                     accessed_files.append(file_id)
-                    filename = f'{module_name}/{snapshot_file.name}'
+                    filename = f'{module_name}/{normalize_path(snapshot_file.name, file_regex)}'
                     self.add_to_snapshot(filename, snapshot_file)
                 if self.with_link:
                     if item.type == 'ExternalUrl' or item.type == 'Page':
-                        item.title = re.sub(file_regex, '_', item.title)
-                        key = f'{module_name}/{item.title}.html'
+                        key = f'{module_name}/{normalize_path(item.title, file_regex)}.html'
                         value = SnapshotLink(
                             item.title, item.html_url, module_name)
                         self.add_to_snapshot(key, value)
@@ -101,9 +99,8 @@ class CanvasModuleSnapshot(Snapshot):
             unmoduled_files = 0
             for file_id, file in files.items():
                 if file_id not in accessed_files:
-                    file.display_name = re.sub(file_regex, '_', file.display_name)
                     snapshot_file = from_canvas_file(file)
-                    filename = f'unmoduled/{snapshot_file.name}'
+                    filename = f'unmoduled/{normalize_path(snapshot_file.name, file_regex)}'
                     self.add_to_snapshot(filename, snapshot_file)
                     unmoduled_files += 1
             print(
