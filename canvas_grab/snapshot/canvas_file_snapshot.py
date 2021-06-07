@@ -5,7 +5,7 @@ from .snapshot_file import from_canvas_file
 from .snapshot_link import SnapshotLink
 from ..request_batcher import RequestBatcher
 from canvasapi.exceptions import ResourceDoesNotExist
-
+from ..utils import normalize_path, file_regex
 
 class CanvasFileSnapshot(Snapshot):
     """Takes a snapshot of files on Canvas, organized by file tab.
@@ -64,11 +64,11 @@ class CanvasFileSnapshot(Snapshot):
         folders = request_batcher.get_folders()
 
         for _, file in files.items():
-            folder = folders[file.folder_id].full_name + "/"
+            folder = normalize_path(folders[file.folder_id].full_name) + "/"
             if folder.startswith("course files/"):
                 folder = folder[len("course files/"):]
             snapshot_file = from_canvas_file(file)
-            filename = f'{folder}{snapshot_file.name}'
+            filename = f'{folder}{normalize_path(snapshot_file.name, file_regex)}'
             self.add_to_snapshot(filename, snapshot_file)
 
         print(f'  {len(files)} files in total')
@@ -78,7 +78,7 @@ class CanvasFileSnapshot(Snapshot):
             yield (None, '正在解析链接', None)
             pages = request_batcher.get_pages() or []
             for page in pages:
-                key = f'pages/{page.title}.html'
+                key = f'pages/{normalize_path(page.title, file_regex)}.html'
                 value = SnapshotLink(
                     page.title, page.html_url, "Page")
                 self.add_to_snapshot(key, value)
