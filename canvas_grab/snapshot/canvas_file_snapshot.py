@@ -1,11 +1,11 @@
 from termcolor import colored
-
+import re
 from .snapshot import Snapshot
 from .snapshot_file import from_canvas_file
 from .snapshot_link import SnapshotLink
 from ..request_batcher import RequestBatcher
 from canvasapi.exceptions import ResourceDoesNotExist
-
+from ..utils import normalize_path, file_regex
 
 class CanvasFileSnapshot(Snapshot):
     """Takes a snapshot of files on Canvas, organized by file tab.
@@ -64,6 +64,8 @@ class CanvasFileSnapshot(Snapshot):
         folders = request_batcher.get_folders()
 
         for _, file in files.items():
+            file.display_name = re.sub(file_regex, '_', file.display_name)
+            folders[file.folder_id].full_name = normalize_path(folders[file.folder_id].full_name)
             folder = folders[file.folder_id].full_name + "/"
             if folder.startswith("course files/"):
                 folder = folder[len("course files/"):]
@@ -78,6 +80,7 @@ class CanvasFileSnapshot(Snapshot):
             yield (None, '正在解析链接', None)
             pages = request_batcher.get_pages() or []
             for page in pages:
+                page.title = re.sub(file_regex, '_', page.title)
                 key = f'pages/{page.title}.html'
                 value = SnapshotLink(
                     page.title, page.html_url, "Page")
