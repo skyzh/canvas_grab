@@ -47,7 +47,7 @@ class Main:
                 on_disk_path).take_snapshot()
 
             # take canvas snapshot
-            canvas_snapshots = config.organize_mode.get_snapshots(course)
+            mode, canvas_snapshots = config.organize_mode.get_snapshots(course)
             canvas_snapshot = {}
             for canvas_snapshot_obj in canvas_snapshots:
                 try:
