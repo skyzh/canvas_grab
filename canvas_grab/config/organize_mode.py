@@ -36,7 +36,7 @@ class OrganizeMode(Configurable, Interactable):
         else:
             raise CanvasGrabCliError(f"Unsupported organize mode {self.mode}")
 
-        return canvas_snapshots
+        return self.mode, canvas_snapshots
 
     def to_config(self):
         return {
