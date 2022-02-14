@@ -1,5 +1,9 @@
 # canvas-grab
 
+**Looking for Maintainers**
+
+*As I no longer have access to Canvas systems, this project cannot be actively maintained by me. If you are interested in maintaining this project, please email me.*
+
 Grab all files on Canvas LMS to local directory.
 
 *Less is More.* In canvas_grab v2, we focus on stability and ease of use.
