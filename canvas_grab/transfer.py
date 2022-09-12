@@ -56,7 +56,7 @@ class Transfer(object):
                 file_obj = Path(path)
                 if file_obj.exists():
                     self.create_parent_folder(archive_path)
-                    file_obj.rename(archive_path)
+                    file_obj.replace(archive_path)
                 if plan.url == '':
                     print(f'  {colored("? (not available)", "yellow")} {key}')
                     continue
