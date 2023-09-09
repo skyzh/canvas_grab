@@ -1,8 +1,17 @@
 #!/bin/bash
-set -e
 
 echo "Check Python installation..."
-python3 --version
+python_path=$(command -v python3 2>/dev/null)
+if [ -z $python_path ]; then
+    python_path=$(command -v python 2>/dev/null)
+fi
+eval $python_path --version
+
+python3() {
+    eval "$python_path $@"
+}
+
+set -e
 
 echo "Check virtual environment..."
 
